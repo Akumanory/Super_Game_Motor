@@ -22,7 +22,7 @@ int WINAPI WinMain(
     try {
         throw_if_failed(E_FAIL);
     } catch (com_exception& e) {
-        cout << e.what() << endl;
+        utils::debug_write::error(e.what());
     }
 
     Sleep(5000);

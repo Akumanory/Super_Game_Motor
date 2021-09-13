@@ -3,12 +3,26 @@
 ADD_DEFINITIONS(-DUNICODE)
 ADD_DEFINITIONS(-D_UNICODE)
 
+set(TASK_SYSTEM_HEADERS
+    include/motor/task_system/clocker.hpp
+    include/motor/task_system/constants.hpp
+    include/motor/task_system/thread_pool.hpp
+    include/motor/task_system/timer.hpp
+)
+
 set(HEADERS
+    include/motor/task_system.hpp
     include/motor/utils.hpp
 )
 
+set(TASK_SYSTEM_SOURCES
+    src/task_system/clocker.cpp
+    src/task_system/thread_pool.cpp
+    src/task_system/timer.cpp
+)
+
 set(SOURCES
-    src/main.cpp
+    # src/main.cpp
     src/utils.cpp
 )
 
@@ -19,12 +33,50 @@ set(LIBRARIES
     dxguid
 )
 
-add_executable (${PROJECT_NAME} WIN32 ${HEADERS} ${SOURCES})
+add_library (${PROJECT_NAME}_lib
+    ${HEADERS}
+    ${TASK_SYSTEM_HEADERS}
 
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
+    ${SOURCES}
+    ${TASK_SYSTEM_SOURCES}
+)
 
-target_include_directories(${PROJECT_NAME} PRIVATE include)
+source_group ("include/motor"                           FILES ${HEADERS})
+source_group ("include/motor/task_system"               FILES ${TASK_SYSTEM_HEADERS})
+
+source_group ("src"                                     FILES ${SOURCES})
+source_group ("src/task_system"                         FILES ${TASK_SYSTEM_SOURCES})
+
+add_executable (${PROJECT_NAME} WIN32 src/main.cpp)
+
+target_link_libraries(${PROJECT_NAME}_lib ${LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
+
+target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set_target_properties(${PROJECT_NAME}_lib PROPERTIES COMPILE_FLAGS "/std:c++latest")
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/std:c++latest")
+endif()
+
+enable_testing()
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+add_executable(runUnitTests tests/debug_test.cpp)
+
+target_link_libraries(runUnitTests
+    gtest
+    gtest_main
+
+    ${PROJECT_NAME}_lib
+)
+
+include(GoogleTest)
+gtest_discover_tests(runUnitTests)
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set_target_properties(runUnitTests PROPERTIES COMPILE_FLAGS "/std:c++latest")
 endif()

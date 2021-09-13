@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
+set (CMAKE_CXX_STANDARD 23)
+
 ADD_DEFINITIONS(-DUNICODE)
 ADD_DEFINITIONS(-D_UNICODE)
 
@@ -54,11 +56,6 @@ target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
 
 target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set_target_properties(${PROJECT_NAME}_lib PROPERTIES COMPILE_FLAGS "/std:c++latest")
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/std:c++latest")
-endif()
-
 enable_testing()
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -76,7 +73,3 @@ target_link_libraries(runUnitTests
 
 include(GoogleTest)
 gtest_discover_tests(runUnitTests)
-
-if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    set_target_properties(runUnitTests PROPERTIES COMPILE_FLAGS "/std:c++latest")
-endif()

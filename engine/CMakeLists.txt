@@ -5,6 +5,10 @@ set (CMAKE_CXX_STANDARD 23)
 ADD_DEFINITIONS(-DUNICODE)
 ADD_DEFINITIONS(-D_UNICODE)
 
+set(ASYNC_HEADEERS
+    include/motor/async/resource.hpp
+)
+
 set(TASK_SYSTEM_HEADERS
     include/motor/task_system/clocker.hpp
     include/motor/task_system/constants.hpp
@@ -24,7 +28,6 @@ set(TASK_SYSTEM_SOURCES
 )
 
 set(SOURCES
-    # src/main.cpp
     src/utils.cpp
 )
 
@@ -37,6 +40,7 @@ set(LIBRARIES
 
 add_library (${PROJECT_NAME}_lib
     ${HEADERS}
+    ${ASYNC_HEADEERS}
     ${TASK_SYSTEM_HEADERS}
 
     ${SOURCES}
@@ -44,6 +48,7 @@ add_library (${PROJECT_NAME}_lib
 )
 
 source_group ("include/motor"                           FILES ${HEADERS})
+source_group ("include/motor/async"                     FILES ${ASYNC_HEADERS})
 source_group ("include/motor/task_system"               FILES ${TASK_SYSTEM_HEADERS})
 
 source_group ("src"                                     FILES ${SOURCES})
@@ -58,13 +63,20 @@ target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
 
 enable_testing()
 
+set(TESTING_NAME run_unit_tests)
+
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
-add_executable(runUnitTests tests/debug_test.cpp)
+set(TEST_FILES
+    tests/debug_test.cpp
+    tests/shared_resource.cpp
+)
 
-target_link_libraries(runUnitTests
+add_executable(${TESTING_NAME} ${TEST_FILES})
+
+target_link_libraries(${TESTING_NAME}
     gtest
     gtest_main
 
@@ -72,4 +84,4 @@ target_link_libraries(runUnitTests
 )
 
 include(GoogleTest)
-gtest_discover_tests(runUnitTests)
+gtest_discover_tests(${TESTING_NAME})

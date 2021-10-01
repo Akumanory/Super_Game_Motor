@@ -1,6 +1,7 @@
 *
 !lib/
 !lib/*
+!lib/imgui-cmake/**
 !engine/
 !/engine/**
 !/*

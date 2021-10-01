@@ -4,3 +4,4 @@ project ("engine")
 
 add_subdirectory ("engine")
 add_subdirectory ("lib/googletest")
+add_subdirectory ("lib/imgui-cmake")

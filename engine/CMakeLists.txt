@@ -36,6 +36,7 @@ set(LIBRARIES
     dxgi
     d3dcompiler
     dxguid
+    imgui-cmake
 )
 
 add_library (${PROJECT_NAME}_lib

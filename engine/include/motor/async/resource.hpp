@@ -70,8 +70,8 @@ public:
         f(*resource_);
     }
 
-    operator bool() const {
-        return resource_;
+    explicit operator bool() const noexcept {
+        return resource_ != nullptr;
     }
 
 private:
@@ -84,8 +84,8 @@ private:
 
 private:
     mutable std::shared_mutex mtx_;
-    ResourceType* resource_;
-    std::aligned_storage_t<sizeof(ResourceType), alignof(ResourceType)> storage_;
+    ResourceType* resource_{ nullptr };
+    std::aligned_storage_t<sizeof(ResourceType), alignof(ResourceType)> storage_{};
 };
 
 } // namespace async

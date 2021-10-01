@@ -8,6 +8,13 @@
 #include <functional>
 #include <exception>
 #include <source_location>
+#include <cassert>
+
+#if _DEBUG
+#    define debug_assert(x) assert(x)
+#else
+#    define debug_assert(x)
+#endif
 
 namespace motor {
 namespace utils {

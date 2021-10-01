@@ -1,4 +1,5 @@
 #include <motor/utils.hpp>
+#include <motor/task_system.hpp>
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -19,13 +20,24 @@ int WINAPI WinMain(
     utils::enable_console();
 #endif // _DEBUG
 
-    try {
-        throw_if_failed(E_FAIL);
-    } catch (com_exception& e) {
-        utils::debug_write::error(e.what());
-    }
+    auto handle = GetCurrentThread();
+    SetThreadAffinityMask(handle, 1);
 
-    Sleep(5000);
+    task_system::timer real_timer;
+    task_system::ticker<task_system::ticker_type::CONSTANT> ticker{ real_timer, chrono::milliseconds(200) };
+
+    auto tick_tack = task_system::tickable_object{
+        [&real_timer](task_system::delta_time delta) {
+            cout << "tick " << real_timer.elapsed() << endl;
+        }
+    };
+    ticker.tickables().emplace_back(&tick_tack);
+
+    while (real_timer.elapsed() < chrono::seconds(30)) {
+        ticker.tick();
+        this_thread::yield();
+    }
+    this_thread::sleep_for(chrono::seconds(7));
 
     return 0;
 }

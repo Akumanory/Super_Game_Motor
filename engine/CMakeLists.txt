@@ -10,9 +10,11 @@ set(ASYNC_HEADEERS
 )
 
 set(TASK_SYSTEM_HEADERS
-    include/motor/task_system/clocker.hpp
     include/motor/task_system/constants.hpp
     include/motor/task_system/thread_pool.hpp
+    include/motor/task_system/tickable.hpp
+    include/motor/task_system/ticker.hpp
+    include/motor/task_system/timeline.hpp
     include/motor/task_system/timer.hpp
 )
 
@@ -22,9 +24,7 @@ set(HEADERS
 )
 
 set(TASK_SYSTEM_SOURCES
-    src/task_system/clocker.cpp
     src/task_system/thread_pool.cpp
-    src/task_system/timer.cpp
 )
 
 set(SOURCES
@@ -70,6 +70,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 set(TEST_FILES
+    tests/task_system/ticker.cpp
     tests/debug_test.cpp
     tests/shared_resource.cpp
 )

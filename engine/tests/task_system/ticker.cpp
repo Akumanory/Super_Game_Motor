@@ -5,7 +5,7 @@
 using namespace std;
 using namespace motor;
 
-TEST(TaskSystem, DISABLED_Ticker) {
+TEST(TaskSystem, Ticker) {
     task_system::timer real_timer;
     task_system::ticker<task_system::ticker_type::CONSTANT> ticker{ real_timer, chrono::milliseconds(5) };
 
@@ -43,7 +43,7 @@ TEST(TaskSystem, DISABLED_Ticker) {
     EXPECT_EQ(counter, 8);
 }
 
-TEST(TaskSystem, DISABLED_FastTicker) {
+TEST(TaskSystem, FastTicker) {
     task_system::timer real_timer;
     task_system::ticker<task_system::ticker_type::CONSTANT> ticker{ real_timer, chrono::milliseconds(1) };
     task_system::game_timer game_timer;
@@ -104,7 +104,7 @@ TEST(TaskSystem, SlowTicker) {
     game_ticker.tickables().emplace_back(&tick_tack_1);
     game_ticker.tickables().emplace_back(&tick_tack_2);
 
-    while (real_timer.elapsed() < chrono::milliseconds(42)) {
+    while (real_timer.elapsed() < chrono::milliseconds(44)) {
         ticker.tick();
         game_ticker.tick();
         this_thread::yield();

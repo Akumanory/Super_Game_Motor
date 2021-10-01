@@ -6,3 +6,11 @@
 	path = lib/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+[submodule "lib/assimp"]
+	path = lib/assimp
+	url = https://github.com/assimp/assimp.git
+	branch = master
+[submodule "lib/DirectXTK"]
+	path = lib/DirectXTK
+	url = https://github.com/microsoft/DirectXTK.git
+	branch = master

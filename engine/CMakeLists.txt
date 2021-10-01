@@ -37,6 +37,8 @@ set(LIBRARIES
     d3dcompiler
     dxguid
     imgui-cmake
+    assimp
+    DirectXTK
 )
 
 add_library (${PROJECT_NAME}_lib

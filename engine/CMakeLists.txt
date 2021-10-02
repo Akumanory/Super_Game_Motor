@@ -152,12 +152,23 @@ source_group ("src/other"                               FILES ${OTHER_SOURCES})
 source_group ("src/task_system"                         FILES ${TASK_SYSTEM_SOURCES})
 source_group ("src"                                     FILES ${SOURCES})
 
-add_executable (${PROJECT_NAME} WIN32 src/main.cpp)
-
 target_link_libraries(${PROJECT_NAME}_lib ${LIBRARIES})
+target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
+
+add_executable (${PROJECT_NAME} WIN32 src/main.cpp)
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
 
-target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
+add_executable (old_main src/old_main.cpp)
+target_link_libraries(old_main ${PROJECT_NAME}_lib)
+add_custom_command(TARGET old_main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/engine/src/data/ $<TARGET_FILE_DIR:old_main>/Data)
+add_custom_command(TARGET old_main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/engine/src/shaders/pixel_shaders/ $<TARGET_FILE_DIR:old_main>)
+add_custom_command(TARGET old_main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/engine/src/shaders/vertex_shaders/ $<TARGET_FILE_DIR:old_main>)
 
 enable_testing()
 

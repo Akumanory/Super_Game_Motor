@@ -1,4 +1,4 @@
-#include <motor/other/StringHelper.h>
+﻿#include <motor/other/StringHelper.h>
 #include <algorithm>
 
 std::wstring StringHelper::StringToWide(std::string str)

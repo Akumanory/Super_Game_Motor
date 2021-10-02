@@ -1,4 +1,4 @@
-#include <motor/graphics/Light.h>
+﻿#include <motor/graphics/Light.h>
 
 bool Light::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader)
 {

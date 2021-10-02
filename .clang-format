@@ -1,4 +1,4 @@
-Language: Cpp
+﻿Language: Cpp
 BasedOnStyle: WebKit
 BreakBeforeBraces: Attach
 ContinuationIndentWidth: 2

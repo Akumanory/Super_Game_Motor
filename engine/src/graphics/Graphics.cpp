@@ -1,10 +1,10 @@
-#include <motor/graphics/Graphics.h>
+ï»¿#include <motor/graphics/Graphics.h>
 
 using namespace DirectX;
 
 bool Graphics::Initialize(HWND hWnd, int width, int height)
 {
-	Logs::Debug("Initialize Graphics"); // Òåñòîâûé ëîã
+	Logs::Debug("Initialize Graphics"); // Ð¢ÐµÑÑ‚Ð¾Ð²Ñ‹Ð¹ Ð»Ð¾Ð³
 
 	windowWidth = width;
 	windowHeight = height;
@@ -42,7 +42,7 @@ bool Graphics::Initialize(HWND hWnd, int width, int height)
 
 void Graphics::RenderFrame()
 {
-	// Ïðè Flip_Discard íóæíî ïðè îòîáðàæåíèå êàäðà êàæäûé ðàç óñòàíàâëèâàòü Render Targets
+	// ÐŸÑ€Ð¸ Flip_Discard Ð½ÑƒÐ¶Ð½Ð¾ Ð¿Ñ€Ð¸ Ð¾Ñ‚Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ ÐºÐ°Ð´Ñ€Ð° ÐºÐ°Ð¶Ð´Ñ‹Ð¹ Ñ€Ð°Ð· ÑƒÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°Ñ‚ÑŒ Render Targets
 	deviceContext->OMSetRenderTargets(
 		1,
 		renderTargetView.GetAddressOf(),
@@ -61,7 +61,7 @@ void Graphics::RenderFrame()
 	deviceContext->ClearRenderTargetView(renderTargetView.Get(), bgcolor);
 	deviceContext->ClearDepthStencilView(depth_stencil_view.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	// -------------------------------------------------------------------
-	// TODO: Ïåðåíåñòè â InitializeScene èëè InitializeScene
+	// TODO: ÐŸÐµÑ€ÐµÐ½ÐµÑÑ‚Ð¸ Ð² InitializeScene Ð¸Ð»Ð¸ InitializeScene
 	// Setup before draw
 	deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
@@ -283,8 +283,8 @@ bool Graphics::InitializeDirectX(HWND hWnd)
 		// Rasterizer
 		CD3D11_RASTERIZER_DESC rasterizer_desc(D3D11_DEFAULT);
 		rasterizer_desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; // Wireframe(D3D11_FILL_WIREFRAME) is a possible considiration
-		rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE; // Äëÿ òîãî ÷òî áû íå ðåíäåðèëàñü çàäíÿÿ ÷àñòü ïðè ðèîñâàíèè ïðîòèâ ÷àñîâîé òðåëêè(êîðî÷å åñëè íîðìàëü ñìîòðèò îò íàñ)
-		//rasterizer_desc.FrontCounterClockwise = TRUE // Äëÿ òîãî ÷òî áû ðèñîâàòü òðåóãîëüíèêè ïðîòèâ ÷àñîâîé ñòðåëêè
+		rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE; // Ð”Ð»Ñ Ñ‚Ð¾Ð³Ð¾ Ñ‡Ñ‚Ð¾ Ð±Ñ‹ Ð½Ðµ Ñ€ÐµÐ½Ð´ÐµÑ€Ð¸Ð»Ð°ÑÑŒ Ð·Ð°Ð´Ð½ÑÑ Ñ‡Ð°ÑÑ‚ÑŒ Ð¿Ñ€Ð¸ Ñ€Ð¸Ð¾ÑÐ²Ð°Ð½Ð¸Ð¸ Ð¿Ñ€Ð¾Ñ‚Ð¸Ð² Ñ‡Ð°ÑÐ¾Ð²Ð¾Ð¹ Ñ‚Ñ€ÐµÐ»ÐºÐ¸(ÐºÐ¾Ñ€Ð¾Ñ‡Ðµ ÐµÑÐ»Ð¸ Ð½Ð¾Ñ€Ð¼Ð°Ð»ÑŒ ÑÐ¼Ð¾Ñ‚Ñ€Ð¸Ñ‚ Ð¾Ñ‚ Ð½Ð°Ñ)
+		//rasterizer_desc.FrontCounterClockwise = TRUE // Ð”Ð»Ñ Ñ‚Ð¾Ð³Ð¾ Ñ‡Ñ‚Ð¾ Ð±Ñ‹ Ñ€Ð¸ÑÐ¾Ð²Ð°Ñ‚ÑŒ Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ¸ Ð¿Ñ€Ð¾Ñ‚Ð¸Ð² Ñ‡Ð°ÑÐ¾Ð²Ð¾Ð¹ ÑÑ‚Ñ€ÐµÐ»ÐºÐ¸
 
 		hr = device->CreateRasterizerState(
 			&rasterizer_desc,

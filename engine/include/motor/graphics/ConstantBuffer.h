@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <motor/graphics/ConstantBufferTypes.h>
 #include <motor/other/Logs.h>

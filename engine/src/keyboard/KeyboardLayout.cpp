@@ -1,4 +1,4 @@
-#include <motor/keyboard/KeyboardLayout.h>
+п»ї#include <motor/keyboard/KeyboardLayout.h>
 #include <motor/other/Logs.h>
 
 KeyboardLayout::KeyboardLayout()
@@ -24,7 +24,7 @@ bool KeyboardLayout::CharBufferIsEmpty()
 
 KeyboardEvent KeyboardLayout::ReadKey()
 {
-	//Logs::Debug("KeyboardLayout:ReadKey"); // Тестовый лог
+	//Logs::Debug("KeyboardLayout:ReadKey"); // РўРµСЃС‚РѕРІС‹Р№ Р»РѕРі
 	if (keyBuffer.empty()) 
 	{
 		return KeyboardEvent(); 
@@ -39,7 +39,7 @@ KeyboardEvent KeyboardLayout::ReadKey()
 
 unsigned char KeyboardLayout::ReadChar()
 {
-	//Logs::Debug("KeyboardLayout:Readchar"); // Тестовый лог
+	//Logs::Debug("KeyboardLayout:Readchar"); // РўРµСЃС‚РѕРІС‹Р№ Р»РѕРі
 	if (charBuffer.empty()) 
 	{
 		return 0u; 

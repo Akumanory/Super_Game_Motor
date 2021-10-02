@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <motor/graphics/Vertex.h>
 #include <motor/graphics/VertexBuffer.h>

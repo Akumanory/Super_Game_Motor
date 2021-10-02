@@ -1,4 +1,4 @@
-#include <motor/other/Timer.h>
+﻿#include <motor/other/Timer.h>
 
 Timer::Timer()
 {

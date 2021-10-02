@@ -1,11 +1,11 @@
-#include <motor/other/Framework.h>
+п»ї#include <motor/other/Framework.h>
 #include <motor/other/Logs.h>
 
 using namespace DirectX;
 
 bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int width, int height)
 {
-	Logs::Debug("Framework constructor"); // Тестовый лог
+	Logs::Debug("Framework constructor"); // РўРµСЃС‚РѕРІС‹Р№ Р»РѕРі
 	timer.Start();
 	if (!display.Initialize(hInstance, window_class, width, height))
 	{
@@ -36,7 +36,7 @@ void Framework::Update()
 	{
 		unsigned char ch = display.keyboard.ReadChar();
 
-		// Тестовый вывод
+		// РўРµСЃС‚РѕРІС‹Р№ РІС‹РІРѕРґ
 		/*std::string outmsg = "Char: ";
 		outmsg += std::to_string(ch);
 		outmsg += "\n";
@@ -48,7 +48,7 @@ void Framework::Update()
 		KeyboardEvent kbe = display.keyboard.ReadKey();
 		unsigned char keycode = kbe.GetKeyCode();
 
-		// Тестовый вывод
+		// РўРµСЃС‚РѕРІС‹Р№ РІС‹РІРѕРґ
 		/*std::string outmsg = "Key: ";
 		outmsg += std::to_string(keycode);
 		outmsg += "\n";
@@ -79,7 +79,7 @@ void Framework::Update()
 			outmsg += "\n";
 			OutputDebugStringA(outmsg.c_str());
 		}*/
-		// Тестовый вывод
+		// РўРµСЃС‚РѕРІС‹Р№ РІС‹РІРѕРґ
 		/*std::string outmsg = "X: ";
 		outmsg += std::to_string(me.GetPosX());
 		outmsg += "Y: ";

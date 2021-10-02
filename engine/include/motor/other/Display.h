@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <motor/other/DirectXIncludes.h>
 #include <motor/keyboard/KeyboardLayout.h>

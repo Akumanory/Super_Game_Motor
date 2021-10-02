@@ -1,4 +1,4 @@
-#include <motor/graphics/Texture.h>
+﻿#include <motor/graphics/Texture.h>
 #include <motor/other/Logs.h>
 #include <motor/other/StringHelper.h>
 #include <WICTextureLoader.h>

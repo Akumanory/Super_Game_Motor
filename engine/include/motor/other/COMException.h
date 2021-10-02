@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <comdef.h>
 #include <motor/other/StringConverter.h>

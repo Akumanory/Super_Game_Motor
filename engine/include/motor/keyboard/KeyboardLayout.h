@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <motor/keyboard/KeyboardEvent.h>
 #include <queue>

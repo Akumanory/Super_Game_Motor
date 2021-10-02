@@ -1,4 +1,4 @@
-#include <motor/other/Display.h>
+п»ї#include <motor/other/Display.h>
 #include <motor/other/StringConverter.h>
 #include <motor/other/Logs.h>
 
@@ -7,7 +7,7 @@
 
 Display::~Display()
 {
-	Logs::Debug("Destroy window"); // Тестовый лог
+	Logs::Debug("Destroy window"); // РўРµСЃС‚РѕРІС‹Р№ Р»РѕРі
 	if (this->hWnd != NULL)
 	{
 		UnregisterClass(window_class_wide.c_str(), hInstance);
@@ -17,7 +17,7 @@ Display::~Display()
 
 bool Display::Initialize(HINSTANCE hInstance, std::string window_class, int width, int height)
 {
-	Logs::Debug("Initialize raw input for mouse"); // Тестовый лог
+	Logs::Debug("Initialize raw input for mouse"); // РўРµСЃС‚РѕРІС‹Р№ Р»РѕРі
 	static bool raw_input_initialized = false;
 	if (raw_input_initialized == false)
 	{
@@ -38,7 +38,7 @@ bool Display::Initialize(HINSTANCE hInstance, std::string window_class, int widt
 	}
 
 
-	Logs::Debug("Initialize window"); // Тестовый лог
+	Logs::Debug("Initialize window"); // РўРµСЃС‚РѕРІС‹Р№ Р»РѕРі
 
 	this->hInstance = hInstance;
 	this->window_class_wide = StringConverter::StringToWide(window_class);
@@ -297,7 +297,7 @@ LRESULT Display::CustomWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 void Display::RegisterDisplayClass()
 {
-	Logs::Debug("	Register display class"); // Тестовый лог
+	Logs::Debug("	Register display class"); // РўРµСЃС‚РѕРІС‹Р№ Р»РѕРі
 
 	WNDCLASSEX wc = { 0 };
 	wc.cbSize = sizeof(wc);
@@ -307,7 +307,7 @@ void Display::RegisterDisplayClass()
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
 	wc.hIcon = nullptr;
-	wc.hCursor = LoadCursor(nullptr, IDC_ARROW); // Поменять курсор если потребуется
+	wc.hCursor = LoadCursor(nullptr, IDC_ARROW); // РџРѕРјРµРЅСЏС‚СЊ РєСѓСЂСЃРѕСЂ РµСЃР»Рё РїРѕС‚СЂРµР±СѓРµС‚СЃСЏ
 	wc.hbrBackground = nullptr;
 	wc.lpszClassName = window_class_wide.c_str();
 	wc.hIconSm = nullptr;

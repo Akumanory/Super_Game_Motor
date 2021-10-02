@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <motor/graphics/Mesh.h>
 
@@ -84,7 +84,7 @@ private:
     DirectX::XMFLOAT3 rot;
     DirectX::XMFLOAT3 scale;
 
-    // TODO: Добавить методы для этих переменных
+    // TODO: Р”РѕР±Р°РІРёС‚СЊ РјРµС‚РѕРґС‹ РґР»СЏ СЌС‚РёС… РїРµСЂРµРјРµРЅРЅС‹С…
     DirectX::XMVECTOR local_pos_vector;
     DirectX::XMVECTOR local_rot_vector;
     DirectX::XMVECTOR local_scale_vector;
@@ -110,7 +110,7 @@ private:
     DirectX::XMVECTOR vec_right_no_Y;
     DirectX::XMVECTOR vec_backward_no_Y;
 
-    // TODO: Добавить методы для этих переменных
+    // TODO: Р”РѕР±Р°РІРёС‚СЊ РјРµС‚РѕРґС‹ РґР»СЏ СЌС‚РёС… РїРµСЂРµРјРµРЅРЅС‹С…
     DirectX::XMVECTOR local_vec_forward;
     DirectX::XMVECTOR local_vec_left;
     DirectX::XMVECTOR local_vec_right;

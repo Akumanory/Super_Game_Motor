@@ -1,4 +1,4 @@
-if exist build\ (
+﻿if exist build\ (
     del /s /q build\*
     rmdir /s /q build\
 )

@@ -1,4 +1,4 @@
-﻿struct PS_INPUT
+struct PS_INPUT
 {
     float4 inPosition : SV_POSITION;
     float2 inTexCoord : TEXCOORD;

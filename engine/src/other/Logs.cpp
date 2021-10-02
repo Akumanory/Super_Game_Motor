@@ -1,5 +1,5 @@
-#include "Logs.h"
-#include "StringConverter.h"
+#include <motor/other/Logs.h>
+#include <motor/other/StringConverter.h>
 
 #include <iostream>
 #include <ctime>

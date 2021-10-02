@@ -1,4 +1,4 @@
-#include "Color.h"
+#include <motor/graphics/Color.h>
 
 Color::Color()
 	:color(0)

@@ -1,4 +1,6 @@
-#include "RenderableGameObject.h"
+#include <motor/graphics/RenderableGameObject.h>
+
+using namespace DirectX;
 
 bool RenderableGameObject::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader)
 {

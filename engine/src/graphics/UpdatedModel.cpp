@@ -1,4 +1,6 @@
-#include "UpdatedModel.h"
+#include <motor/graphics/UpdatedModel.h>
+
+using namespace DirectX;
 
 bool UpdatedModel::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader)
 {

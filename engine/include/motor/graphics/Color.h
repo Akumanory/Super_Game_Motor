@@ -1,5 +1,6 @@
 #pragma once
-#include "StringHelper.h"
+
+#include <motor/other/StringHelper.h>
 
 typedef unsigned char BYTE;
 

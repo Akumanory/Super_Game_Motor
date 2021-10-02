@@ -1,6 +1,6 @@
-#include "Display.h"
-#include "StringConverter.h"
-#include "Logs.h"
+#include <motor/other/Display.h>
+#include <motor/other/StringConverter.h>
+#include <motor/other/Logs.h>
 
 #include <string>
 

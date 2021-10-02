@@ -1,9 +1,10 @@
-#ifndef ConstantBuffer_h__
-#define ConstantBuffer_h__
+#pragma once
+
+#include <motor/graphics/ConstantBufferTypes.h>
+#include <motor/other/Logs.h>
+
 #include <d3d11.h>
-#include "ConstantBufferTypes.h"
 #include <wrl/client.h>
-#include "Logs.h"
 
 template<class T>
 class ConstantBuffer
@@ -65,5 +66,3 @@ private:
 	ID3D11DeviceContext* deviceContext = nullptr;
 
 };
-
-#endif // ConstantBuffer_h__

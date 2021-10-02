@@ -1,6 +1,7 @@
 #pragma once
-#include "DirectXIncludes.h"
-#include "Logs.h"
+
+#include <motor/other/DirectXIncludes.h>
+#include <motor/other/Logs.h>
 
 class VertexShader
 {

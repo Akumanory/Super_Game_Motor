@@ -1,5 +1,5 @@
-#ifndef VertexBuffer_h__
-#define VertexBuffer_h__
+#pragma once
+
 #include <d3d11.h>
 #include <wrl/client.h>
 #include <memory>
@@ -80,5 +80,3 @@ private:
 	UINT stride = sizeof(T);
 	UINT vertexCount = 0;
 };
-
-#endif // VertexBuffer_h__

@@ -1,7 +1,8 @@
 #pragma once
-#include "DirectXIncludes.h"
-#include "KeyboardLayout.h"
-#include "MouseLayout.h"
+
+#include <motor/other/DirectXIncludes.h>
+#include <motor/keyboard/KeyboardLayout.h>
+#include <motor/mouse/MouseLayout.h>
 
 class Display
 {

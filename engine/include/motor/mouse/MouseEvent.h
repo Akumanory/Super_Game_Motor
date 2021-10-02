@@ -1,5 +1,5 @@
 #pragma once
-#pragma once
+
 struct MousePoint
 {
 	int x;

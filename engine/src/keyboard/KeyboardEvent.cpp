@@ -1,4 +1,4 @@
-#include "KeyboardEvent.h"
+#include <motor/keyboard/KeyboardEvent.h>
 
 KeyboardEvent::KeyboardEvent()
 	:

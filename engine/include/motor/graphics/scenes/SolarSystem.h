@@ -1,4 +1,6 @@
-#include "Model.h"
+#pragma once
+
+#include <motor/graphics/Model.h>
 
 class SolarSystem
 {
@@ -79,7 +81,7 @@ public:
 		models[8].RotateByRadiusAroundY(0.0009f * delta, 3.0f, true);
 	}
 
-	void DrawScene(const XMMATRIX& viewProjectionMatrix)
+	void DrawScene(const DirectX::XMMATRIX& viewProjectionMatrix)
 	{
 		for (size_t i = 0; i < 10; i++)
 		{

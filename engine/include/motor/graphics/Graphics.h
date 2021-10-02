@@ -1,25 +1,24 @@
 #pragma once
 
-#include "DirectXIncludes.h"
-#include "Logs.h"
-#include "Shaders.h"
-#include "Camera.h"
-#include "Timer.h"
-#include "StringConverter.h"
-#include "COMException.h"
-#include "Model.h"
-#include "RenderableGameObject.h"
-#include "Light.h"
+#include <motor/other/DirectXIncludes.h>
+#include <motor/other/Logs.h>
+#include <motor/graphics/Shaders.h>
+#include <motor/graphics/Camera.h>
+#include <motor/other/Timer.h>
+#include <motor/other/StringConverter.h>
+#include <motor/other/COMException.h>
+#include <motor/graphics/Model.h>
+#include <motor/graphics/RenderableGameObject.h>
+#include <motor/graphics/Light.h>
+#include <motor/graphics/scenes/SolarSystem.h>
 
 // ImGui
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_win32.h"
-#include "imgui/imgui_impl_dx11.h"
+#include <imgui.h>
+#include <imgui_impl_win32.h>
+#include <imgui_impl_dx11.h>
 // 
 
 #include <SpriteBatch.h>
-#include "SolarSystem.h"
-
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
 

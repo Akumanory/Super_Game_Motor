@@ -1,9 +1,9 @@
 #pragma once
 
-#pragma warning(disable : 4267)
+//#pragma warning(disable : 4267)
 
 #define WIN32_LEAN_AND_MEAN
-#include "windows.h"
+#include <Windows.h>
 #include <iostream>
 #include "winuser.h"
 #include <wrl.h>

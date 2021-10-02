@@ -1,7 +1,8 @@
 #pragma once
-#include "Display.h"
-#include "Graphics.h"
-#include "Timer.h";
+
+#include <motor/other/Display.h>
+#include <motor/graphics/Graphics.h>
+#include <motor/other/Timer.h>
 
 class Framework
 {

@@ -1,4 +1,6 @@
-#include "Model.h"
+#include <motor/graphics/Model.h>
+
+using namespace DirectX;
 
 bool Model::Initialize(const std::string& file_path, ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, ID3D11ShaderResourceView* _texture, ConstantBuffer<CB_VS_vertex_shader>& _cb_vs_vertexshader)
 {

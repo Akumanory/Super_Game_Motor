@@ -1,5 +1,5 @@
-#include "KeyboardLayout.h"
-#include "Logs.h"
+#include <motor/keyboard/KeyboardLayout.h>
+#include <motor/other/Logs.h>
 
 KeyboardLayout::KeyboardLayout()
 {

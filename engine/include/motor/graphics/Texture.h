@@ -1,7 +1,13 @@
 #pragma once
+
+#include <motor/graphics/Color.h>
+
 #include <d3d11.h>
 #include <wrl/client.h>
-#include "Color.h"
+
+#ifdef min
+#undef min
+#endif
 #include <assimp/material.h>
 
 enum class TextureStorageType

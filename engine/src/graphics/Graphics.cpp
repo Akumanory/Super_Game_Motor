@@ -1,4 +1,6 @@
-#include "Graphics.h"
+#include <motor/graphics/Graphics.h>
+
+using namespace DirectX;
 
 bool Graphics::Initialize(HWND hWnd, int width, int height)
 {

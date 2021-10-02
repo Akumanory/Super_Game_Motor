@@ -1,7 +1,8 @@
-#ifndef IndicesBuffer_h__
-#define IndicesBuffer_h__
+#pragma once
+
 #include <d3d11.h>
 #include <wrl/client.h>
+
 #include <vector>
 
 class IndexBuffer
@@ -51,5 +52,3 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
 	UINT indexCount = 0;
 };
-
-#endif // IndicesBuffer_h__

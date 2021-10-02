@@ -1,5 +1,6 @@
 #pragma once
-#include "RenderableGameObject.h"
+
+#include <motor/graphics/RenderableGameObject.h>
 
 class Light : public RenderableGameObject
 {

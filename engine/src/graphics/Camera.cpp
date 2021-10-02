@@ -1,4 +1,6 @@
-#include "Camera.h"
+#include <motor/graphics/Camera.h>
+
+using namespace DirectX;
 
 Camera::Camera()
 {

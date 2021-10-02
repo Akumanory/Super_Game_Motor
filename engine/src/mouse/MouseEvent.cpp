@@ -1,4 +1,4 @@
-#include "MouseEvent.h"
+#include <motor/mouse/MouseEvent.h>
 
 MouseEvent::MouseEvent()
 	:

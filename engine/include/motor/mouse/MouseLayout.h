@@ -1,5 +1,7 @@
 #pragma once
-#include "MouseEvent.h"
+
+#include <motor/mouse/MouseEvent.h>
+
 #include <queue>
 
 class MouseLayout

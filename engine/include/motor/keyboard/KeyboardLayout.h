@@ -1,6 +1,6 @@
 #pragma once
 
-#include "KeyboardEvent.h"
+#include <motor/keyboard/KeyboardEvent.h>
 #include <queue>
 
 class KeyboardLayout

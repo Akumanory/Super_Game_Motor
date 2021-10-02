@@ -1,6 +1,7 @@
-#include "Framework.h"
-#include "Logs.h"
+#include <motor/other/Framework.h>
+#include <motor/other/Logs.h>
 
+using namespace DirectX;
 
 bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int width, int height)
 {

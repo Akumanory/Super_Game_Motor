@@ -1,4 +1,4 @@
-#include "StringConverter.h"
+#include <motor/other/StringConverter.h>
 
 std::wstring StringConverter::StringToWide(std::string str)
 {

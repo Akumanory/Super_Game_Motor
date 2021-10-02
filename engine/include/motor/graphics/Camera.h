@@ -1,8 +1,8 @@
 #pragma once
-#include <DirectXMath.h>
-using namespace DirectX;
 
-#include "GameObject.h"
+#include <motor/graphics/GameObject.h>
+
+#include <DirectXMath.h>
 
 class Camera : public GameObject
 {
@@ -10,12 +10,12 @@ public:
 	Camera();
 	void SetProjectionValues(float fovDegrees, float aspectRatio, float nearZ, float farZ);
 
-	const XMMATRIX& GetViewMatrix() const;
-	const XMMATRIX& GetProjectionMatrix() const;
+	const DirectX::XMMATRIX& GetViewMatrix() const;
+	const DirectX::XMMATRIX& GetProjectionMatrix() const;
 
 private:
 	void UpdateMatrix() override;
 
-	XMMATRIX view_matrix;
-	XMMATRIX projection_matrix;
+	DirectX::XMMATRIX view_matrix;
+	DirectX::XMMATRIX projection_matrix;
 };

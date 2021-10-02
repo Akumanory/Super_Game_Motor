@@ -1,12 +1,14 @@
 #pragma once
-#include "Vertex.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "ConstantBuffer.h"
+
+#include <motor/graphics/Vertex.h>
+#include <motor/graphics/VertexBuffer.h>
+#include <motor/graphics/IndexBuffer.h>
+#include <motor/graphics/ConstantBuffer.h>
+#include <motor/graphics/Texture.h>
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include "Texture.h"
 
 class Mesh
 {

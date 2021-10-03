@@ -37,6 +37,9 @@ bool Graphics::Initialize(HWND hWnd, int width, int height)
 	ImGui_ImplDX11_Init(device.Get(), deviceContext.Get());
 	ImGui::StyleColorsDark();
 
+	ImFont* font = io.Fonts->AddFontFromFileTTF("./fonts/Cascadia Mono PL ExtraLight 200.otf", 15.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+    IM_ASSERT(font != nullptr);
+
 	return true;
 }
 
@@ -440,27 +443,27 @@ bool Graphics::InitializeScene()
 			return false;
 		}*/
 
-		if (!gameObject.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
+		if (!gameObject.Initialize("Data\\Objects\\light.fbx", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
 
-		if (!gameObject1.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
+		if (!gameObject1.Initialize("Data\\Objects\\light.fbx", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
 
-		if (!gameObject2.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
+		if (!gameObject2.Initialize("Data\\Objects\\light.fbx", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
 
-		if (!gameObject3.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
+		if (!gameObject3.Initialize("Data\\Objects\\light.fbx", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
 
-		if (!gameObject4.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
+		if (!gameObject4.Initialize("Data\\Objects\\light.fbx", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}

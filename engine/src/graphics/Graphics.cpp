@@ -37,7 +37,7 @@ bool Graphics::Initialize(HWND hWnd, int width, int height)
 	ImGui_ImplDX11_Init(device.Get(), deviceContext.Get());
 	ImGui::StyleColorsDark();
 
-	ImFont* font = io.Fonts->AddFontFromFileTTF("./fonts/Cascadia Mono PL ExtraLight 200.otf", 15.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+	ImFont* font = io.Fonts->AddFontFromFileTTF("./Data/Fonts/Cascadia Mono PL Light 300.otf", 15.f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
     IM_ASSERT(font != nullptr);
 
 	return true;

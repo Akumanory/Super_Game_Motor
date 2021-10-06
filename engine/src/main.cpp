@@ -5,6 +5,9 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
 
+#define SOL_ALL_SAFETIES_ON 1
+#include <sol/sol.hpp>
+
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #undef min
@@ -43,6 +46,13 @@ int WINAPI WinMain(
 
     auto handle = GetCurrentThread();
     SetThreadAffinityMask(handle, 1);
+
+
+    sol::state lua;
+    lua.open_libraries(sol::lib::base);
+
+    lua.script("print('bark bark bark!')");
+
 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();

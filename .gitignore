@@ -2,6 +2,7 @@
 !lib/
 !lib/*
 !lib/imgui-cmake/**
+!lib/sol/**
 !engine/
 !/engine/**
 !/*

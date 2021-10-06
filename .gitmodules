@@ -18,3 +18,7 @@
 	path = lib/freetype
 	url = https://github.com/freetype/freetype.git
 	branch = master
+[submodule "lib/LuaJIT-cmake"]
+	path = lib/LuaJIT-cmake
+	url = https://github.com/9chu/LuaJIT-cmake.git
+	branch = master

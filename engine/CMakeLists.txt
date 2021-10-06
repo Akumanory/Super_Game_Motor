@@ -116,6 +116,7 @@ set(LIBRARIES
     imgui-cmake
     assimp
     DirectXTK
+    liblua-static
 )
 
 add_library (${PROJECT_NAME}_lib
@@ -154,6 +155,7 @@ source_group ("src"                                     FILES ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME}_lib ${LIBRARIES})
 target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
+target_include_directories(${PROJECT_NAME}_lib PUBLIC ../lib/sol)
 
 add_executable (${PROJECT_NAME} WIN32 src/main.cpp src/DeclareDPIAware.manifest)
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
@@ -173,6 +175,7 @@ add_custom_command(TARGET old_main POST_BUILD
 add_custom_command(TARGET old_main POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/engine/src/shaders/vertex_shaders/ $<TARGET_FILE_DIR:old_main>)
+
 
 enable_testing()
 

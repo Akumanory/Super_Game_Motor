@@ -105,6 +105,7 @@ set(TASK_SYSTEM_SOURCES
 )
 
 set(SOURCES
+    src/imgui_lua_bindings.cpp
     src/utils.cpp
 )
 

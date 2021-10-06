@@ -62,7 +62,7 @@ void Framework::Update()
 		{
 			if (me.GetType() == MouseEvent::EventType::RAW_MOVE)
 			{
-				gfx.camera.AdjustRotation(
+				gfx.cam_container.GetCurrentCamera().AdjustRotation(
 					(float)me.GetPosY() * 0.005f,
 					(float)me.GetPosX() * 0.005f,
 					0
@@ -134,10 +134,10 @@ void Framework::Update()
 
 	if (display.keyboard.KeyIsPressed('F'))
 	{
-		XMVECTOR boxPosition = gfx.camera.GetPositionVector();
-		boxPosition += gfx.camera.GetForwardVector() * 4;
+        XMVECTOR boxPosition = gfx.cam_container.GetCurrentCamera().GetPositionVector();
+        boxPosition += gfx.cam_container.GetCurrentCamera().GetForwardVector() * 4;
 		gfx.gameObject.SetPosition(boxPosition);
-		gfx.gameObject.SetRotation(gfx.camera.GetRotationFloat3());
+		gfx.gameObject.SetRotation(gfx.cam_container.GetCurrentCamera().GetRotationFloat3());
 
 
 		gfx.gameObject.BindOnIntersect(gfx.gameObject1);
@@ -168,35 +168,35 @@ void Framework::Update()
 
 	if (display.keyboard.KeyIsPressed('C'))
 	{
-		XMVECTOR lightPosition = gfx.camera.GetPositionVector();
-		lightPosition += gfx.camera.GetForwardVector();
+		XMVECTOR lightPosition = gfx.cam_container.GetCurrentCamera().GetPositionVector();
+		lightPosition += gfx.cam_container.GetCurrentCamera().GetForwardVector();
 		gfx.light.SetPosition(lightPosition);
-		gfx.light.SetRotation(gfx.camera.GetRotationFloat3());
+		gfx.light.SetRotation(gfx.cam_container.GetCurrentCamera().GetRotationFloat3());
 	}
 
 	if (display.keyboard.KeyIsPressed('W'))
 	{
-		gfx.camera.AdjustPosition(gfx.camera.GetForwardVector() * camera_speed * delta);
+		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetForwardVector() * camera_speed * delta);
 	}
 	if (display.keyboard.KeyIsPressed('S'))
 	{
-		gfx.camera.AdjustPosition(gfx.camera.GetBackwardVector() * camera_speed * delta);
+		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetBackwardVector() * camera_speed * delta);
 	}
 	if (display.keyboard.KeyIsPressed('A'))
 	{
-		gfx.camera.AdjustPosition(gfx.camera.GetLeftVector() * camera_speed * delta);
+		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetLeftVector() * camera_speed * delta);
 	}
 	if (display.keyboard.KeyIsPressed('D'))
 	{
-		gfx.camera.AdjustPosition(gfx.camera.GetRightVector() * camera_speed * delta);
+		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetRightVector() * camera_speed * delta);
 	}
 	if (display.keyboard.KeyIsPressed(VK_SPACE))
 	{
-		gfx.camera.AdjustPosition(0.0f, camera_speed * delta, 0.0f );
+		gfx.cam_container.GetCurrentCamera().AdjustPosition(0.0f, camera_speed * delta, 0.0f );
 	}
 	if (display.keyboard.KeyIsPressed('Z'))
 	{
-		gfx.camera.AdjustPosition(0.0f, -camera_speed * delta, 0.0f);
+		gfx.cam_container.GetCurrentCamera().AdjustPosition(0.0f, -camera_speed * delta, 0.0f);
 	}
 }
 

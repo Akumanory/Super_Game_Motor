@@ -10,6 +10,7 @@
 #include <motor/graphics/Model.h>
 #include <motor/graphics/RenderableGameObject.h>
 #include <motor/graphics/Light.h>
+#include <motor/graphics/CameraContainer.h>
 #include <motor/graphics/scenes/SolarSystem.h>
 
 // ImGui
@@ -27,7 +28,7 @@ class Graphics
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
-	Camera camera;
+    CameraContainer cam_container;
 
 	RenderableGameObject gameObject;
 	RenderableGameObject gameObject1;

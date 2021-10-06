@@ -65,5 +65,5 @@ protected:
 	DirectX::XMVECTOR vec_backward_noY;
 
 	bool collide = true;
-        DirectX::XMFLOAT3 offset;
+    DirectX::XMFLOAT3 offset;
 };

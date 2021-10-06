@@ -6,7 +6,8 @@ int WINAPI main(
   HINSTANCE hInstance,
   HINSTANCE hPrevInstance,
   LPSTR lpCmdLine,
-  int nCmdShow) {
+  int nCmdShow) 
+{
     Logs::Debug("Main call"); // Тестовый лог
 
     Framework framework;

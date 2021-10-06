@@ -96,16 +96,16 @@ void Graphics::RenderFrame()
 	model3.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());*/
 	//test_mesh_model.DrawMeshes(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 
-	gameObject.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
-	gameObject1.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
-	gameObject2.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
-	gameObject3.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
-	gameObject4.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+	gameObject.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+	gameObject1.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+	gameObject2.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+	gameObject3.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+	gameObject4.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
-	solar_system_scene.DrawScene(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+	solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 	
 	deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
-	light.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
+	light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
 	// Draw Text and fps
 	static int fps_counter = 0;
@@ -162,8 +162,19 @@ void Graphics::RenderFrame()
 	ImGui::DragFloat("Dynamic Light Attenuation B", &this->light.attennuation_B, 0.01f, 0.0f, 10.0f);
 	ImGui::DragFloat("Dynamic Light Attenuation C", &this->light.attennuation_C, 0.01f, 0.0f, 10.0f);
 
-
 	ImGui::End();
+
+	cam_container.ImGUIWindow();
+
+	/*std::vector<std::string> test = { "A", "B" };
+
+	ImGui::Begin;
+
+	ImGui::BeginCombo("Active Camera", test[0].c_str());
+
+	ImGui::End;*/
+
+
 	// Assemble together Draw Data
 	ImGui::Render();
 	// Render draw data
@@ -484,14 +495,34 @@ bool Graphics::InitializeScene()
 		gameObject3.SetPosition(-8.0f, -2.0f, -2.0f);
 		gameObject4.SetPosition(3.0f, -4.0f, -6.0f);
 
-		// Camera 
+
+		// Camera 1
+		Camera camera;
+		camera.SetCameraName("First camera");
 		camera.SetPosition(0.0f, 0.0f, -2.0f);
-		camera.SetProjectionValues(
+        camera.SetProjectionValues(
 			90.0f, // Fov 
 			static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
 			0.1f,
 			1000.0f
 		);
+
+		// Camera 2
+		Camera camera2;
+        camera2.SetCameraName("Second camera");
+        camera2.SetPosition(5.0f, 5.0f, -2.0f);
+		camera2.SetProjectionValues(
+			90.0f, // Fov 
+			static_cast<float>(windowWidth) / static_cast<float>(windowHeight),
+			0.1f,
+			1000.0f
+		);
+
+		// Add to camera container
+		cam_container.AddCamera(camera);
+		cam_container.AddCamera(camera2);
+
+
 	}
 	catch(COMException& ex)
 	{

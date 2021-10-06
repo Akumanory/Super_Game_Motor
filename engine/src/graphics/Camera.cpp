@@ -4,6 +4,7 @@ using namespace DirectX;
 
 Camera::Camera()
 {
+    _name = "NULL";
 	this->pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -15,6 +16,16 @@ void Camera::SetProjectionValues(float fovDegrees, float aspectRatio, float near
 {
 	float fovRadians = (fovDegrees / 360.0f) * XM_2PI;
 	projection_matrix = XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
+}
+
+std::string Camera::GetCameraName() const
+{
+	return _name;
+}
+
+void Camera::SetCameraName(std::string name) 
+{
+    _name = name;
 }
 
 const XMMATRIX& Camera::GetViewMatrix() const

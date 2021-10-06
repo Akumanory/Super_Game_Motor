@@ -26,6 +26,7 @@ set(GRAPHICS_HEADERS
     include/motor/graphics/UpdatedModel.h
     include/motor/graphics/Vertex.h
     include/motor/graphics/VertexBuffer.h
+    include/motor/graphics/CameraContainer.h
 )
 
 set(SCENES_HEADERS
@@ -79,6 +80,7 @@ set(GRAPHICS_SOURCES
     src/graphics/Shaders.cpp
     src/graphics/Texture.cpp
     src/graphics/UpdatedModel.cpp
+    src/graphics/CameraContainer.cpp
 )
 
 set(KEYBOARD_SOURCES

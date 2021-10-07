@@ -1,10 +1,14 @@
 ﻿*
-!lib/
-!lib/*
-!lib/imgui-cmake/**
-!lib/sol/**
-!engine/
+!/lib/
+!/lib/*
+!/lib/imgui-cmake/**
+!/lib/sol/**
+!/engine/
 !/engine/**
+!/editor/
+!/editor/**
+!/launcher/
+!/launcher/**
 !/*
 
 out/

@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
-project ("engine")
+project ("motor")
 
 set(CompilerFlags
         CMAKE_CXX_FLAGS
@@ -21,6 +21,8 @@ foreach(CompilerFlag ${CompilerFlags})
 endforeach()
 
 add_subdirectory ("engine")
+add_subdirectory ("editor")
+add_subdirectory ("launcher")
 add_subdirectory ("lib/googletest")
 add_subdirectory ("lib/imgui-cmake")
 set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "Build your own zlib")

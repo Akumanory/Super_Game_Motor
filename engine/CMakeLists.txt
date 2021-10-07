@@ -1,5 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
+project ("engine")
+
 set (CMAKE_CXX_STANDARD 23)
 
 ADD_DEFINITIONS(-DUNICODE)
@@ -120,7 +122,7 @@ set(LIBRARIES
     liblua-static
 )
 
-add_library (${PROJECT_NAME}_lib
+add_library (${PROJECT_NAME}
     ${ASYNC_HEADERS}
     ${GRAPHICS_HEADERS}
     ${SCENES_HEADERS}
@@ -154,19 +156,13 @@ source_group ("src/other"                               FILES ${OTHER_SOURCES})
 source_group ("src/task_system"                         FILES ${TASK_SYSTEM_SOURCES})
 source_group ("src"                                     FILES ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME}_lib ${LIBRARIES})
-target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
-target_include_directories(${PROJECT_NAME}_lib PUBLIC ../lib/sol)
-
-add_executable (${PROJECT_NAME} WIN32 src/main.cpp src/DeclareDPIAware.manifest)
-target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/engine/src/data/Fonts/ $<TARGET_FILE_DIR:${PROJECT_NAME}>/fonts)
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC ../lib/sol)
 
 
 add_executable (old_main src/old_main.cpp src/DeclareDPIAware.manifest)
-target_link_libraries(old_main ${PROJECT_NAME}_lib)
+target_link_libraries(old_main ${PROJECT_NAME})
 add_custom_command(TARGET old_main POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/engine/src/data/ $<TARGET_FILE_DIR:old_main>/Data)
@@ -198,7 +194,7 @@ target_link_libraries(${TESTING_NAME}
     gtest
     gtest_main
 
-    ${PROJECT_NAME}_lib
+    ${PROJECT_NAME}
 )
 
 include(GoogleTest)

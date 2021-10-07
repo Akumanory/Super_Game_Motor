@@ -138,6 +138,8 @@ add_library (${PROJECT_NAME}
     ${OTHER_SOURCES}
     ${TASK_SYSTEM_SOURCES}
     ${SOURCES}
+
+    src/rapidjson.natvis
 )
 
 source_group ("include/motor/async"                     FILES ${ASYNC_HEADERS})

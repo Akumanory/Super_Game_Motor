@@ -7,6 +7,10 @@
 
 #include <entt/entt.hpp>
 
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+#include <rapidjson/stringbuffer.h>
+
 #define SOL_ALL_SAFETIES_ON 1
 #include <sol/sol.hpp>
 
@@ -22,6 +26,7 @@
 
 using namespace std;
 using namespace motor;
+namespace rj = rapidjson;
 
 // Data
 static ID3D11Device* g_pd3dDevice = NULL;
@@ -107,6 +112,27 @@ int WINAPI WinMain(
     };
 
     update(registry);
+
+    string_view json = R"json(
+        {
+            "project"   : "rapidjson",
+            "stars"     : 10
+        }
+    )json";
+    rj::Document d;
+    d.Parse(json.data());
+
+    // 2. Modify it by DOM.
+    rj::Value& s = d["stars"];
+    s.SetInt(s.GetInt() + 1);
+
+    // 3. Stringify the DOM
+    rj::StringBuffer buffer;
+    rj::Writer<rj::StringBuffer> writer(buffer);
+    d.Accept(writer);
+
+    // Output {"project":"rapidjson","stars":11}
+    utils::debug_write::info("{}\n", buffer.GetString());
 
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();

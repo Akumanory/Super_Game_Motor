@@ -32,6 +32,11 @@ Camera& CameraContainer::GetCurrentCamera()
     return cameras[_selectedCameraId];
 }
 
+Camera& CameraContainer::GetCameraById(int id) 
+{ 
+    return cameras[id];
+}
+
 void CameraContainer::AddCamera(Camera camera) 
 {
     cameras.push_back(std::move(camera));

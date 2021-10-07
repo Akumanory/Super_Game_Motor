@@ -12,6 +12,7 @@
 #include <motor/graphics/Light.h>
 #include <motor/graphics/CameraContainer.h>
 #include <motor/graphics/scenes/SolarSystem.h>
+#include <motor/graphics/FrustumCulling.h>
 
 // ImGui
 #include <imgui.h>
@@ -29,6 +30,9 @@ public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
     CameraContainer cam_container;
+	FrustumCulling f_culling;
+    DirectX::XMMATRIX viewMatrix;
+
 
 	RenderableGameObject gameObject;
 	RenderableGameObject gameObject1;

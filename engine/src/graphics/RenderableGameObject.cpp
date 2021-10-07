@@ -24,6 +24,11 @@ void RenderableGameObject::Draw(const XMMATRIX& viewProjectionMatrix)
 	model.Draw(this->worldMatrix, viewProjectionMatrix);
 }
 
+DirectX::XMMATRIX RenderableGameObject::GetWorldMatrix() 
+{ 
+	return worldMatrix;
+}
+
 void RenderableGameObject::UpdateMatrix()
 {
 	this->worldMatrix = XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z) * XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);

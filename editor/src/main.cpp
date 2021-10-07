@@ -44,6 +44,40 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern lua_State* lState;
 void LoadImguiBindings();
 
+vector<string> lua_output_strings;
+
+int l_my_print(lua_State* L) {
+    int nargs = lua_gettop(L);
+
+    for (int i = 1; i <= nargs; i++) {
+        //if (lua_isstring(L, i)) {
+        /* Pop the next arg using lua_tostring(L, i) and do your print */
+        const char* msg = lua_tostring(L, i);
+        if (msg != nullptr) {
+            //utils::debug_write::info("str = {}\n", msg);
+            lua_output_strings.emplace_back(msg);
+        } else {
+            lua_output_strings.emplace_back("--- bad lua output ---");
+        }
+        //} else {
+        //    /* Do something with non-strings if you like */
+        //}
+    }
+    return 0;
+};
+
+static const struct luaL_Reg printlib[] = {
+    { "print", l_my_print },
+    { NULL, NULL } /* end of array */
+};
+
+void luaopen_luamylib(lua_State* L) {
+    lua_getglobal(L, "_G");
+    // luaL_register(L, NULL, printlib); // for Lua versions < 5.2
+    luaL_setfuncs(L, printlib, 0); // for Lua versions 5.2 or greater
+    lua_pop(L, 1);
+}
+
 int WINAPI WinMain(
   _In_ HINSTANCE h_instance,
   _In_opt_ HINSTANCE h_prev_instance,
@@ -63,9 +97,14 @@ int WINAPI WinMain(
 
     LoadImguiBindings();
 
+    luaopen_luamylib(lua.lua_state());
+
     lua.script("print('bark bark bark!')");
+    lua.script("print(1, 2, 3.5)");
+    //lua.script("print(1, 2, 3.5, {t:6}");
 
     lua.script(R"lua(
+        counter = 0;
         demoOpened = true
         luaOpened = true
     )lua");
@@ -243,13 +282,15 @@ int WINAPI WinMain(
         lua.set("demoOpened", show_demo_window);
         lua.script(R"lua(
             if demoOpened then
-                print('a')
                 imgui.ShowDemoWindow(demoOpened)
-                print('b')
             end
             if luaOpened then
                 shoulddraw, luaOpened = imgui.Begin("Lua", luaOpened, imgui.constant.WindowFlags.ShowBorders)
                     ret = imgui.RadioButton("String goes here", isActive)
+                    if imgui.Button("Button") then
+                        counter = counter + 1
+                        print(counter)
+                    end
                 imgui.End()
             end
         )lua");
@@ -287,6 +328,14 @@ int WINAPI WinMain(
             ImGui::Text("Hello from another window!");
             if (ImGui::Button("Close Me"))
                 show_another_window = false;
+            ImGui::End();
+        }
+
+        {
+            ImGui::Begin("Lua output");
+            for (size_t i = lua_output_strings.size() > 20 ? lua_output_strings.size() - 20 : 0; i < lua_output_strings.size(); ++i) {
+                ImGui::Text(lua_output_strings[i].c_str());
+            }
             ImGui::End();
         }
 

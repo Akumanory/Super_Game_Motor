@@ -27,7 +27,6 @@ set(GRAPHICS_HEADERS
     include/motor/graphics/Vertex.h
     include/motor/graphics/VertexBuffer.h
     include/motor/graphics/CameraContainer.h
-    include/motor/graphics/FrustumCulling.h
 )
 
 set(SCENES_HEADERS
@@ -53,6 +52,7 @@ set(OTHER_HEADERS
     include/motor/other/StringConverter.h
     include/motor/other/StringHelper.h
     include/motor/other/Timer.h
+    include/motor/other/MathHelper.h
 )
 
 set(TASK_SYSTEM_HEADERS
@@ -82,7 +82,6 @@ set(GRAPHICS_SOURCES
     src/graphics/Texture.cpp
     src/graphics/UpdatedModel.cpp
     src/graphics/CameraContainer.cpp
-    src/graphics/FrustumCulling.cpp
 )
 
 set(KEYBOARD_SOURCES
@@ -102,6 +101,7 @@ set(OTHER_SOURCES
     src/other/StringConverter.cpp
     src/other/StringHelper.cpp
     src/other/Timer.cpp
+    src/other/MathHelper.cpp
 )
 
 set(TASK_SYSTEM_SOURCES

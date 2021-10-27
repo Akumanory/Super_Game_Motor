@@ -132,39 +132,38 @@ void Framework::Update()
 		camera_speed = 0.03f;
 	}
 
-	if (display.keyboard.KeyIsPressed('F'))
-	{
-        XMVECTOR boxPosition = gfx.cam_container.GetCurrentCamera().GetPositionVector();
-        boxPosition += gfx.cam_container.GetCurrentCamera().GetForwardVector() * 4;
-		gfx.gameObject.SetPosition(boxPosition);
-		gfx.gameObject.SetRotation(gfx.cam_container.GetCurrentCamera().GetRotationFloat3());
+
+	// TODO Пока что вырезанно
+	// Collision detection
+	//if (display.keyboard.KeyIsPressed('F'))
+	//{
+ //       XMVECTOR boxPosition = gfx.cam_container.GetCurrentCamera().GetPositionVector();
+ //       boxPosition += gfx.cam_container.GetCurrentCamera().GetForwardVector() * 4;
+	//	gfx.gameObject.SetPosition(boxPosition);
+	//	gfx.gameObject.SetRotation(gfx.cam_container.GetCurrentCamera().GetRotationFloat3());
 
 
-		gfx.gameObject.BindOnIntersect(gfx.gameObject1);
-		gfx.gameObject.BindOnIntersect(gfx.gameObject2);
-		gfx.gameObject.BindOnIntersect(gfx.gameObject3);
-		gfx.gameObject.BindOnIntersect(gfx.gameObject4);
+	//	gfx.gameObject.BindOnIntersect(gfx.gameObject1);
+	//	gfx.gameObject.BindOnIntersect(gfx.gameObject2);
+	//	gfx.gameObject.BindOnIntersect(gfx.gameObject3);
+	//	gfx.gameObject.BindOnIntersect(gfx.gameObject4);
 
-		/*if (gfx.gameObject.CollisionIntersects(gfx.gameObject1.GetCollisionSphere()))
-		{
-			Logs::Debug("Intesected");
-			gfx.gameObject1.SetRotation(gfx.gameObject.GetRotationVector());
+	//	/*if (gfx.gameObject.CollisionIntersects(gfx.gameObject1.GetCollisionSphere()))
+	//	{
+	//		Logs::Debug("Intesected");
+	//		gfx.gameObject1.SetRotation(gfx.gameObject.GetRotationVector());
 
-			
-			gfx.gameObject1.BoundToIntersected(
-				gfx.gameObject, 
-				XMFLOAT3(
-					gfx.gameObject1.GetPositionFloat3().x - gfx.gameObject.GetPositionFloat3().x,
-					gfx.gameObject1.GetPositionFloat3().y - gfx.gameObject.GetPositionFloat3().y,
-					gfx.gameObject1.GetPositionFloat3().z - gfx.gameObject.GetPositionFloat3().z
-				)
-			);
-		}*/
-
-
-
-
-	}
+	//		
+	//		gfx.gameObject1.BoundToIntersected(
+	//			gfx.gameObject, 
+	//			XMFLOAT3(
+	//				gfx.gameObject1.GetPositionFloat3().x - gfx.gameObject.GetPositionFloat3().x,
+	//				gfx.gameObject1.GetPositionFloat3().y - gfx.gameObject.GetPositionFloat3().y,
+	//				gfx.gameObject1.GetPositionFloat3().z - gfx.gameObject.GetPositionFloat3().z
+	//			)
+	//		);
+	//	}*/
+	//}
 
 	if (display.keyboard.KeyIsPressed('C'))
 	{

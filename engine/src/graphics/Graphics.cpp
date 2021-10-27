@@ -96,22 +96,21 @@ void Graphics::RenderFrame()
 	model3.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());*/
 	//test_mesh_model.DrawMeshes(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 
-	// Check Frustrum culling
-    viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
-	XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
-	XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
+	
+	DrawObjects(true);
 
 
+	/*
 	// object
-	XMMATRIX world = gameObject.GetWorldMatrix();
+	XMMATRIX world = renderable_objects[0].GetWorldMatrix();
     XMVECTOR Det2 = XMMatrixDeterminant(world);
     XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
     XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
     FrustumCulling local_culling; 
 	f_culling.Transform(local_culling, viewToLocal);
-    if (local_culling.ContainsByPositonPoint(gameObject.GetPositionVector())) 
+    if (local_culling.ContainsByPositonPoint(renderable_objects[0].GetPositionVector())) 
 	{
-		gameObject.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+		renderable_objects[0].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
     } 
 	else 
 	{
@@ -120,13 +119,14 @@ void Graphics::RenderFrame()
 
 
 	// object1
-    world = gameObject1.GetWorldMatrix();
+    world = renderable_objects[1].GetWorldMatrix();
     Det2 = XMMatrixDeterminant(world);
     invWorld = XMMatrixInverse(&Det2, world);
     viewToLocal = XMMatrixMultiply(invView, invWorld);
-    f_culling.Transform(local_culling, viewToLocal);
-    if (local_culling.ContainsByPositonPoint(gameObject1.GetPositionVector())) {
-        gameObject1.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+    FrustumCulling local_culling2; 
+    f_culling.Transform(local_culling2, viewToLocal);
+    if (local_culling.ContainsByPositonPoint(renderable_objects[1].GetPositionVector())) {
+        renderable_objects[1].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
     } 
 	else {
         Logs::Debug("Object1 not rendered");
@@ -135,11 +135,11 @@ void Graphics::RenderFrame()
 	//gameObject.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 	
 	//gameObject1.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-	gameObject2.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-	gameObject3.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-	gameObject4.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+    renderable_objects[2].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+    renderable_objects[3].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+    renderable_objects[4].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
-	
+	*/
 
 	solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 	
@@ -493,31 +493,50 @@ bool Graphics::InitializeScene()
 			return false;
 		}*/
 
+		RenderableGameObject gameObject;
+
 		if (!gameObject.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
+
+		renderable_objects.push_back(gameObject);
+
+		RenderableGameObject gameObject1;
 
 		if (!gameObject1.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
 
+		renderable_objects.push_back(gameObject1);
+
+		RenderableGameObject gameObject2;
+
 		if (!gameObject2.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
+
+		renderable_objects.push_back(gameObject2);
+
+		RenderableGameObject gameObject3;
 
 		if (!gameObject3.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
 
+		renderable_objects.push_back(gameObject3);
+
+		RenderableGameObject gameObject4;
+
 		if (!gameObject4.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
 
+		renderable_objects.push_back(gameObject4);
 
 		if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
@@ -529,10 +548,16 @@ bool Graphics::InitializeScene()
 			return false;
 		}
 
-		gameObject1.SetPosition(4.0f, 0.0f, 0.0f);
-		gameObject2.SetPosition(6.0f, 4.0f, 2.0f);
-		gameObject3.SetPosition(-8.0f, -2.0f, -2.0f);
-		gameObject4.SetPosition(3.0f, -4.0f, -6.0f);
+		renderable_objects[1].SetPosition(4.0f, 0.0f, 0.0f);
+		renderable_objects[2].SetPosition(6.0f, 4.0f, 2.0f);
+		renderable_objects[3].SetPosition(-8.0f, -2.0f, -2.0f);
+		renderable_objects[4].SetPosition(3.0f, -4.0f, -6.0f);
+
+
+		//gameObject1.SetPosition(4.0f, 0.0f, 0.0f);
+		//gameObject2.SetPosition(6.0f, 4.0f, 2.0f);
+		//gameObject3.SetPosition(-8.0f, -2.0f, -2.0f);
+		//gameObject4.SetPosition(3.0f, -4.0f, -6.0f);
 
 
 		// Camera 1
@@ -562,7 +587,7 @@ bool Graphics::InitializeScene()
 		cam_container.AddCamera(camera2);
 
 		// Frustrum culling
-		f_culling.CreateFromCameraProjection(camera.GetProjectionMatrix());
+		DirectX::BoundingFrustum::CreateFromMatrix(f_culling, camera.GetProjectionMatrix());
 
 	}
 	catch(COMException& ex)
@@ -571,4 +596,39 @@ bool Graphics::InitializeScene()
 		return false;
 	}
 	return true;
+}
+
+void Graphics::DrawObjects(bool f_culling_enabled) 
+{
+    // Check Frustrum culling
+    viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
+    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
+    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
+
+    for (size_t i = 0; i < renderable_objects.size(); i++) {
+
+		if (f_culling_enabled) 
+		{
+            XMMATRIX world = renderable_objects[i].GetWorldMatrix();
+            XMVECTOR Det2 = XMMatrixDeterminant(world);
+            XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
+            XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
+
+            BoundingFrustum localSpaceFrustum;
+            f_culling.Transform(localSpaceFrustum, viewToLocal);
+            
+			if (localSpaceFrustum.Contains(renderable_objects[i].GetBoundingBox()) != DirectX::DISJOINT) 
+			{
+                renderable_objects[i].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+            } 
+			else 
+			{
+                //Logs::Debug("Object not rendered");
+            }
+		}
+		else 
+		{
+			renderable_objects[i].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+		}
+    }
 }

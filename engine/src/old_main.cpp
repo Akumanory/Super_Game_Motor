@@ -12,7 +12,7 @@ int WINAPI main(
 
     Framework framework;
 
-    if (framework.Initialize(hInstance, "Test window", 1600, 900)) {
+    if (framework.Initialize(hInstance, "Test window", 1240, 720)) {
         Logs::Debug("Start ProcessMessage"); // Тестовый лог
         while (framework.ProcessMessages()) {
             framework.Update();

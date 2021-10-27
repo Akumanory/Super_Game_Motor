@@ -12,7 +12,6 @@
 #include <motor/graphics/Light.h>
 #include <motor/graphics/CameraContainer.h>
 #include <motor/graphics/scenes/SolarSystem.h>
-#include <motor/graphics/FrustumCulling.h>
 
 // ImGui
 #include <imgui.h>
@@ -29,16 +28,20 @@ class Graphics
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
+	void DrawObjects(bool f_culling_enabled);
     CameraContainer cam_container;
-	FrustumCulling f_culling;
+
+	DirectX::BoundingFrustum f_culling;
     DirectX::XMMATRIX viewMatrix;
 
 
-	RenderableGameObject gameObject;
-	RenderableGameObject gameObject1;
-	RenderableGameObject gameObject2;
-	RenderableGameObject gameObject3;
-	RenderableGameObject gameObject4;
+	//RenderableGameObject gameObject;
+	//RenderableGameObject gameObject1;
+	//RenderableGameObject gameObject2;
+	//RenderableGameObject gameObject3;
+	//RenderableGameObject gameObject4;
+
+	std::vector<RenderableGameObject> renderable_objects;
 
 
 	Light light;

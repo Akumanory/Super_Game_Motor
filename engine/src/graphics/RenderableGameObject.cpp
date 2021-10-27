@@ -6,13 +6,12 @@ bool RenderableGameObject::Initialize(const std::string& filePath, ID3D11Device*
 {
 	if (!model.Initialize(filePath, device, deviceContext, cb_vs_vertexshader))
 		return false;
-
 	
 
 	this->SetPosition(0.0f, 0.0f, 0.0f);
 	this->SetRotation(0.0f, 0.0f, 0.0f);
 
-	
+	bounding_box = model.GetBoundingBox();
 
 	this->UpdateMatrix();
 	return true;

@@ -9,6 +9,8 @@
 using namespace motor;
 using namespace task_system;
 
+thread_pool::thread_pool() { }
+
 thread_pool::thread_pool(int32_t threads_count, uint64_t affinity_mask, std::vector<std::string_view> thread_names)
     : threads_{ threads_count }
     , threads_count_{ threads_count }

@@ -1,5 +1,6 @@
 ﻿#include <motor/utils.hpp>
 #include <motor/task_system.hpp>
+#include <motor/core_system/core.hpp>
 
 #include <imgui.h>
 #include <imgui_impl_win32.h>
@@ -90,6 +91,8 @@ int WINAPI WinMain(
 
     auto handle = GetCurrentThread();
     SetThreadAffinityMask(handle, 1);
+
+    core_system::core().run();
 
     sol::state lua;
     lState = lua.lua_state();

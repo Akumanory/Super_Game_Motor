@@ -11,6 +11,10 @@ set(ASYNC_HEADERS
     include/motor/async/resource.hpp
 )
 
+set(CORE_SYSTEM_HEADERS
+    include/motor/core_system/core.hpp
+)
+
 set(GRAPHICS_HEADERS
     include/motor/graphics/Camera.h
     include/motor/graphics/Color.h
@@ -55,6 +59,10 @@ set(OTHER_HEADERS
     include/motor/other/Timer.h
 )
 
+set(STATE_SYSTEM_HEADERS
+    include/motor/state_system/state.hpp
+)
+
 set(TASK_SYSTEM_HEADERS
     include/motor/task_system/constants.hpp
     include/motor/task_system/thread_pool.hpp
@@ -64,9 +72,17 @@ set(TASK_SYSTEM_HEADERS
     include/motor/task_system/timer.hpp
 )
 
+set(UI_SYSTEM_HEADERS
+    include/motor/ui_system/ui.hpp
+)
+
 set(HEADERS
     include/motor/task_system.hpp
     include/motor/utils.hpp
+)
+
+set(CORE_SYSTEM_SOURCES
+    src/core_system/core.cpp
 )
 
 set(GRAPHICS_SOURCES
@@ -102,6 +118,10 @@ set(OTHER_SOURCES
     src/other/Timer.cpp
 )
 
+set(STATE_SYSTEM_SOURCES
+    src/state_system/state.cpp
+)
+
 set(TASK_SYSTEM_SOURCES
     src/task_system/thread_pool.cpp
 )
@@ -124,18 +144,22 @@ set(LIBRARIES
 
 add_library (${PROJECT_NAME}
     ${ASYNC_HEADERS}
+    ${CORE_SYSTEM_HEADERS}
     ${GRAPHICS_HEADERS}
     ${SCENES_HEADERS}
     ${KEYBOARD_HEADERS}
     ${MOUSE_HEADERS}
     ${OTHER_HEADERS}
+    ${STATE_SYSTEM_HEADERS}
     ${TASK_SYSTEM_HEADERS}
     ${HEADERS}
 
+    ${CORE_SYSTEM_SOURCES}
     ${GRAPHICS_SOURCES}
     ${KEYBOARD_SOURCES}
     ${MOUSE_SOURCES}
     ${OTHER_SOURCES}
+    ${STATE_SYSTEM_SOURCES}
     ${TASK_SYSTEM_SOURCES}
     ${SOURCES}
 

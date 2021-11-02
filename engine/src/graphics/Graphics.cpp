@@ -141,10 +141,88 @@ void Graphics::RenderFrame()
 
 	*/
 
+	
+
 	solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 	
 	deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
 	light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+
+
+	// Simple batch
+	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(deviceContext.Get());
+	m_states = std::make_unique<CommonStates>(device.Get());
+	m_effect = std::make_unique<BasicEffect>(device.Get());
+
+	m_effect->SetVertexColorEnabled(true);
+	m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
+	m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
+
+	{
+            void const* shaderByteCode;
+            size_t byteCodeLength;
+
+            m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+
+            device->CreateInputLayout(
+                VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
+                shaderByteCode, byteCodeLength,
+                m_inputLayout.ReleaseAndGetAddressOf());
+              
+    }
+
+	deviceContext->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
+    deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
+    deviceContext->RSSetState(m_states->CullNone());
+
+    m_effect->Apply(deviceContext.Get());
+
+    deviceContext->IASetInputLayout(m_inputLayout.Get());
+
+    m_batch->Begin();
+
+	/*for (size_t i = 0; i < renderable_objects.size(); i++) 
+	{
+        Draw(m_batch.get(), renderable_objects[i].GetBoundingBox(), DirectX::Colors::Green);
+    }*/
+
+	DirectX::BoundingBox local_box;
+    renderable_objects[1].GetBoundingBox().Transform(local_box, renderable_objects[1].GetWorldMatrix());
+
+
+	Draw(m_batch.get(), renderable_objects[0].GetBoundingBox(), DirectX::Colors::Green);
+    Draw(m_batch.get(), local_box, DirectX::Colors::Blue);
+	Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Green);
+
+
+
+	//// Check Frustrum culling
+    /*viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
+    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
+    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
+
+	XMMATRIX world = XMMatrixIdentity();
+    XMVECTOR Det2 = XMMatrixDeterminant(world);
+    XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
+    XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);*/
+
+	DirectX::BoundingFrustum localFrustum;
+
+	viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
+    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
+    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
+
+	f_culling.Transform(localFrustum, invView);
+
+    Draw(m_batch.get(), localFrustum, DirectX::Colors::Orange);
+
+    //Draw(m_batch.get(), frustum, Colors::Blue); // BoundingFrustum
+    //Draw(m_batch.get(), box, Colors::Blue); // BoundingBox
+    //Draw(m_batch.get(), orientedBox, Colors::Blue); // BoundingOrientedBox
+    //Draw(m_batch.get(), sphere, Colors::Blue); // BoundingSphere
+
+    m_batch->End();
+
 
 	// Draw Text and fps
 	static int fps_counter = 0;
@@ -538,6 +616,7 @@ bool Graphics::InitializeScene()
 
 		renderable_objects.push_back(gameObject4);
 
+
 		if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
@@ -588,6 +667,8 @@ bool Graphics::InitializeScene()
 
 		// Frustrum culling
 		DirectX::BoundingFrustum::CreateFromMatrix(f_culling, camera.GetProjectionMatrix());
+
+		
 
 	}
 	catch(COMException& ex)

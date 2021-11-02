@@ -66,31 +66,35 @@ bool UpdatedModel::LoadModel(const std::string& filePath)
 	XMFLOAT3 vMinf3(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
 	XMFLOAT3 vMaxf3(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
 
-	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
-	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
+	vMin = XMLoadFloat3(&vMinf3);
+	vMax = XMLoadFloat3(&vMaxf3);
 
 
-	this->ProcessNode(pScene->mRootNode, pScene, DirectX::XMMatrixIdentity(), vMin, vMax);
+	this->ProcessNode(pScene->mRootNode, pScene, DirectX::XMMatrixIdentity());
+
+	XMStoreFloat3(&bounding_box.Center, 0.5f*(vMin + vMax));
+	XMStoreFloat3(&bounding_box.Extents, 0.5f*(vMax - vMin));
+
 	return true;
 }
 
-void UpdatedModel::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix, DirectX::XMVECTOR vMin, DirectX::XMVECTOR vMax) 
+void UpdatedModel::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix) 
 {
 	XMMATRIX nodeTransformMatrix = XMMatrixTranspose(XMMATRIX(&node->mTransformation.a1)) * parentTransformMatrix;
 
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		meshes.push_back(this->ProcessMesh(mesh, scene, nodeTransformMatrix, vMin, vMax));
+		meshes.push_back(this->ProcessMesh(mesh, scene, nodeTransformMatrix));
 	}
 
 	for (UINT i = 0; i < node->mNumChildren; i++)
 	{
-		this->ProcessNode(node->mChildren[i], scene, nodeTransformMatrix, vMin, vMax);
+		this->ProcessNode(node->mChildren[i], scene, nodeTransformMatrix);
 	}
 }
 
-Mesh UpdatedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix, DirectX::XMVECTOR vMin, DirectX::XMVECTOR vMax) 
+Mesh UpdatedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix) 
 {
 	// Data to fill
 	std::vector<Vertex> vertices;
@@ -122,9 +126,6 @@ Mesh UpdatedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRI
 		vMin = XMVectorMin(vMin, P);
 		vMax = XMVectorMax(vMax, P);
 	}
-
-	XMStoreFloat3(&bounding_box.Center, 0.5f*(vMin + vMax));
-	XMStoreFloat3(&bounding_box.Extents, 0.5f*(vMax - vMin));
 
 	//Get indices
 	for (UINT i = 0; i < mesh->mNumFaces; i++)

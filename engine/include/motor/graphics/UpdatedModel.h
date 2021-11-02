@@ -17,8 +17,8 @@ public:
 private:
 	std::vector<Mesh> meshes;
 	bool LoadModel(const std::string& filePath);
-	void ProcessNode(aiNode* node, const aiScene* scene, const DirectX::XMMATRIX& parentTransformMatrix, DirectX::XMVECTOR vMin, DirectX::XMVECTOR vMax);
-	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const DirectX::XMMATRIX& transformMatrix, DirectX::XMVECTOR vMin, DirectX::XMVECTOR vMax);
+	void ProcessNode(aiNode* node, const aiScene* scene, const DirectX::XMMATRIX& parentTransformMatrix);
+	Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const DirectX::XMMATRIX& transformMatrix);
 	TextureStorageType DetermineTextureStorageType(const aiScene* pScene, aiMaterial* pMat, unsigned int index, aiTextureType textureType);
 	std::vector<Texture> LoadMaterialTextures(aiMaterial* pMaterial, aiTextureType textureType, const aiScene* pScene);
 	int GetTextureIndex(aiString* pStr);
@@ -27,6 +27,9 @@ private:
 	ID3D11DeviceContext* deviceContext = nullptr;
 	ConstantBuffer<CB_VS_vertex_shader>* cb_vs_vertexshader = nullptr;
 	DirectX::BoundingBox bounding_box;
+
+	DirectX::XMVECTOR vMin;
+	DirectX::XMVECTOR vMax;
 	
 	//ID3D11ShaderResourceView* texture = nullptr;
 	std::string directory = "";

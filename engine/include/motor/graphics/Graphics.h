@@ -10,7 +10,9 @@
 #include <motor/graphics/Model.h>
 #include <motor/graphics/RenderableGameObject.h>
 #include <motor/graphics/Light.h>
+#include <motor/graphics/CameraContainer.h>
 #include <motor/graphics/scenes/SolarSystem.h>
+#include <motor/graphics/DebugDraw.h>
 
 // ImGui
 #include <imgui.h>
@@ -27,13 +29,26 @@ class Graphics
 public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
-	Camera camera;
+	void DrawObjects(bool f_culling_enabled);
+    CameraContainer cam_container;
 
-	RenderableGameObject gameObject;
-	RenderableGameObject gameObject1;
-	RenderableGameObject gameObject2;
-	RenderableGameObject gameObject3;
-	RenderableGameObject gameObject4;
+	DirectX::BoundingFrustum f_culling;
+    DirectX::XMMATRIX viewMatrix;
+
+	//TODO temp vartiables
+    using VertexType = DirectX::VertexPositionColor;
+    std::unique_ptr<DirectX::CommonStates> m_states;
+    std::unique_ptr<DirectX::BasicEffect> m_effect;
+    std::unique_ptr<DirectX::PrimitiveBatch<VertexType>> m_batch;
+    Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+	
+	//RenderableGameObject gameObject;
+	//RenderableGameObject gameObject1;
+	//RenderableGameObject gameObject2;
+	//RenderableGameObject gameObject3;
+	//RenderableGameObject gameObject4;
+
+	std::vector<RenderableGameObject> renderable_objects;
 
 
 	Light light;

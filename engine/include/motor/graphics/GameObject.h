@@ -28,6 +28,8 @@ public:
 
 	bool CollisionIntersects(DirectX::BoundingSphere& bound);
 	DirectX::BoundingSphere& GetCollisionSphere();
+	DirectX::BoundingBox& GetBoundingBox();
+
 	void BoundToIntersected(GameObject& object, DirectX::XMFLOAT3 offset);
 	void DisableCollision();
 	void BindOnIntersect(GameObject& child);
@@ -42,6 +44,7 @@ protected:
 	void UpdateDirectionVectors();
 
 	DirectX::BoundingSphere bounding_sphere;
+	DirectX::BoundingBox bounding_box;
 
 	DirectX::XMVECTOR posVector;
 	DirectX::XMVECTOR rotVector;
@@ -65,5 +68,5 @@ protected:
 	DirectX::XMVECTOR vec_backward_noY;
 
 	bool collide = true;
-        DirectX::XMFLOAT3 offset;
+    DirectX::XMFLOAT3 offset;
 };

@@ -238,6 +238,11 @@ const XMVECTOR& GameObject::GetLeftVector(bool omitY)
 		return this->vec_left;
 }
 
+DirectX::BoundingBox& GameObject::GetBoundingBox() 
+{
+    return bounding_box;
+}
+
 void GameObject::UpdateMatrix()
 {
 	assert("UpdateMatrix must be overridden." && 0);

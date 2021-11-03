@@ -9,6 +9,8 @@ public:
 
 	void Draw(const DirectX::XMMATRIX& viewProjectionMatrix);
 
+	DirectX::XMMATRIX GetWorldMatrix();
+
 protected:
 	UpdatedModel model;
 	void UpdateMatrix() override;

@@ -16,5 +16,9 @@
 #include <d3dcompiler.h>
 #include <directxmath.h>
 #include <DirectXColors.h>
+#include <PrimitiveBatch.h>
+#include <CommonStates.h>
+#include <Effects.h>
+#include <VertexTypes.h>
 #include <chrono>
 #include <thread>

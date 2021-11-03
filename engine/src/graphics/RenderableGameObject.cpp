@@ -6,13 +6,12 @@ bool RenderableGameObject::Initialize(const std::string& filePath, ID3D11Device*
 {
 	if (!model.Initialize(filePath, device, deviceContext, cb_vs_vertexshader))
 		return false;
-
 	
 
 	this->SetPosition(0.0f, 0.0f, 0.0f);
 	this->SetRotation(0.0f, 0.0f, 0.0f);
 
-	
+	bounding_box = model.GetBoundingBox();
 
 	this->UpdateMatrix();
 	return true;
@@ -24,8 +23,14 @@ void RenderableGameObject::Draw(const XMMATRIX& viewProjectionMatrix)
 	model.Draw(this->worldMatrix, viewProjectionMatrix);
 }
 
+DirectX::XMMATRIX RenderableGameObject::GetWorldMatrix() 
+{ 
+	return worldMatrix;
+}
+
 void RenderableGameObject::UpdateMatrix()
 {
 	this->worldMatrix = XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z) * XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
 	this->UpdateDirectionVectors();
+	bounding_box.Transform(bounding_box, worldMatrix);
 }

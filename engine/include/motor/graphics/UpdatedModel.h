@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <motor/graphics/Mesh.h>
+#include <motor/other/MathHelper.h>
 
 #include <DirectXCollision.h>
 
@@ -10,6 +11,8 @@ public:
 	bool Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader);
 	//void SetTexture(ID3D11ShaderResourceView* texture);
 	void Draw(const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewProjectionMatrix);
+	DirectX::BoundingBox& GetBoundingBox();
+
 
 private:
 	std::vector<Mesh> meshes;
@@ -23,6 +26,10 @@ private:
 	ID3D11Device* device = nullptr;
 	ID3D11DeviceContext* deviceContext = nullptr;
 	ConstantBuffer<CB_VS_vertex_shader>* cb_vs_vertexshader = nullptr;
+	DirectX::BoundingBox bounding_box;
+
+	DirectX::XMVECTOR vMin;
+	DirectX::XMVECTOR vMax;
 	
 	//ID3D11ShaderResourceView* texture = nullptr;
 	std::string directory = "";

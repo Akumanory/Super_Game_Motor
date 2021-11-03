@@ -1,5 +1,6 @@
 ﻿#include <motor/graphics/UpdatedModel.h>
 
+
 using namespace DirectX;
 
 bool UpdatedModel::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader)
@@ -60,14 +61,26 @@ bool UpdatedModel::LoadModel(const std::string& filePath)
 	if (pScene == nullptr)
 		return false;
 
+
+	// Bounding box min max vertex params
+	XMFLOAT3 vMinf3(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
+	XMFLOAT3 vMaxf3(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
+
+	vMin = XMLoadFloat3(&vMinf3);
+	vMax = XMLoadFloat3(&vMaxf3);
+
+
 	this->ProcessNode(pScene->mRootNode, pScene, DirectX::XMMatrixIdentity());
+
+	XMStoreFloat3(&bounding_box.Center, 0.5f*(vMin + vMax));
+	XMStoreFloat3(&bounding_box.Extents, 0.5f*(vMax - vMin));
+
 	return true;
 }
 
-void UpdatedModel::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix)
+void UpdatedModel::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix) 
 {
 	XMMATRIX nodeTransformMatrix = XMMatrixTranspose(XMMATRIX(&node->mTransformation.a1)) * parentTransformMatrix;
-
 
 	for (UINT i = 0; i < node->mNumMeshes; i++)
 	{
@@ -81,7 +94,7 @@ void UpdatedModel::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRI
 	}
 }
 
-Mesh UpdatedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix)
+Mesh UpdatedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRIX& transformMatrix) 
 {
 	// Data to fill
 	std::vector<Vertex> vertices;
@@ -95,6 +108,8 @@ Mesh UpdatedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRI
 		vertex.pos.x = mesh->mVertices[i].x;
 		vertex.pos.y = mesh->mVertices[i].y;
 		vertex.pos.z = mesh->mVertices[i].z;
+		
+		XMVECTOR P = XMLoadFloat3(&vertex.pos);
 
 		vertex.normal.x = mesh->mNormals[i].x;
 		vertex.normal.y = mesh->mNormals[i].y;
@@ -107,6 +122,9 @@ Mesh UpdatedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene, const XMMATRI
 		}
 
 		vertices.push_back(vertex);
+
+		vMin = XMVectorMin(vMin, P);
+		vMax = XMVectorMax(vMax, P);
 	}
 
 	//Get indices
@@ -238,6 +256,11 @@ std::vector<Texture> UpdatedModel::LoadMaterialTextures(aiMaterial* pMaterial, a
 	}
 	return materialTextures;
 
+}
+
+DirectX::BoundingBox& UpdatedModel::GetBoundingBox() 
+{
+    return bounding_box;
 }
 
 int UpdatedModel::GetTextureIndex(aiString* pStr)

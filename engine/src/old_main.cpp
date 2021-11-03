@@ -6,12 +6,13 @@ int WINAPI main(
   HINSTANCE hInstance,
   HINSTANCE hPrevInstance,
   LPSTR lpCmdLine,
-  int nCmdShow) {
+  int nCmdShow) 
+{
     Logs::Debug("Main call"); // Тестовый лог
 
     Framework framework;
 
-    if (framework.Initialize(hInstance, "Test window", 1600, 900)) {
+    if (framework.Initialize(hInstance, "Test window", 1240, 720)) {
         Logs::Debug("Start ProcessMessage"); // Тестовый лог
         while (framework.ProcessMessages()) {
             framework.Update();

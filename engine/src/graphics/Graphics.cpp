@@ -186,13 +186,15 @@ void Graphics::RenderFrame()
         Draw(m_batch.get(), renderable_objects[i].GetBoundingBox(), DirectX::Colors::Green);
     }*/
 
-	DirectX::BoundingBox local_box;
-    renderable_objects[1].GetBoundingBox().Transform(local_box, renderable_objects[1].GetWorldMatrix());
+	/*DirectX::BoundingBox local_box;
+    renderable_objects[1].GetBoundingBox().Transform(local_box, renderable_objects[1].GetWorldMatrix());*/
 
 
 	Draw(m_batch.get(), renderable_objects[0].GetBoundingBox(), DirectX::Colors::Green);
-    Draw(m_batch.get(), local_box, DirectX::Colors::Blue);
-	Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Green);
+    Draw(m_batch.get(), renderable_objects[1].GetBoundingBox(), DirectX::Colors::Blue);
+	Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Olive);
+    Draw(m_batch.get(), renderable_objects[3].GetBoundingBox(), DirectX::Colors::DarkSeaGreen);
+	Draw(m_batch.get(), renderable_objects[4].GetBoundingBox(), DirectX::Colors::Yellow);
 
 
 
@@ -206,15 +208,15 @@ void Graphics::RenderFrame()
     XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
     XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);*/
 
-	DirectX::BoundingFrustum localFrustum;
+	//DirectX::BoundingFrustum localFrustum;
 
-	viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
+	/*viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
     XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
     XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
 
-	f_culling.Transform(localFrustum, invView);
+	f_culling.Transform(localFrustum, invView);*/
 
-    Draw(m_batch.get(), localFrustum, DirectX::Colors::Orange);
+    //Draw(m_batch.get(), localFrustum, DirectX::Colors::Orange);
 
     //Draw(m_batch.get(), frustum, Colors::Blue); // BoundingFrustum
     //Draw(m_batch.get(), box, Colors::Blue); // BoundingBox
@@ -686,17 +688,21 @@ void Graphics::DrawObjects(bool f_culling_enabled)
     XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
     XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
 
+	BoundingFrustum localSpaceFrustum;
+    f_culling.Transform(localSpaceFrustum, invView);
+
     for (size_t i = 0; i < renderable_objects.size(); i++) {
 
 		if (f_culling_enabled) 
-		{
+		{	/*
             XMMATRIX world = renderable_objects[i].GetWorldMatrix();
             XMVECTOR Det2 = XMMatrixDeterminant(world);
             XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
             XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
 
             BoundingFrustum localSpaceFrustum;
-            f_culling.Transform(localSpaceFrustum, viewToLocal);
+            f_culling.Transform(localSpaceFrustum, viewToLocal);*/
+            
             
 			if (localSpaceFrustum.Contains(renderable_objects[i].GetBoundingBox()) != DirectX::DISJOINT) 
 			{

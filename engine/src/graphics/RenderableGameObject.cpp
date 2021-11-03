@@ -32,4 +32,5 @@ void RenderableGameObject::UpdateMatrix()
 {
 	this->worldMatrix = XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z) * XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
 	this->UpdateDirectionVectors();
+	bounding_box.Transform(bounding_box, worldMatrix);
 }

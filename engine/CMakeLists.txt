@@ -12,7 +12,9 @@ set(ASYNC_HEADERS
 )
 
 set(CORE_SYSTEM_HEADERS
+    include/motor/core_system/console.hpp
     include/motor/core_system/core.hpp
+    include/motor/core_system/lua.hpp
 )
 
 set(GRAPHICS_HEADERS
@@ -77,6 +79,7 @@ set(TASK_SYSTEM_HEADERS
 
 set(UI_SYSTEM_HEADERS
     include/motor/ui_system/ui.hpp
+    include/motor/ui_system/ui_console.hpp
 )
 
 set(HEADERS
@@ -85,6 +88,7 @@ set(HEADERS
 )
 
 set(CORE_SYSTEM_SOURCES
+    src/core_system/console.cpp
     src/core_system/core.cpp
 )
 
@@ -132,6 +136,10 @@ set(TASK_SYSTEM_SOURCES
     src/task_system/thread_pool.cpp
 )
 
+set(UI_SYSTEM_SOURCES
+    src/ui_system/ui_console.cpp
+)
+
 set(SOURCES
     src/imgui_lua_bindings.cpp
     src/utils.cpp
@@ -167,6 +175,7 @@ add_library (${PROJECT_NAME}
     ${OTHER_SOURCES}
     ${STATE_SYSTEM_SOURCES}
     ${TASK_SYSTEM_SOURCES}
+    ${UI_SYSTEM_SOURCES}
     ${SOURCES}
 
     src/rapidjson.natvis

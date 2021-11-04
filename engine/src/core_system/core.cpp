@@ -3,7 +3,9 @@
 namespace motor {
 namespace core_system {
 
-core::core() { }
+core::core() {
+    lua_.open_libraries(sol::lib::base);
+}
 
 void core::run() {
 }

@@ -1,6 +1,8 @@
 ﻿#include <motor/utils.hpp>
 #include <motor/task_system.hpp>
 #include <motor/core_system/core.hpp>
+#include <motor/ui_system/ui_console.hpp>
+#include <motor/core_system/lua.hpp>
 
 #include <imgui.h>
 #include <imgui_impl_win32.h>
@@ -11,9 +13,6 @@
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
-
-#define SOL_ALL_SAFETIES_ON 1
-#include <sol/sol.hpp>
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -257,6 +256,10 @@ int WINAPI WinMain(
     };
     ticker.tickables().emplace_back(&tick_tack);
 
+    core_system::core core;
+    ui_system::ConsoleUI consoleUI;
+    bool consoleUIopened = true;
+
     // Main loop
     bool done = false;
     while (!done) {
@@ -297,6 +300,10 @@ int WINAPI WinMain(
                 imgui.End()
             end
         )lua");
+
+        if (consoleUIopened) {
+            consoleUI.Draw("My console", &consoleUIopened);
+        }
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         //if (show_demo_window)

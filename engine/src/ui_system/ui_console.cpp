@@ -97,6 +97,8 @@ void ConsoleUI::Draw(const char* title, bool* p_open) {
     ImGui::EndChild();
     ImGui::Separator();
 
+    ImGui::Text(continuation_ ? ">>" : "> ");
+    ImGui::SameLine();
     // Command-line
     bool reclaim_focus = false;
     ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory;
@@ -109,8 +111,9 @@ void ConsoleUI::Draw(const char* title, bool* p_open) {
           (void*)this)) {
         char* s = input_buf_;
         Strtrim(s);
-        if (s[0])
+        if (s[0]) {
             ExecCommand(s);
+        }
         strcpy(s, "");
         reclaim_focus = true;
     }
@@ -170,7 +173,7 @@ int ConsoleUI::TextEditCallback(ImGuiInputTextCallbackData* data) {
 }
 
 void ConsoleUI::ExecCommand(const char* command_line) {
-    core_system::LuaConsole::getInstance()->input(command_line);
+    continuation_ = core_system::LuaConsole::getInstance()->input(command_line);
 
     // On command input, we scroll to bottom even if AutoScroll==false
     scroll_to_bottom_ = true;

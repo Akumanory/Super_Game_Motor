@@ -32,6 +32,7 @@ private:
     char input_buf_[256];
     bool auto_scroll_{ true };
     bool scroll_to_bottom_{ false };
+    bool continuation_{ false };
 };
 
 } // namespace ui_system

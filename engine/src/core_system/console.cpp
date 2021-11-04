@@ -18,9 +18,25 @@ LuaConsole* LuaConsole::getInstance() {
     return instance_;
 }
 
-void LuaConsole::input(std::string_view command) {
-    log_.emplace_back(command);
-    lua_->script(command);
+bool LuaConsole::input(std::string_view command) {
+    log_.emplace_back(std::string(input_cache_.empty() ? "> " : ">> ") + command.data());
+    auto res = lua_->script(
+      input_cache_.empty()
+        ? command
+        : input_cache_ + "\n" + command.data());
+    if (res.status() == sol::call_status::syntax) {
+        sol::error error = res;
+        std::string_view what{ error.what() };
+        if (what.ends_with("'<eof>'")) {
+            input_cache_ += std::string("\n") + command.data();
+        } else {
+            log_.emplace_back(std::string("[error] ") + what.data());
+            input_cache_.clear();
+        }
+    } else {
+        input_cache_.clear();
+    }
+    return not input_cache_.empty();
 }
 
 std::vector<std::string>& LuaConsole::getLog() {

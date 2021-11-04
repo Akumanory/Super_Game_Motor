@@ -19,7 +19,7 @@ public:
 
 public:
     static LuaConsole* getInstance();
-    void input(std::string_view command);
+    bool input(std::string_view command);
     std::vector<std::string>& getLog();
 
 private:
@@ -31,6 +31,7 @@ private:
     int history_iterator_{ -1 };
     sol::state* lua_{ nullptr };
     static inline LuaConsole* instance_{ nullptr };
+    std::string input_cache_;
 };
 
 } // namespace core_system

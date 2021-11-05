@@ -29,7 +29,7 @@ private:
     void ExecCommand(const char* command_line);
 
 private:
-    char input_buf_[256];
+    char input_buf_[1024];
     bool auto_scroll_{ true };
     bool scroll_to_bottom_{ false };
     bool continuation_{ false };

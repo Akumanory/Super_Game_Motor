@@ -3,9 +3,23 @@
 
 using namespace DirectX;
 
+extern lua_State* lState;
+void LoadImguiBindings();
+
 bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int width, int height)
 {
 	Logs::Debug("Framework constructor"); // Тестовый лог
+
+	lState = lua_.lua_state();
+    lua_.open_libraries(sol::lib::base, sol::lib::jit);
+    LoadImguiBindings();
+
+	lua_["addCube"] = [this](float x, float y, float z) {
+        gfx.addCube(x, y, z);
+    };
+
+	gfx.setConsole(&consoleUI_, &showConsole_);
+
 	timer.Start();
 	if (!display.Initialize(hInstance, window_class, width, height))
 	{

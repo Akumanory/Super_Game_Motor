@@ -294,6 +294,11 @@ void Graphics::RenderFrame()
 
 	ImGui::End;*/
 
+	if (showConsole_ != nullptr && consoleUI_ != nullptr) {
+		if (*showConsole_) {
+            consoleUI_->Draw("Lua Console", showConsole_);
+		}
+	}
 
 	// Assemble together Draw Data
 	ImGui::Render();
@@ -724,4 +729,13 @@ void Graphics::DrawObjects(bool f_culling_enabled)
 			renderable_objects[i].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 		}
     }
+}
+
+void Graphics::setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole) {
+    consoleUI_ = console;
+    showConsole_ = showConsole;
+}
+
+void Graphics::addCube(float x, float y, float z) {
+    test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(x, y, z));
 }

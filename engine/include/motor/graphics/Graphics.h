@@ -14,6 +14,7 @@
 #include <motor/graphics/scenes/SolarSystem.h>
 #include <motor/graphics/DebugDraw.h>
 #include <motor/ECS/Scene.h>
+#include <motor/ui_system/ui_console.hpp>
 
 // ImGui
 #include <imgui.h>
@@ -32,6 +33,8 @@ public:
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
 	void DrawObjects(bool f_culling_enabled);
+    void setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole);
+    void addCube(float, float, float);
     CameraContainer cam_container;
 
 	Scene test_entt_scene;
@@ -93,4 +96,7 @@ private:
 
 	int windowWidth = 0;
 	int windowHeight = 0;
+
+	bool* showConsole_{ nullptr };
+    motor::ui_system::ConsoleUI* consoleUI_{ nullptr };
 };

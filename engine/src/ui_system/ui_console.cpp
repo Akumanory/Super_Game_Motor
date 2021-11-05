@@ -101,7 +101,7 @@ void ConsoleUI::Draw(const char* title, bool* p_open) {
     ImGui::SameLine();
     // Command-line
     bool reclaim_focus = false;
-    ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory;
+    ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory | ImGuiInputTextFlags_CallbackAlways;
     if (ImGui::InputText(
           "Input",
           input_buf_,
@@ -162,6 +162,9 @@ void ConsoleUI::Strtrim(char* s) {
 }
 
 int ConsoleUI::TextEditCallback(ImGuiInputTextCallbackData* data) {
+    if (data->BufTextLen > 1000) {
+        data->DeleteChars(1000, data->BufTextLen - 1000);
+    }
     switch (data->EventFlag) {
     case ImGuiInputTextFlags_CallbackCompletion: {
         break;

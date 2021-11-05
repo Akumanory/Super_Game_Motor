@@ -99,7 +99,17 @@ void Graphics::RenderFrame()
 	
 	DrawObjects(true);
 
-	test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+
+	/// -------------------------------------------------------------------
+	viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
+    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
+    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
+
+	BoundingFrustum localSpaceFrustum;
+    f_culling.Transform(localSpaceFrustum, invView);
+
+	test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), localSpaceFrustum);
+	/// -------------------------------------------------------------------
 
 	/*
 	// object

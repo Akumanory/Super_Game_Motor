@@ -14,3 +14,8 @@ void SetModel(ObjectModel& model_struct, const std::string& filePath, ID3D11Devi
 {
     model_struct.model.Initialize(filePath, device, deviceContext, cb_vs_vertexshader);
 }
+
+void UpdateBoundingBox(PositionRotation& pos_struct, ObjectModel& model_struct) 
+{ 
+    model_struct.model.bounding_box.Transform(model_struct.model.bounding_box, pos_struct.worldMatrix);
+}

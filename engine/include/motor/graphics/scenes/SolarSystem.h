@@ -9,12 +9,19 @@ public:
 	{
 		for (size_t i = 0; i < 10; i++)
 		{
+            models.emplace_back();
 			if (!models[i].InitializeCube(device, deviceContext, texture, cb_vs_vertexshader))
 			{
 				return false;
 			}
 			models[i].SetPosition(0.0f, 0.0f, 0.0f);
 		}
+	}
+
+	void AddCube(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos) {
+        models.emplace_back();
+        models.back().InitializeCube(device, deviceContext, texture, cb_vs_vertexshader);
+        models.back().SetPosition(pos.x, pos.y, pos.z);
 	}
 
 	void Update(float delta)
@@ -83,12 +90,12 @@ public:
 
 	void DrawScene(const DirectX::XMMATRIX& viewProjectionMatrix)
 	{
-		for (size_t i = 0; i < 10; i++)
+		for (size_t i = 0; i < models.size(); i++)
 		{
 			models[i].Draw(viewProjectionMatrix);
 		}
 	}
 
 private:
-	Model models[10];
+	std::vector<Model> models;
 };

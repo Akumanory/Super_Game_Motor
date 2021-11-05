@@ -35,6 +35,7 @@ public:
 	void DrawObjects(bool f_culling_enabled);
     void setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole);
     void addCube(float, float, float);
+    void addLightCube(float, float, float);
     CameraContainer cam_container;
 
 	Scene test_entt_scene;

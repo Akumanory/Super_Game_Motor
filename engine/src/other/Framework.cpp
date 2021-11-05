@@ -17,6 +17,9 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
 	lua_["addCube"] = [this](float x, float y, float z) {
         gfx.addCube(x, y, z);
     };
+    lua_["addLightCube"] = [this](float x, float y, float z) {
+        gfx.addLightCube(x, y, z);
+    };
 
 	gfx.setConsole(&consoleUI_, &showConsole_);
 

@@ -749,3 +749,7 @@ void Graphics::setConsole(motor::ui_system::ConsoleUI* console, bool* showConsol
 void Graphics::addCube(float x, float y, float z) {
     test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(x, y, z));
 }
+
+void Graphics::addLightCube(float x, float y, float z) {
+    solar_system_scene.AddCube(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader, DirectX::XMFLOAT3{ x, y, z });
+}

@@ -3,11 +3,11 @@
 
 void Scene::InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader) {
 
-    first_entity = SimpleGameObject(m_registry);
+    entt::entity first_entity = SimpleGameObject(m_registry);
 
     SetPosition(m_registry.get<PositionRotation>(first_entity), DirectX::XMFLOAT3(0.0f, 6.0f, 0.0f));
 
-    SetRotation(m_registry.get<PositionRotation>(first_entity), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+    SetRotation(m_registry.get<PositionRotation>(first_entity), DirectX::XMFLOAT3(0.0f, 2.0f, 0.0f));
 
     SetModel(m_registry.get<ObjectModel>(first_entity), filePath, device, deviceContext, cb_vs_vertexshader);
 
@@ -29,6 +29,17 @@ void Scene::InitializeSceneEntt(const std::string& filePath, ID3D11Device* devic
     /*PositionVector& pos_vector = registry.get<PositionVector>(entity);
     registry.view<PositionVector>(entity)();
     pos_vector.position = DirectX::XMVectorSet(1.0, 1.0, 1.0, 0.0);*/
+}
+
+void Scene::AddSimpleCube(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos) 
+{
+    entt::entity e = SimpleGameObject(m_registry);
+
+    SetPosition(m_registry.get<PositionRotation>(e), pos);
+
+    SetRotation(m_registry.get<PositionRotation>(e), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f));
+
+    SetModel(m_registry.get<ObjectModel>(e), filePath, device, deviceContext, cb_vs_vertexshader);
 }
 
 void Scene::DrawSceneEntt(const DirectX::XMMATRIX& viewProjectionMatrix) {

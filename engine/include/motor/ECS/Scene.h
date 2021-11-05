@@ -9,8 +9,8 @@ class Scene
 public:
     void InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader);
     void DrawSceneEntt(const DirectX::XMMATRIX& viewProjectionMatrix);
+    void AddSimpleCube(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos);
 
 private:
-    entt::entity first_entity;
     entt::registry m_registry;
 };

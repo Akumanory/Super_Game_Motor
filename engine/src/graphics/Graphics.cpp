@@ -673,6 +673,11 @@ bool Graphics::InitializeScene()
 
 		// Entt scene
 		test_entt_scene.InitializeSceneEntt("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader);
+
+		for (size_t i = 1; i < 5; i++) 
+		{
+			test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(i * 3, 6.0f, 0.0f));
+        }
 	}
 	catch(COMException& ex)
 	{

@@ -15,6 +15,13 @@ set(CORE_SYSTEM_HEADERS
     include/motor/core_system/core.hpp
 )
 
+set(ECS_HEADERS
+    include/motor/ECS/Components.h
+    include/motor/ECS/Scene.h
+    include/motor/ECS/Factory.h
+    include/motor/ECS/CompRealization.h
+)
+
 set(GRAPHICS_HEADERS
     include/motor/graphics/Camera.h
     include/motor/graphics/Color.h
@@ -88,6 +95,12 @@ set(CORE_SYSTEM_SOURCES
     src/core_system/core.cpp
 )
 
+set(ECS_SOURCES
+    src/ECS/Scene.cpp
+    src/ECS/Factory.cpp
+    src/ECS/CompRealization.cpp
+)
+
 set(GRAPHICS_SOURCES
     src/graphics/Camera.cpp
     src/graphics/Color.cpp
@@ -151,6 +164,7 @@ set(LIBRARIES
 add_library (${PROJECT_NAME}
     ${ASYNC_HEADERS}
     ${CORE_SYSTEM_HEADERS}
+    ${ECS_HEADERS}
     ${GRAPHICS_HEADERS}
     ${SCENES_HEADERS}
     ${KEYBOARD_HEADERS}
@@ -161,6 +175,7 @@ add_library (${PROJECT_NAME}
     ${HEADERS}
 
     ${CORE_SYSTEM_SOURCES}
+    ${ECS_SOURCES}
     ${GRAPHICS_SOURCES}
     ${KEYBOARD_SOURCES}
     ${MOUSE_SOURCES}
@@ -173,6 +188,7 @@ add_library (${PROJECT_NAME}
 )
 
 source_group ("include/motor/async"                     FILES ${ASYNC_HEADERS})
+source_group ("include/motor/ECS"                       FILES ${ECS_HEADERS})
 source_group ("include/motor/graphics"                  FILES ${GRAPHICS_HEADERS})
 source_group ("include/motor/graphics/scenes"           FILES ${SCENES_HEADERS})
 source_group ("include/motor/keyboard"                  FILES ${KEYBOARD_HEADERS})
@@ -181,6 +197,8 @@ source_group ("include/motor/other"                     FILES ${OTHER_HEADERS})
 source_group ("include/motor/task_system"               FILES ${TASK_SYSTEM_HEADERS})
 source_group ("include/motor"                           FILES ${HEADERS})
 
+source_group ("src/core_system"                         FILES ${CORE_SYSTEM_SOURCES})
+source_group ("src/ECS"                                 FILES ${ECS_SOURCES})
 source_group ("src/graphics"                            FILES ${GRAPHICS_SOURCES})
 source_group ("src/keyboard"                            FILES ${KEYBOARD_SOURCES})
 source_group ("src/mouse"                               FILES ${MOUSE_SOURCES})

@@ -99,6 +99,7 @@ void Graphics::RenderFrame()
 	
 	DrawObjects(true);
 
+	test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
 	/*
 	// object
@@ -670,8 +671,8 @@ bool Graphics::InitializeScene()
 		// Frustrum culling
 		DirectX::BoundingFrustum::CreateFromMatrix(f_culling, camera.GetProjectionMatrix());
 
-		
-
+		// Entt scene
+		test_entt_scene.InitializeSceneEntt("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader);
 	}
 	catch(COMException& ex)
 	{

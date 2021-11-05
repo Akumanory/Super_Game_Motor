@@ -12,7 +12,7 @@ public:
 	//void SetTexture(ID3D11ShaderResourceView* texture);
 	void Draw(const DirectX::XMMATRIX& worldMatrix, const DirectX::XMMATRIX& viewProjectionMatrix);
 	DirectX::BoundingBox& GetBoundingBox();
-
+	DirectX::BoundingBox bounding_box;
 
 private:
 	std::vector<Mesh> meshes;
@@ -26,7 +26,7 @@ private:
 	ID3D11Device* device = nullptr;
 	ID3D11DeviceContext* deviceContext = nullptr;
 	ConstantBuffer<CB_VS_vertex_shader>* cb_vs_vertexshader = nullptr;
-	DirectX::BoundingBox bounding_box;
+	
 
 	DirectX::XMVECTOR vMin;
 	DirectX::XMVECTOR vMax;

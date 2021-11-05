@@ -13,12 +13,14 @@
 #include <motor/graphics/CameraContainer.h>
 #include <motor/graphics/scenes/SolarSystem.h>
 #include <motor/graphics/DebugDraw.h>
+#include <motor/ECS/Scene.h>
 
 // ImGui
 #include <imgui.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
 // 
+
 
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
@@ -31,6 +33,8 @@ public:
 	void RenderFrame();
 	void DrawObjects(bool f_culling_enabled);
     CameraContainer cam_container;
+
+	Scene test_entt_scene;
 
 	DirectX::BoundingFrustum f_culling;
     DirectX::XMMATRIX viewMatrix;

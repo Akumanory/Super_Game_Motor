@@ -1,15 +1,19 @@
 #pragma once
 
+#include <imgui.h>
+
 namespace motor {
 namespace ui_system {
 
-class ui {
+class UI {
 public:
-    virtual void draw() = 0;
+    virtual ~UI() = default;
+    virtual void Draw(const char* title, bool* p_open) = 0;
 };
 
-class core_ui : public ui {
-    void draw() override { }
+class CoreUI : public UI {
+public:
+    void Draw(const char* title, bool* p_open) override { }
 };
 
 } // namespace ui_system

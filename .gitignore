@@ -1,8 +1,6 @@
 ﻿*
 !/lib/
-!/lib/*
-!/lib/imgui-cmake/**
-!/lib/sol/**
+!/lib/**
 !/engine/
 !/engine/**
 !/editor/

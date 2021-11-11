@@ -22,3 +22,7 @@
 	path = lib/LuaJIT-cmake
 	url = https://github.com/9chu/LuaJIT-cmake.git
 	branch = master
+[submodule "lib/luasocket"]
+	path = lib/luasocket
+	url = https://github.com/diegonehab/luasocket.git
+	branch = master

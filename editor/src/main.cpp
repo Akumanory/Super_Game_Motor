@@ -95,7 +95,14 @@ int WINAPI WinMain(
 
     sol::state lua;
     lState = lua.lua_state();
-    lua.open_libraries(sol::lib::base);
+    lua.open_libraries(
+        sol::lib::base,
+        sol::lib::package,
+        sol::lib::math,
+        sol::lib::string,
+        sol::lib::table,
+        sol::lib::debug
+    );
 
     LoadImguiBindings();
 
@@ -104,6 +111,14 @@ int WINAPI WinMain(
     lua.script("print('bark bark bark!')");
     lua.script("print(1, 2, 3.5)");
     //lua.script("print(1, 2, 3.5, {t:6}");
+    lua.script("print(package.path)");
+    lua.script("print(package.cpath)");
+
+    lua.script("package.path = package.path .. ';./scripts/?.lua;./scripts/utils/?.lua;'");
+    lua.script("package.cpath = package.cpath .. ';./scripts/?.dll;./scripts/utils/?.dll;'");
+    lua.script("print(package.path)");
+    lua.script("print(package.cpath)");
+    lua.script("require 'scr'");
 
     lua.script(R"lua(
         counter = 0;
@@ -251,7 +266,7 @@ int WINAPI WinMain(
 
     auto tick_tack = task_system::tickable_object{
         [&real_timer](task_system::delta_time delta) {
-            cout << "tick " << real_timer.elapsed() << endl;
+            //cout << "tick " << real_timer.elapsed() << endl;
         }
     };
     ticker.tickables().emplace_back(&tick_tack);

@@ -6,6 +6,8 @@
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/core_system/console.hpp>
 #include <motor/core_system/lua.hpp>
+#include <motor/ECS/Scene.h>
+
 
 class Framework
 {
@@ -18,6 +20,7 @@ private:
 	Timer timer;
 	Display display;
 	Graphics gfx;
+	Scene scene;
 
 	sol::state lua_;
     motor::ui_system::ConsoleUI consoleUI_;

@@ -154,7 +154,7 @@ void Graphics::RenderFrame()
 
 	
 
-	solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+	solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), localSpaceFrustum);
 	
 	deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
 	light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
@@ -199,40 +199,21 @@ void Graphics::RenderFrame()
 
 	/*DirectX::BoundingBox local_box;
     renderable_objects[1].GetBoundingBox().Transform(local_box, renderable_objects[1].GetWorldMatrix());*/
+    for (size_t i = 0; i < solar_system_scene.models.size(); i++) 
+	{
+        Draw(m_batch.get(), solar_system_scene.models[i].bounding_box_frustum, DirectX::Colors::Red);
+    }
 
 
+	DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetForwardVector(), true, DirectX::Colors::LightGreen);
+    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetRightVector(), true, DirectX::Colors::Red);
+	DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetUpVector(), true, DirectX::Colors::LightBlue);
 	Draw(m_batch.get(), renderable_objects[0].GetBoundingBox(), DirectX::Colors::Green);
     Draw(m_batch.get(), renderable_objects[1].GetBoundingBox(), DirectX::Colors::Blue);
 	Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Olive);
     Draw(m_batch.get(), renderable_objects[3].GetBoundingBox(), DirectX::Colors::DarkSeaGreen);
 	Draw(m_batch.get(), renderable_objects[4].GetBoundingBox(), DirectX::Colors::Yellow);
 
-
-
-	//// Check Frustrum culling
-    /*viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
-    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
-    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
-
-	XMMATRIX world = XMMatrixIdentity();
-    XMVECTOR Det2 = XMMatrixDeterminant(world);
-    XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
-    XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);*/
-
-	//DirectX::BoundingFrustum localFrustum;
-
-	/*viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
-    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
-    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
-
-	f_culling.Transform(localFrustum, invView);*/
-
-    //Draw(m_batch.get(), localFrustum, DirectX::Colors::Orange);
-
-    //Draw(m_batch.get(), frustum, Colors::Blue); // BoundingFrustum
-    //Draw(m_batch.get(), box, Colors::Blue); // BoundingBox
-    //Draw(m_batch.get(), orientedBox, Colors::Blue); // BoundingOrientedBox
-    //Draw(m_batch.get(), sphere, Colors::Blue); // BoundingSphere
 
     m_batch->End();
 
@@ -589,6 +570,19 @@ bool Graphics::InitializeScene()
 			return false;
 		}*/
 
+		// LoadModels test
+		// ---------------
+		ModelLoader model_loader;
+
+		model_loader.Initialize(device.Get());
+
+		model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj");
+		model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj");
+
+
+		model_loader.GetModelById(1);
+		// ---------------
+
 		RenderableGameObject gameObject;
 
 		if (!gameObject.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
@@ -627,7 +621,7 @@ bool Graphics::InitializeScene()
 
 		RenderableGameObject gameObject4;
 
-		if (!gameObject4.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
+		if (!gameObject4.Initialize("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader))
 		{
 			return false;
 		}
@@ -646,6 +640,9 @@ bool Graphics::InitializeScene()
 		}
 
 		renderable_objects[1].SetPosition(4.0f, 0.0f, 0.0f);
+		//----------------------
+		renderable_objects[1].SetRotation(0.0f, 0.5f, 0.0f);
+		// ---------------------
 		renderable_objects[2].SetPosition(6.0f, 4.0f, 2.0f);
 		renderable_objects[3].SetPosition(-8.0f, -2.0f, -2.0f);
 		renderable_objects[4].SetPosition(3.0f, -4.0f, -6.0f);
@@ -752,4 +749,39 @@ void Graphics::addCube(float x, float y, float z) {
 
 void Graphics::addLightCube(float x, float y, float z) {
     solar_system_scene.AddCube(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader, DirectX::XMFLOAT3{ x, y, z });
+}
+
+// TODO: нужно не удалять
+void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) 
+{
+    
+	deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertex_shader.GetAddressOf());
+
+    //this->deviceContext->PSSetShaderResources(0, 1, &this->texture); //Set Texture
+
+    for (int i = 0; i < meshes.size(); i++) 
+	{
+        cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
+        cb_vs_vertex_shader.data.worldMatrix = meshes[i].GetMeshTransform() * worldMatrix; //Calculate World
+        cb_vs_vertex_shader.ApplyChanges();
+        
+
+		UINT offset = 0;
+
+		auto textures = meshes[i].GetTextures();
+
+		for (int j = 0; j < textures.size(); j++) {
+			if (textures[j].GetType() == aiTextureType::aiTextureType_DIFFUSE) {
+				deviceContext->PSSetShaderResources(0, 1, textures[j].GetTextureResourceViewAddress());
+				break;
+			}
+		}
+
+		auto vertexbuffer = meshes[i].GetVertexBuffer();
+		auto indexbuffer = meshes[i].GetIndexBuffer();
+
+		this->deviceContext->IASetVertexBuffers(0, 1, vertexbuffer.GetAddressOf(), vertexbuffer.StridePtr(), &offset);
+		this->deviceContext->IASetIndexBuffer(indexbuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
+		this->deviceContext->DrawIndexed(indexbuffer.IndexCount(), 0, 0);
+    }
 }

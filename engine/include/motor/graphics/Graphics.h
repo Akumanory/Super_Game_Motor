@@ -15,6 +15,7 @@
 #include <motor/graphics/DebugDraw.h>
 #include <motor/ECS/Scene.h>
 #include <motor/ui_system/ui_console.hpp>
+#include <motor/other/ModelLoader.h>
 
 // ImGui
 #include <imgui.h>
@@ -36,6 +37,10 @@ public:
     void setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole);
     void addCube(float, float, float);
     void addLightCube(float, float, float);
+
+	// TODO: перенести в renderer
+    void DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix);
+
     CameraContainer cam_container;
 
 	Scene test_entt_scene;

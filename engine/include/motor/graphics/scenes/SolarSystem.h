@@ -88,14 +88,17 @@ public:
 		models[8].RotateByRadiusAroundY(0.0009f * delta, 3.0f, true);
 	}
 
-	void DrawScene(const DirectX::XMMATRIX& viewProjectionMatrix)
+	void DrawScene(const DirectX::XMMATRIX& viewProjectionMatrix, DirectX::BoundingFrustum& f_culling)
 	{
 		for (size_t i = 0; i < models.size(); i++)
 		{
-			models[i].Draw(viewProjectionMatrix);
+			if (f_culling.Contains(models[i].bounding_box_frustum) != DirectX::DISJOINT) 
+			{ 
+				models[i].Draw(viewProjectionMatrix);
+			}
 		}
 	}
 
-private:
+
 	std::vector<Model> models;
 };

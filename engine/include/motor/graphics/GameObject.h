@@ -38,6 +38,7 @@ public:
 	const DirectX::XMVECTOR& GetRightVector(bool omitY = false);
 	const DirectX::XMVECTOR& GetBackwardVector(bool omitY = false);
 	const DirectX::XMVECTOR& GetLeftVector(bool omitY = false);
+	const DirectX::XMVECTOR& GetUpVector();
 
 protected:
 	virtual void UpdateMatrix();
@@ -60,6 +61,7 @@ protected:
 	DirectX::XMVECTOR vec_forward;
 	DirectX::XMVECTOR vec_left;
 	DirectX::XMVECTOR vec_right;
+	DirectX::XMVECTOR vec_up;
 	DirectX::XMVECTOR vec_backward;
 
 	DirectX::XMVECTOR vec_forward_noY;

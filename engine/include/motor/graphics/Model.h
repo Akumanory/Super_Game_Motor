@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <motor/graphics/Mesh.h>
+#include <DirectXCollision.h>
 
 class Model {
 public:
@@ -57,6 +58,8 @@ public:
 
     void UpdateWorldMatrix(bool orbital);
     void UpdateLocalMatrix(bool orbital);
+
+    DirectX::BoundingOrientedBox bounding_box_frustum;
 
 private:
     std::vector<Mesh> meshes;

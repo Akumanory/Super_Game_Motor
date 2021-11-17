@@ -1,6 +1,32 @@
 #include <motor/ECS/Scene.h>
 #include <motor/graphics/CameraContainer.h>
 
+void Scene::Initialize(ModelLoader& model_loader) {
+
+    _model_loader = model_loader;
+
+    // перенести потом в другое место
+    entt::entity second_entity = TestNewGameObject(m_registry);
+
+    ComponentSystems::SetPosition(m_registry.get<TransformComponent>(second_entity), DirectX::XMFLOAT3(0.0f, 6.0f, 0.0f));
+    ComponentSystems::SetRotation(m_registry.get<TransformComponent>(second_entity), DirectX::XMFLOAT3(0.5f, 0.0f, 0.0f));
+    ComponentSystems::SetModel(m_registry.get<MeshComponent>(second_entity), _model_loader.GetModelById(1));
+    ComponentSystems::UpdateBoundingBox(m_registry.get<MeshComponent>(second_entity), m_registry.get<TransformComponent>(second_entity), _model_loader.GetModelById(1));
+
+}
+
+std::vector<RenderableEntities> Scene::GetRenderableEntities() {
+    std::vector<RenderableEntities> renderable_e;
+
+    auto view = m_registry.view<TransformComponent, MeshComponent>();
+
+    for (entt::entity entity : view) 
+    {
+
+    }
+
+}
+
 
 void Scene::InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader) {
 
@@ -13,6 +39,15 @@ void Scene::InitializeSceneEntt(const std::string& filePath, ID3D11Device* devic
     SetModel(m_registry.get<ObjectModel>(first_entity), filePath, device, deviceContext, cb_vs_vertexshader);
 
     UpdateBoundingBox(m_registry.get<PositionRotation>(first_entity), m_registry.get<ObjectModel>(first_entity));
+    
+
+    // New realization
+    entt::entity second_entity = TestNewGameObject(m_registry);
+
+    ComponentSystems::SetPosition(m_registry.get<TransformComponent>(second_entity), DirectX::XMFLOAT3(0.0f, 6.0f, 0.0f));
+    ComponentSystems::SetRotation(m_registry.get<TransformComponent>(second_entity), DirectX::XMFLOAT3(0.5f, 0.0f, 0.0f));
+    
+    
     /*
     entt::entity entity = registry.create();
     registry.emplace<PositionVector>(entity, DirectX::XMVectorSet(0.0, 0.0, 0.0, 0.0));
@@ -59,6 +94,10 @@ void Scene::DrawSceneEntt(const DirectX::XMMATRIX& viewProjectionMatrix, DirectX
             up_model.Draw(worldMatrix, viewProjectionMatrix);
         }
     }
+
+
+
+
 }
 
 //bool RenderableGameObject::Initialize(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader) {

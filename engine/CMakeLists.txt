@@ -69,6 +69,7 @@ set(OTHER_HEADERS
     include/motor/other/StringHelper.h
     include/motor/other/Timer.h
     include/motor/other/MathHelper.h
+    include/motor/other/Instrumentor.h
 )
 
 set(STATE_SYSTEM_HEADERS

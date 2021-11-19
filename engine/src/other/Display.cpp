@@ -1,6 +1,7 @@
 ﻿#include <motor/other/Display.h>
 #include <motor/other/StringConverter.h>
 #include <motor/other/Logs.h>
+#include <motor/other/Instrumentor.h>
 
 #include <string>
 
@@ -17,6 +18,7 @@ Display::~Display()
 
 bool Display::Initialize(HINSTANCE hInstance, std::string window_class, int width, int height)
 {
+    PROFILE_FUNCTION();
 	Logs::Debug("Initialize raw input for mouse"); // Тестовый лог
 	static bool raw_input_initialized = false;
 	if (raw_input_initialized == false)

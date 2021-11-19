@@ -1,5 +1,6 @@
 ﻿#include <motor/other/Framework.h>
 #include <motor/other/Logs.h>
+#include <motor/other/Instrumentor.h>
 
 using namespace DirectX;
 
@@ -8,6 +9,7 @@ void LoadImguiBindings();
 
 bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int width, int height)
 {
+    PROFILE_FUNCTION();
 	Logs::Debug("Framework constructor"); // Тестовый лог
 
 	lState = lua_.lua_state();

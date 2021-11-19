@@ -1,9 +1,11 @@
 ﻿#include <motor/graphics/Graphics.h>
+#include <motor/other/Instrumentor.h>
 
 using namespace DirectX;
 
 bool Graphics::Initialize(HWND hWnd, int width, int height)
 {
+    PROFILE_FUNCTION();
 	Logs::Debug("Initialize Graphics"); // Тестовый лог
 
 	windowWidth = width;
@@ -320,6 +322,7 @@ void Graphics::RenderFrame()
 
 bool Graphics::InitializeDirectX(HWND hWnd)
 {
+    PROFILE_FUNCTION();
 	try {
 		Logs::Debug("	Initialize DirectX");
 
@@ -466,6 +469,7 @@ bool Graphics::InitializeDirectX(HWND hWnd)
 
 bool Graphics::InitializeShaders()
 {
+    PROFILE_FUNCTION();
 	Logs::Debug("	Initialize shaders");
 
 	D3D11_INPUT_ELEMENT_DESC layoutDesc[] =

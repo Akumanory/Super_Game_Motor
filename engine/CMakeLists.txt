@@ -8,154 +8,181 @@ ADD_DEFINITIONS(-DUNICODE)
 ADD_DEFINITIONS(-D_UNICODE)
 
 set(ASYNC_HEADERS
-    include/motor/async/resource.hpp
+    include/Motor/_old/async/resource.hpp
 )
 
 set(CORE_SYSTEM_HEADERS
-    include/motor/core_system/console.hpp
-    include/motor/core_system/core.hpp
-    include/motor/core_system/lua.hpp
+    include/Motor/_old/core_system/console.hpp
+    include/Motor/_old/core_system/core.hpp
+    include/Motor/_old/core_system/lua.hpp
 )
 
 set(ECS_HEADERS
-    include/motor/ECS/Components.h
-    include/motor/ECS/Scene.h
-    include/motor/ECS/Factory.h
-    include/motor/ECS/CompRealization.h
+    include/Motor/_old/ECS/Components.h
+    include/Motor/_old/ECS/Scene.h
+    include/Motor/_old/ECS/Factory.h
+    include/Motor/_old/ECS/CompRealization.h
 )
 
-set(GRAPHICS_HEADERS
-    include/motor/graphics/Camera.h
-    include/motor/graphics/Color.h
-    include/motor/graphics/ConstantBuffer.h
-    include/motor/graphics/ConstantBufferTypes.h
-    include/motor/graphics/GameObject.h
-    include/motor/graphics/Graphics.h
-    include/motor/graphics/IndexBuffer.h
-    include/motor/graphics/Light.h
-    include/motor/graphics/Mesh.h
-    include/motor/graphics/Model.h
-    include/motor/graphics/RenderableGameObject.h
-    include/motor/graphics/Shaders.h
-    include/motor/graphics/Texture.h
-    include/motor/graphics/UpdatedModel.h
-    include/motor/graphics/Vertex.h
-    include/motor/graphics/VertexBuffer.h
-    include/motor/graphics/CameraContainer.h
-    include/motor/graphics/DebugDraw.h
+set(APPLICATION_HEADERS
+    include/Motor/Engine/Core.h
+    include/Motor/Engine/Engine.h
+    include/Motor/Engine/Scene.h
+    include/Motor/Engine/Window.h
+)
+
+set(ENGINE_HEADERS
+    include/Motor/Engine/Core.h
+    include/Motor/Engine/Engine.h
+    include/Motor/Engine/Scene.h
+    include/Motor/Engine/Window.h
+)
+
+set(RENDERER_HEADERS
+    include/Motor/Renderer/Renderer.h
+    include/Motor/Renderer/Prerequisites.h
+    include/Motor/Renderer/Resource/Material.h
+    include/Motor/Renderer/Resource/Mesh.h
+    include/Motor/Renderer/Resource/MeshManager.h
+    include/Motor/Renderer/Resource/Resource.h
+    include/Motor/Renderer/Resource/ResourceManager.h
+    include/Motor/Renderer/Resource/Texture.h
+    include/Motor/Renderer/Resource/TextureManager.h
+    include/Motor/Renderer/RHI/ConstantBuffer.h
+    include/Motor/Renderer/RHI/DeviceContext.h
+    include/Motor/Renderer/RHI/IndexBuffer.h
+    include/Motor/Renderer/RHI/VertexBuffer.h
+    include/Motor/Renderer/RHI/RendererSystem.h
+    include/Motor/Renderer/RHI/GraphicsEngine.h
+    include/Motor/Renderer/RHI/SwapChain.h
+    include/Motor/Renderer/RHI/PixelShader.h
+    include/Motor/Renderer/RHI/VertexShader.h
 )
 
 set(SCENES_HEADERS
-    include/motor/graphics/scenes/SolarSystem.h
+    include/Motor/_old/graphics/scenes/SolarSystem.h
 )
 
 set(KEYBOARD_HEADERS
-    include/motor/keyboard/KeyboardEvent.h
-    include/motor/keyboard/KeyboardLayout.h
+    include/Motor/_old/keyboard/KeyboardEvent.h
+    include/Motor/_old/keyboard/KeyboardLayout.h
 )
 
 set(MOUSE_HEADERS
-    include/motor/mouse/MouseEvent.h
-    include/motor/mouse/MouseLayout.h
+    include/Motor/_old/mouse/MouseEvent.h
+    include/Motor/_old/mouse/MouseLayout.h
 )
 
 set(OTHER_HEADERS
-    include/motor/other/COMException.h
-    include/motor/other/DirectXIncludes.h
-    include/motor/other/Display.h
-    include/motor/other/Framework.h
-    include/motor/other/Logs.h
-    include/motor/other/StringConverter.h
-    include/motor/other/StringHelper.h
-    include/motor/other/Timer.h
-    include/motor/other/MathHelper.h
+    include/Motor/_old/other/COMException.h
+    include/Motor/_old/other/DirectXIncludes.h
+    include/Motor/_old/other/Display.h
+    include/Motor/_old/other/Framework.h
+    include/Motor/_old/other/Logs.h
+    include/Motor/_old/other/StringConverter.h
+    include/Motor/_old/other/StringHelper.h
+    include/Motor/_old/other/Timer.h
+    include/Motor/_old/other/MathHelper.h
 )
 
 set(STATE_SYSTEM_HEADERS
-    include/motor/state_system/state.hpp
+    include/Motor/_old/state_system/state.hpp
 )
 
 set(TASK_SYSTEM_HEADERS
-    include/motor/task_system/constants.hpp
-    include/motor/task_system/thread_pool.hpp
-    include/motor/task_system/tickable.hpp
-    include/motor/task_system/ticker.hpp
-    include/motor/task_system/timeline.hpp
-    include/motor/task_system/timer.hpp
+    include/Motor/_old/task_system/constants.hpp
+    include/Motor/_old/task_system/thread_pool.hpp
+    include/Motor/_old/task_system/tickable.hpp
+    include/Motor/_old/task_system/ticker.hpp
+    include/Motor/_old/task_system/timeline.hpp
+    include/Motor/_old/task_system/timer.hpp
 )
 
 set(UI_SYSTEM_HEADERS
-    include/motor/ui_system/ui.hpp
-    include/motor/ui_system/ui_console.hpp
+    include/Motor/_old/ui_system/ui.hpp
+    include/Motor/_old/ui_system/ui_console.hpp
 )
 
 set(HEADERS
-    include/motor/task_system.hpp
-    include/motor/utils.hpp
+    include/Motor/_old/task_system.hpp
+    include/Motor/_old/utils.hpp
 )
 
 set(CORE_SYSTEM_SOURCES
-    src/core_system/console.cpp
-    src/core_system/core.cpp
+    src/_old/core_system/console.cpp
+    src/_old/core_system/core.cpp
 )
 
 set(ECS_SOURCES
-    src/ECS/Scene.cpp
-    src/ECS/Factory.cpp
-    src/ECS/CompRealization.cpp
+    src/_old/ECS/Scene.cpp
+    src/_old/ECS/Factory.cpp
+    src/_old/ECS/CompRealization.cpp
 )
 
-set(GRAPHICS_SOURCES
-    src/graphics/Camera.cpp
-    src/graphics/Color.cpp
-    src/graphics/GameObject.cpp
-    src/graphics/Graphics.cpp
-    src/graphics/Light.cpp
-    src/graphics/Mesh.cpp
-    src/graphics/Model.cpp
-    src/graphics/RenderableGameObject.cpp
-    src/graphics/Shaders.cpp
-    src/graphics/Texture.cpp
-    src/graphics/UpdatedModel.cpp
-    src/graphics/CameraContainer.cpp
-    src/graphics/DebugDraw.cpp
+set(ENGINE_SOURCES
+    src/Engine/Engine.cpp
+    src/Engine/GraphicsSystem.cpp
+    src/Engine/GraphicsSystem.h
+    src/Engine/Scene.cpp
+    src/Engine/Window.cpp
+    src/Engine/Win32/Win32Window.cpp
+)
+
+set(RENDERER_SOURCES
+    src/Renderer/Resource/Material.cpp
+    src/Renderer/Resource/Mesh.cpp
+    src/Renderer/Resource/MeshManager.cpp
+    src/Renderer/Resource/Resource.cpp
+    src/Renderer/Resource/ResourceManager.cpp
+    src/Renderer/Resource/Texture.cpp
+    src/Renderer/Resource/TextureManager.cpp
+    src/Renderer/RHI/ConstantBuffer.cpp
+    src/Renderer/RHI/IndexBuffer.cpp
+    src/Renderer/RHI/VertexBuffer.cpp
+    src/Renderer/RHI/DeviceContext.cpp
+    src/Renderer/RHI/RenderSystem.cpp
+    src/Renderer/RHI/GraphicsEngine.cpp
+    src/Renderer/RHI/PixelShader.cpp
+    src/Renderer/RHI/VertexShader.cpp
+    src/Renderer/RHI/SwapChain.cpp
+    src/Renderer/RHI/VertexMesh.cpp
 )
 
 set(KEYBOARD_SOURCES
-    src/keyboard/KeyboardEvent.cpp
-    src/keyboard/KeyboardLayout.cpp
+    src/_old/keyboard/KeyboardEvent.cpp
+    src/_old/keyboard/KeyboardLayout.cpp
 )
 
 set(MOUSE_SOURCES
-    src/mouse/MouseEvent.cpp
-    src/mouse/MouseLayout.cpp
+    src/_old/mouse/MouseEvent.cpp
+    src/_old/mouse/MouseLayout.cpp
 )
 
 set(OTHER_SOURCES
-    src/other/Display.cpp
-    src/other/Framework.cpp
-    src/other/Logs.cpp
-    src/other/StringConverter.cpp
-    src/other/StringHelper.cpp
-    src/other/Timer.cpp
-    src/other/MathHelper.cpp
+    src/_old/other/Display.cpp
+    src/_old/other/Framework.cpp
+    src/_old/other/Logs.cpp
+    src/_old/other/StringConverter.cpp
+    src/_old/other/StringHelper.cpp
+    src/_old/other/Timer.cpp
+    src/_old/other/MathHelper.cpp
 )
 
 set(STATE_SYSTEM_SOURCES
-    src/state_system/state.cpp
+    src/_old/state_system/state.cpp
 )
 
 set(TASK_SYSTEM_SOURCES
-    src/task_system/thread_pool.cpp
+    src/_old/task_system/thread_pool.cpp
 )
 
 set(UI_SYSTEM_SOURCES
-    src/ui_system/ui_console.cpp
+    src/_old/ui_system/ui_console.cpp
 )
 
 set(SOURCES
-    src/imgui_lua_bindings.cpp
-    src/utils.cpp
+    src/_old/imgui_lua_bindings.cpp
+    src/_old/utils.cpp
 )
 
 set(LIBRARIES
@@ -194,26 +221,26 @@ add_library (${PROJECT_NAME}
     ${SOURCES}
 
     src/rapidjson.natvis
-)
+ )
 
-source_group ("include/motor/async"                     FILES ${ASYNC_HEADERS})
-source_group ("include/motor/ECS"                       FILES ${ECS_HEADERS})
-source_group ("include/motor/graphics"                  FILES ${GRAPHICS_HEADERS})
-source_group ("include/motor/graphics/scenes"           FILES ${SCENES_HEADERS})
-source_group ("include/motor/keyboard"                  FILES ${KEYBOARD_HEADERS})
-source_group ("include/motor/mouse"                     FILES ${MOUSE_HEADERS})
-source_group ("include/motor/other"                     FILES ${OTHER_HEADERS})
-source_group ("include/motor/task_system"               FILES ${TASK_SYSTEM_HEADERS})
-source_group ("include/motor"                           FILES ${HEADERS})
+source_group ("include/Motor/_old/async"                     FILES ${ASYNC_HEADERS})
+source_group ("include/Motor/_old/ECS"                       FILES ${ECS_HEADERS})
+source_group ("include/Motor/Renderer"                       FILES ${RENDERER_HEADERS})
+source_group ("include/Motor/_old/graphics/scenes"           FILES ${SCENES_HEADERS})
+source_group ("include/Motor/_old/keyboard"                  FILES ${KEYBOARD_HEADERS})
+source_group ("include/Motor/_old/mouse"                     FILES ${MOUSE_HEADERS})
+source_group ("include/Motor/_old/other"                     FILES ${OTHER_HEADERS})
+source_group ("include/Motor/_old/task_system"               FILES ${TASK_SYSTEM_HEADERS})
+source_group ("include/Motor"                                FILES ${HEADERS})
 
-source_group ("src/core_system"                         FILES ${CORE_SYSTEM_SOURCES})
-source_group ("src/ECS"                                 FILES ${ECS_SOURCES})
-source_group ("src/graphics"                            FILES ${GRAPHICS_SOURCES})
-source_group ("src/keyboard"                            FILES ${KEYBOARD_SOURCES})
-source_group ("src/mouse"                               FILES ${MOUSE_SOURCES})
-source_group ("src/other"                               FILES ${OTHER_SOURCES})
-source_group ("src/task_system"                         FILES ${TASK_SYSTEM_SOURCES})
-source_group ("src"                                     FILES ${SOURCES})
+source_group ("src/Renderer"                                 FILES ${RENDERER_SOURCES})
+source_group ("src/_old/core_system"                         FILES ${CORE_SYSTEM_SOURCES})
+source_group ("src/_old/ECS"                                 FILES ${ECS_SOURCES})
+source_group ("src/_old/keyboard"                            FILES ${KEYBOARD_SOURCES})
+source_group ("src/_old/mouse"                               FILES ${MOUSE_SOURCES})
+source_group ("src/_old/other"                               FILES ${OTHER_SOURCES})
+source_group ("src/_old/task_system"                         FILES ${TASK_SYSTEM_SOURCES})
+source_group ("src"                                          FILES ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
@@ -224,7 +251,7 @@ add_executable (old_main src/old_main.cpp src/DeclareDPIAware.manifest)
 target_link_libraries(old_main ${PROJECT_NAME})
 add_custom_command(TARGET old_main POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/engine/src/data/ $<TARGET_FILE_DIR:old_main>/Data)
+    ${CMAKE_SOURCE_DIR}/engine/data/ $<TARGET_FILE_DIR:old_main>/Data)
 add_custom_command(TARGET old_main POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/engine/src/shaders/pixel_shaders/ $<TARGET_FILE_DIR:old_main>)
@@ -233,7 +260,7 @@ add_custom_command(TARGET old_main POST_BUILD
     ${CMAKE_SOURCE_DIR}/engine/src/shaders/vertex_shaders/ $<TARGET_FILE_DIR:old_main>)
 
 
-enable_testing()
+#enable_testing()
 
 set(TESTING_NAME run_unit_tests)
 

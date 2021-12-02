@@ -1,17 +1,14 @@
 #include <motor/ECS/ComponentSystems.h>
 
-void SetPosition(TransformComponent& transform_comp, DirectX::XMFLOAT3 pos) 
-{
+void ComponentSystems::SetPosition(TransformComponent& transform_comp, DirectX::XMFLOAT3 pos) {
     transform_comp.position = pos;
 }
 
-void SetRotation(TransformComponent& transform_comp, DirectX::XMFLOAT3 rot) 
-{
+void ComponentSystems::SetRotation(TransformComponent& transform_comp, DirectX::XMFLOAT3 rot) {
     transform_comp.rotation = rot;
 }
 
-void SetModel(MeshComponent& mesh_comp, ModelStruct& model)
-{
+void ComponentSystems::SetModel(MeshComponent& mesh_comp, ModelStruct& model) {
     mesh_comp.meshes = model.meshes;
 }
 

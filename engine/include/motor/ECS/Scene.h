@@ -11,7 +11,7 @@ struct RenderableEntities
     TransformComponent& transform_comp;
     MeshComponent& mesh_comp;
 
-    RenderableEntities() = default;
+    //RenderableEntities() = default;
 };
 
 

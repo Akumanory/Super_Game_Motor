@@ -22,9 +22,9 @@ std::vector<RenderableEntities> Scene::GetRenderableEntities() {
 
     for (entt::entity entity : view) 
     {
-
+        renderable_e.emplace_back(m_registry.get<TransformComponent>(entity), m_registry.get<MeshComponent>(entity));
     }
-
+    return renderable_e;
 }
 
 

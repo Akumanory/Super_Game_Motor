@@ -5,6 +5,8 @@
 #include <entt/entt.hpp>
 #include <motor/ECS/ComponentSystems.h>
 #include <motor/other/ModelLoader.h>
+#include <motor/ECS/Entity.h>
+
 
 struct RenderableEntities
 {
@@ -24,6 +26,11 @@ public:
     void AddSimpleCube(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos);
 
     std::vector<RenderableEntities> GetRenderableEntities();
+
+    Entity CreateEntity(const std::string& name = std::string());
+    void DestroyEntity(Entity entity);
+
+
     
 
 private:

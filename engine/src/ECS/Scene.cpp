@@ -10,7 +10,7 @@ void Scene::Initialize(ModelLoader& model_loader) {
 
     ComponentSystems::SetPosition(m_registry.get<TransformComponent>(second_entity), DirectX::XMFLOAT3(0.0f, 6.0f, 0.0f));
     ComponentSystems::SetRotation(m_registry.get<TransformComponent>(second_entity), DirectX::XMFLOAT3(0.5f, 0.0f, 0.0f));
-    ComponentSystems::SetModel(m_registry.get<MeshComponent>(second_entity), _model_loader.GetModelById(1));
+    ComponentSystems::SetModel(m_registry.get<MeshComponent>(second_entity), _model_loader.GetModelById(0));
     ComponentSystems::UpdateBoundingBox(m_registry.get<MeshComponent>(second_entity), m_registry.get<TransformComponent>(second_entity), _model_loader.GetModelById(1));
 
 }

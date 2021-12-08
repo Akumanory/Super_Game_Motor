@@ -95,9 +95,9 @@ void Graphics::RenderFrame() {
     BoundingFrustum localSpaceFrustum;
     f_culling.Transform(localSpaceFrustum, invView);
 
-    test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), localSpaceFrustum);
+    //test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), localSpaceFrustum);
     /// -------------------------------------------------------------------
-
+    DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
     /*
 	// object
 	XMMATRIX world = renderable_objects[0].GetWorldMatrix();
@@ -615,7 +615,8 @@ bool Graphics::InitializeScene() {
         DirectX::BoundingFrustum::CreateFromMatrix(f_culling, camera.GetProjectionMatrix());
 
         // Entt scene
-        test_entt_scene.InitializeSceneEntt("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader);
+        //test_entt_scene.InitializeSceneEntt("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader);
+        test_entt_scene.Initialize(model_loader);
 
         for (size_t i = 1; i < 5; i++) {
             test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(i * 3, 6.0f, 0.0f));

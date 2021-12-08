@@ -1,11 +1,11 @@
-#include <motor/ECS/Scene.h>
+п»ї#include <motor/ECS/Scene.h>
 #include <motor/graphics/CameraContainer.h>
 
 void Scene::Initialize(ModelLoader& model_loader) {
 
     _model_loader = model_loader;
 
-    // перенести потом в другое место
+    // РїРµСЂРµРЅРµСЃС‚Рё РїРѕС‚РѕРј РІ РґСЂСѓРіРѕРµ РјРµСЃС‚Рѕ
     entt::entity second_entity = TestNewGameObject(m_registry);
 
     ComponentSystems::SetPosition(m_registry.get<TransformComponent>(second_entity), DirectX::XMFLOAT3(0.0f, 6.0f, 0.0f));

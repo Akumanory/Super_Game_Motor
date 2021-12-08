@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <motor/graphics/UpdatedModel.h>
 #include <motor/graphics/MeshForComponents.h>
@@ -20,7 +20,7 @@ struct TransformComponent
     XMFLOAT3 rotation = { 0.0, 0.0, 0.0 };
     XMFLOAT3 scale    = { 1.0, 1.0, 1.0 };
 
-    // Отдельно матрицы rotation, translation, scale
+    // РћС‚РґРµР»СЊРЅРѕ РјР°С‚СЂРёС†С‹ rotation, translation, scale
     // .....
     XMMATRIX GetScaleMatrix() const {
 

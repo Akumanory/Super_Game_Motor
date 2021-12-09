@@ -1,7 +1,7 @@
 #pragma once
 
-#include <motor/ECS/Scene.h>
 #include <entt/entt.hpp>
+#include <motor/ECS/Scene.h>
 
 class Entity
 {
@@ -38,6 +38,6 @@ public:
 	}
 
 private:
-	entt::entity m_entity_handle{ entt:: null };
-    Scene* m_scene = nullptr;
+	Scene* m_scene = nullptr;
+	entt::entity m_entity_handle {entt::null};
 };

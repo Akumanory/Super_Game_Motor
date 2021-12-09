@@ -10,7 +10,7 @@ Entity::Entity(entt::entity handle, Scene* scene)
 template<typename T>
 T& Entity::AddComponent() 
 {
-    assert(!HasComponent<T>(), "Entity already has component");
+    assert(!HasComponent<T>() && "Entity already has component");
     T& component = m_scene->m_registry.emplace<T>(m_entity_handle);
     return component;
 }
@@ -18,14 +18,14 @@ T& Entity::AddComponent()
 template <typename T>
 T& Entity::GetComponent()
 {
-    assert(HasComponent<T>(), "Entity does not have component");
+    assert(HasComponent<T>() && "Entity does not have component");
     return m_scene->m_registry.get<T>(m_entity_handle);
 }
 
 template <typename T>
 void Entity::RemoveComponent() 
 {
-    assert(HasComponent<T>(), "Entity does not have component");
+    assert(HasComponent<T>() && "Entity does not have component");
     return m_scene->m_registry.remove<T>(m_entity_handle);
 }
 

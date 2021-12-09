@@ -473,47 +473,6 @@ bool Graphics::InitializeScene() {
         cb_ps_light.data.ambientLightColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
         cb_ps_light.data.ambientLightStrength = 0.5f;
 
-        // Initialize  model
-
-        /*for (size_t i = 0; i < 5; i++)
-		{
-			
-			if (!models_solar_system[i].InitializeCube(device.Get(), deviceContext.Get(), texture.Get(), constant_buffer))
-			{
-				return false;
-			}
-			models_solar_system[i].SetPosition(0.0f, 0.0f, 0.0f);
-		}*/
-
-        /*if (!models[0].Initialize(device.Get(), deviceContext.Get(), texture.Get(), constant_buffer))
-		{
-			return false;
-		}
-
-		if (!model1.Initialize(device.Get(), deviceContext.Get(), texture.Get(), constant_buffer))
-		{
-			return false;
-		}
-
-		if (!model2.Initialize(device.Get(), deviceContext.Get(), texture.Get(), constant_buffer))
-		{
-			return false;
-		}
-
-		if (!model3.Initialize(device.Get(), deviceContext.Get(), texture.Get(), constant_buffer))
-		{
-			return false;
-		}
-
-		models[0].SetPosition(0.0f, 1.0f, 0.0f, false);
-
-		model1.SetPosition(0.0f, 0.0f, 0.0f, false);*/
-
-        /*if (!test_mesh_model.Initialize("Data\\Objects\\BOTTLE_v1.obj",device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader))
-		{
-			return false;
-		}*/
-
         // LoadModels test
         // ---------------
         ModelLoader model_loader;
@@ -616,11 +575,24 @@ bool Graphics::InitializeScene() {
 
         // Entt scene
         //test_entt_scene.InitializeSceneEntt("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader);
-        test_entt_scene.Initialize(model_loader);
+        //test_entt_scene.Initialize(model_loader);
 
-        for (size_t i = 1; i < 5; i++) {
+        
+
+        /*for (size_t i = 1; i < 5; i++) {
             test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(i * 3, 6.0f, 0.0f));
-        }
+        }*/
+
+        // Create Entities for Scene
+
+        /*Entity entity1 = test_entt_scene.CreateEntity("First Entity");
+        ComponentSystems::SetPosition(entity1.GetComponent<TransformComponent>(), DirectX::XMFLOAT3(12.0f, 6.0f, 0.0f));
+        ComponentSystems::SetRotation(entity1.GetComponent<TransformComponent>(), DirectX::XMFLOAT3(0.0f, 3.0f, 2.0f));
+        entity1.AddComponent<MeshComponent>();
+        ComponentSystems::SetModel(entity1.GetComponent<MeshComponent>(), model_loader.GetModelById(1));*/
+
+
+
     } catch (COMException& ex) {
         Logs::Error(ex);
         return false;
@@ -664,9 +636,9 @@ void Graphics::setConsole(motor::ui_system::ConsoleUI* console, bool* showConsol
     showConsole_ = showConsole;
 }
 
-void Graphics::addCube(float x, float y, float z) {
-    test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(x, y, z));
-}
+//void Graphics::addCube(float x, float y, float z) {
+//    test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(x, y, z));
+//}
 
 void Graphics::addLightCube(float x, float y, float z) {
     solar_system_scene.AddCube(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader, DirectX::XMFLOAT3{ x, y, z });
@@ -710,3 +682,8 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
         }
     }
 }
+
+//void Graphics::DrawModel(RenderableEntities renderable_entity)
+//{
+//
+//}

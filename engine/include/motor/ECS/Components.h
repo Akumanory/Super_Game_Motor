@@ -64,25 +64,3 @@ struct MeshComponent
     std::vector<MeshForComponents> meshes;
     BoundingOrientedBox bounding_box;
 };
-
-
-
-// Old shit
-struct PositionRotation
-{
-    XMFLOAT3 position;
-    XMFLOAT3 rotation;
-    XMMATRIX worldMatrix;
-
-    void UpdateMatrix() 
-    {
-        worldMatrix = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) * 
-                      XMMatrixTranslation(position.x, position.y, position.z);
-    }
-};
-
-
-struct ObjectModel
-{
-    UpdatedModel model;
-};

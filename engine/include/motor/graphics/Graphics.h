@@ -16,6 +16,7 @@
 #include <motor/ECS/Scene.h>
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/other/ModelLoader.h>
+#include <motor/ECS/ComponentSystems.h>
 
 // ImGui
 #include <imgui.h>
@@ -40,6 +41,8 @@ public:
 
 	// TODO: перенести в renderer
     void DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix);
+    void DrawModel();
+    void DrawMesh();
 
     CameraContainer cam_container;
 

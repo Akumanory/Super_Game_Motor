@@ -14,9 +14,9 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
     lua_.open_libraries(sol::lib::base, sol::lib::jit);
     LoadImguiBindings();
 
-	lua_["addCube"] = [this](float x, float y, float z) {
-        gfx.addCube(x, y, z);
-    };
+	//lua_["addCube"] = [this](float x, float y, float z) {
+    //    gfx.addCube(x, y, z);
+    //};
     lua_["addLightCube"] = [this](float x, float y, float z) {
         gfx.addLightCube(x, y, z);
     };
@@ -46,7 +46,7 @@ bool Framework::ProcessMessages()
 
 void Framework::Update()
 {
-	float delta = timer.GetMilisecondsElapsed();
+	auto delta = static_cast<float>(timer.GetMilisecondsElapsed());
 	timer.Restart();
 
 	while (!display.keyboard.CharBufferIsEmpty())

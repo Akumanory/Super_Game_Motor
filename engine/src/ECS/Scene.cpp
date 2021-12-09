@@ -1,4 +1,5 @@
 ﻿#include <motor/ECS/Scene.h>
+#include <motor/ECS/Entity.h>
 #include <motor/graphics/CameraContainer.h>
 
 Scene::Scene() 

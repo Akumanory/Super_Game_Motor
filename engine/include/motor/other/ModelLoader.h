@@ -7,6 +7,8 @@
 
 struct ModelStruct 
 {
+    ModelStruct() = default;
+
     std::vector<MeshForComponents> meshes;
     DirectX::BoundingOrientedBox bounding_box;
 };
@@ -20,9 +22,8 @@ public:
 
 private:
     std::vector<ModelStruct> _models;
-    ModelStruct _model;
 
-    void ProcessNode(aiNode* node, const aiScene* scene, const DirectX::XMMATRIX& parentTransformMatrix);
+    void ProcessNode(aiNode* node, const aiScene* scene, const DirectX::XMMATRIX& parentTransformMatrix, ModelStruct& temp_model);
     MeshForComponents ProcessMesh(aiMesh* mesh, const aiScene* scene, const DirectX::XMMATRIX& transformMatrix);
     TextureStorageType DetermineTextureStorageType(const aiScene* pScene, aiMaterial* pMat, unsigned int index, aiTextureType textureType);
     std::vector<Texture> LoadMaterialTextures(aiMaterial* pMaterial, aiTextureType textureType, const aiScene* pScene);

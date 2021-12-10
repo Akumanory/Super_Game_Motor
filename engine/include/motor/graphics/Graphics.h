@@ -17,6 +17,7 @@
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
+#include <motor/ECS/Entity.h>
 
 // ImGui
 #include <imgui.h>
@@ -41,6 +42,7 @@ public:
 
 	// TODO: перенести в renderer
     void DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix);
+    void DrawDebugScene(Scene& scene);
     void DrawModel();
     void DrawMesh();
 
@@ -48,7 +50,6 @@ public:
 
 	Scene test_entt_scene;
 
-	DirectX::BoundingFrustum f_culling;
     DirectX::XMMATRIX viewMatrix;
 
 	//TODO temp vartiables

@@ -8,6 +8,12 @@ void ComponentSystems::SetRotation(TransformComponent& transform_comp, DirectX::
     transform_comp.rotation = rot;
 }
 
+static void AjustRotation(TransformComponent& transform_comp, DirectX::XMFLOAT3 rot) {
+    transform_comp.rotation.x += rot.x;
+    transform_comp.rotation.y += rot.y;
+    transform_comp.rotation.y += rot.y;
+}
+
 void ComponentSystems::SetModel(MeshComponent& mesh_comp, ModelStruct& model) {
     mesh_comp.meshes = model.meshes;
 }

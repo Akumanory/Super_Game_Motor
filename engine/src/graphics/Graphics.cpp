@@ -164,7 +164,6 @@ void Graphics::RenderFrame() {
     deviceContext->IASetInputLayout(m_inputLayout.Get());
 
     m_batch->Begin();
-    
 
     DrawDebugScene(test_entt_scene);
     DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetForwardVector(), true, DirectX::Colors::LightGreen);
@@ -232,6 +231,8 @@ void Graphics::RenderFrame() {
     ImGui::End();
 
     cam_container.ImGUIWindow();
+
+    scene_hierachy.OnImguiRender();
 
     /*std::vector<std::string> test = { "A", "B" };
 
@@ -573,6 +574,7 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetModel(entity1.GetComponent<MeshComponent>(), model_loader.GetModelById(0));
         ComponentSystems::UpdateBoundingBox(entity1.GetComponent<MeshComponent>(), entity1.GetComponent<TransformComponent>(), model_loader.GetModelById(0));
 
+        scene_hierachy.SetContext(&test_entt_scene);
 
 
     } catch (COMException& ex) {

@@ -18,6 +18,7 @@
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
 #include <motor/ECS/Entity.h>
+#include <motor/ECS/SceneHierarchy.h>
 
 // ImGui
 #include <imgui.h>
@@ -49,6 +50,7 @@ public:
     CameraContainer cam_container;
 
 	Scene test_entt_scene;
+    SceneHierarchy scene_hierachy;
 
     DirectX::XMMATRIX viewMatrix;
 

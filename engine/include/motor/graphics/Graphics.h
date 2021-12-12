@@ -52,6 +52,10 @@ public:
 	Scene test_entt_scene;
     SceneHierarchy scene_hierachy;
 
+	Entity entity1;
+    Entity entity2;
+
+
     DirectX::XMMATRIX viewMatrix;
 
 	//TODO temp vartiables

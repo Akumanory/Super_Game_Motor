@@ -17,6 +17,7 @@ public:
 
 private:
     void DrawEntityNode(Entity entity);
+    void DrawSelectedEntityComponents(Entity entity);
 
 private:
     Scene* m_context;

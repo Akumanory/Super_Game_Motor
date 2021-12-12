@@ -26,6 +26,13 @@ void SceneHierarchy::OnImguiRender()
     });
 
     ImGui::End();
+
+    ImGui::Begin("Properties");
+    if (m_selection_context) 
+    {
+        DrawSelectedEntityComponents(m_selection_context);
+    }
+    ImGui::End();
 }
 
 void SceneHierarchy::DrawEntityNode(Entity entity) {
@@ -44,5 +51,25 @@ void SceneHierarchy::DrawEntityNode(Entity entity) {
         if (opened)
             ImGui::TreePop();
         ImGui::TreePop();
+    }
+}
+
+void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
+    if (entity.HasComponent<TagComponent>()) 
+    {
+        auto& tag = entity.GetComponent<TagComponent>().tag;
+
+        char buffer[256];
+        memset(buffer, 0, sizeof(buffer));
+        strcpy_s(buffer, tag.c_str());
+        if (ImGui::InputText("Tag", buffer, sizeof(buffer))) 
+        {
+            tag = std::string(buffer);
+        }
+    }
+
+    if (entity.HasComponent<TransformComponent>()) 
+    {
+
     }
 }

@@ -2,6 +2,7 @@
 
 #include <motor/graphics/UpdatedModel.h>
 #include <motor/graphics/MeshForComponents.h>
+#include <motor/other/ModelLoader.h>
 
 using namespace DirectX;
 
@@ -61,6 +62,6 @@ struct DirectionalVectorsComponent
 // TODO: Undone
 struct MeshComponent 
 {
-    std::vector<MeshForComponents> meshes;
-    BoundingOrientedBox bounding_box;
+    BoundingOrientedBox transformed_bounding_box;
+    ModelStruct model;
 };

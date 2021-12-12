@@ -1,24 +1,55 @@
 #include <motor/ECS/ComponentSystems.h>
 
-void ComponentSystems::SetPosition(TransformComponent& transform_comp, DirectX::XMFLOAT3 pos) {
-    transform_comp.position = pos;
-}
-
-void ComponentSystems::SetRotation(TransformComponent& transform_comp, DirectX::XMFLOAT3 rot) {
-    transform_comp.rotation = rot;
-}
-
-static void AjustRotation(TransformComponent& transform_comp, DirectX::XMFLOAT3 rot) {
-    transform_comp.rotation.x += rot.x;
-    transform_comp.rotation.y += rot.y;
-    transform_comp.rotation.y += rot.y;
-}
-
-void ComponentSystems::SetModel(MeshComponent& mesh_comp, ModelStruct& model) {
-    mesh_comp.meshes = model.meshes;
-}
-
-void ComponentSystems::UpdateBoundingBox(MeshComponent& mesh_comp, TransformComponent& transform_comp, ModelStruct& model) 
+void ComponentSystems::SetPosition(Entity& entity, DirectX::XMFLOAT3 pos) 
 {
-    model.bounding_box.Transform(mesh_comp.bounding_box, transform_comp.GetTransformMatrix());
+    auto& transform_comp = entity.GetComponent<TransformComponent>();
+    transform_comp.position = pos;
+
+    if (entity.HasComponent<MeshComponent>()) 
+    {
+        UpdateBoundingBox(entity);
+    }
+}
+
+void ComponentSystems::SetRotation(Entity& entity, DirectX::XMFLOAT3 rot) 
+{
+    auto& transform_comp = entity.GetComponent<TransformComponent>();
+    transform_comp.rotation = rot;
+
+    if (entity.HasComponent<MeshComponent>()) 
+    {
+        UpdateBoundingBox(entity);
+    }
+}
+
+void ComponentSystems::AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, float delta) 
+{
+    auto& transform_comp = entity.GetComponent<TransformComponent>();
+    transform_comp.rotation.x += rot.x * delta;
+    transform_comp.rotation.y += rot.y * delta;
+    transform_comp.rotation.z += rot.z * delta;
+
+    if (entity.HasComponent<MeshComponent>()) 
+    {
+        UpdateBoundingBox(entity);
+    }
+}
+
+void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
+    auto& mesh_comp = entity.GetComponent<MeshComponent>();
+    mesh_comp.model.meshes = model.meshes;
+    mesh_comp.model.bounding_box = model.bounding_box;
+
+    if (entity.HasComponent<MeshComponent>()) 
+    {
+        UpdateBoundingBox(entity);
+    }
+}
+
+void ComponentSystems::UpdateBoundingBox(Entity& entity) 
+{
+    auto& mesh_comp = entity.GetComponent<MeshComponent>();
+    const auto& transform_comp = entity.GetComponent<TransformComponent>();
+
+    mesh_comp.model.bounding_box.Transform(mesh_comp.transformed_bounding_box, transform_comp.GetTransformMatrix());
 }

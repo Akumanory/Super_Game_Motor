@@ -13,7 +13,5 @@ public:
     static void SetRotation(Entity& entity, DirectX::XMFLOAT3 rot);
     static void AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, float delta);
     static void SetModel(Entity& entity, ModelStruct& model);
-
-private:
     static void UpdateBoundingBox(Entity& entity);
 };

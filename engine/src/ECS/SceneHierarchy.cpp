@@ -1,5 +1,6 @@
 #include <motor/ECS/SceneHierarchy.h>
 #include <motor/ECS/Components.h>
+#include <motor/ECS/ComponentSystems.h>
 
 #include "imgui.h"
 #include "imgui_internal.h"
@@ -61,7 +62,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
         char buffer[256];
         memset(buffer, 0, sizeof(buffer));
-        strcpy_s(buffer, tag.c_str());
+        strcpy_s(buffer, sizeof(buffer), tag.c_str());
         if (ImGui::InputText("Tag", buffer, sizeof(buffer))) 
         {
             tag = std::string(buffer);
@@ -70,6 +71,21 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
     if (entity.HasComponent<TransformComponent>()) 
     {
+        auto& transform_comp = entity.GetComponent<TransformComponent>();
 
+        if (ImGui::DragFloat3("Position", &transform_comp.position.x, 0.01f, -100.0f, 100.0f)) 
+        {
+            ComponentSystems::UpdateBoundingBox(entity);
+        }
+
+        if (ImGui::DragFloat3("Rotation", &transform_comp.rotation.x, 0.01f, -100.0f, 100.0f)) 
+        {
+            ComponentSystems::UpdateBoundingBox(entity);
+        }
+
+        if (ImGui::DragFloat3("Scale", &transform_comp.scale.x, 0.01f, 0.0001f, 100.0f)) 
+        {
+            ComponentSystems::UpdateBoundingBox(entity);
+        }
     }
 }

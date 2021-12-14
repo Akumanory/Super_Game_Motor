@@ -22,7 +22,7 @@ public:
 
     Entity CreateEntity(const std::string name);
     void DestroyEntity(Entity entity);
-    std::vector<RenderableEntities> GetRenderableEntities();
+    std::vector<Entity> GetRenderableEntities();
 
     /*void Initialize(ModelLoader& model_loader);
     void InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader);

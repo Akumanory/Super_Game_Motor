@@ -569,15 +569,18 @@ bool Graphics::InitializeScene() {
 
         entity1 = test_entt_scene.CreateEntity("First Entity");
         ComponentSystems::SetPosition(entity1, DirectX::XMFLOAT3(0.0f, 4.0f, 0.0f));
-        ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 3.0f, 2.0f));
+        ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity1.AddComponent<MeshComponent>();
         ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
 
         entity2 = test_entt_scene.CreateEntity("Second Entity");
         ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
-        ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(5.0f, 3.0f, 0.0f));
+        ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity2.AddComponent<MeshComponent>();
         ComponentSystems::SetModel(entity2, model_loader.GetModelById(1));
+
+
+        ComponentSystems::SetChildEntity(&entity1, entity2);
 
         scene_hierachy.SetContext(&test_entt_scene);
 
@@ -640,11 +643,13 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
     auto renderableEntities = scene.GetRenderableEntities();
     for (auto&& i : renderableEntities)
     {
-        auto&& meshes = i.mesh_comp.model.meshes;
-        auto worldMatrix = i.transform_comp.GetTransformMatrix();
+        auto&& meshes = i.GetComponent<MeshComponent>().model.meshes;
+
+        auto worldMatrix = ComponentSystems::GetTransformMatrix(i);
+        
 
         DirectX::BoundingFrustum local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
-        if (local_frustum.Contains(i.mesh_comp.transformed_bounding_box) != DirectX::DISJOINT) 
+        if (local_frustum.Contains(i.GetComponent<MeshComponent>().transformed_bounding_box) != DirectX::DISJOINT) 
         {
             for (int i = 0; i < meshes.size(); i++) {
                 cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
@@ -685,7 +690,7 @@ void Graphics::DrawDebugScene(Scene& scene) {
 
     auto renderableEntities = scene.GetRenderableEntities();
     for (auto&& i : renderableEntities) {
-        Draw(m_batch.get(), i.mesh_comp.transformed_bounding_box, DirectX::Colors::Pink);
+        Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);
     }
 }
 

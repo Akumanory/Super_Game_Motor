@@ -49,7 +49,45 @@ void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
 void ComponentSystems::UpdateBoundingBox(Entity& entity) 
 {
     auto& mesh_comp = entity.GetComponent<MeshComponent>();
-    const auto& transform_comp = entity.GetComponent<TransformComponent>();
+    //const auto& transform_comp = entity.GetComponent<TransformComponent>();
+    mesh_comp.model.bounding_box.Transform(mesh_comp.transformed_bounding_box, GetTransformMatrix(entity));
+    if (entity.HasComponent<ChildsComponent>()) 
+    {
+        auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+        for (auto&& i : childs) 
+        {
+            UpdateBoundingBox(i);
+        }
+    }
+}
 
-    mesh_comp.model.bounding_box.Transform(mesh_comp.transformed_bounding_box, transform_comp.GetTransformMatrix());
+void ComponentSystems::SetChildEntity(Entity* parent, Entity& child) 
+{
+    if (parent->HasComponent<TransformComponent>() && child.HasComponent<TransformComponent>()) 
+    {
+        if (!child.HasComponent<ParentComponent>()) {
+            // Нельязя что бы реебнок был зависи от двух родителей, но родитель может являтся доччерним компонентом другоко компонента
+            child.AddComponent<ParentComponent>();
+            auto& parent_comp = child.GetComponent<ParentComponent>();
+            parent_comp.parent = parent;
+
+            if (!parent->HasComponent<ChildsComponent>()) {
+                parent->AddComponent<ChildsComponent>();
+            }
+            auto& childs_comp = parent->GetComponent<ChildsComponent>();
+            childs_comp.child_entities.emplace_back(child);
+            UpdateBoundingBox(child);
+        }
+    }
+}
+
+DirectX::XMMATRIX ComponentSystems::GetTransformMatrix(Entity& entity) {
+    if (entity.HasComponent<ParentComponent>()) 
+    {
+        auto child_transform = entity.GetComponent<TransformComponent>().GetTransformMatrix();
+        auto parent_transform = entity.GetComponent<ParentComponent>().parent->GetComponent<TransformComponent>().GetTransformMatrix();
+        return child_transform * parent_transform;
+    }
+
+    return entity.GetComponent<TransformComponent>().GetTransformMatrix();
 }

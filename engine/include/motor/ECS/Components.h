@@ -6,7 +6,7 @@
 
 using namespace DirectX;
 
-// New Components
+class Entity;
 
 // Component Done
 struct TagComponent 
@@ -64,4 +64,16 @@ struct MeshComponent
 {
     BoundingOrientedBox transformed_bounding_box;
     ModelStruct model;
+};
+
+// Компонент указывает на то что entity является родлителем для данных entity
+struct ChildsComponent 
+{
+    std::vector<Entity> child_entities;
+};
+
+// Коспонет указывает на то что entity является чьим то ребенком
+struct ParentComponent 
+{
+    Entity* parent;
 };

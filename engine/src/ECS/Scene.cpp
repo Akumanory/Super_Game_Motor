@@ -10,14 +10,15 @@ Scene::~Scene()
 {
 }
 
-std::vector<RenderableEntities> Scene::GetRenderableEntities() {
-    std::vector<RenderableEntities> renderable_e;
+std::vector<Entity> Scene::GetRenderableEntities() {
+    std::vector<Entity> renderable_e;
 
     auto view = m_registry.view<TransformComponent, MeshComponent>();
 
     for (entt::entity entity : view) 
     {
-        renderable_e.emplace_back(m_registry.get<TransformComponent>(entity), m_registry.get<MeshComponent>(entity));
+        Entity tmp = { entity, this };
+        renderable_e.emplace_back(tmp);
     }
     return renderable_e;
 }

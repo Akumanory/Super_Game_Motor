@@ -11,6 +11,8 @@ bool ModelLoader::Initialize(ID3D11Device* device)
 
 bool ModelLoader::LoadModel(const std::string& filePath) 
 {
+    ModelStruct temp_model;
+
     _directory = StringHelper::GetDirectoryFromPath(filePath);
 
     Assimp::Importer importer;
@@ -28,13 +30,13 @@ bool ModelLoader::LoadModel(const std::string& filePath)
     vMin = XMLoadFloat3(&vMinf3);
     vMax = XMLoadFloat3(&vMaxf3);
 
-    ProcessNode(pScene->mRootNode, pScene, DirectX::XMMatrixIdentity());
+    ProcessNode(pScene->mRootNode, pScene, DirectX::XMMatrixIdentity(), temp_model);
 
-    XMStoreFloat3(&_model.bounding_box.Center, 0.5f * (vMin + vMax));
-    XMStoreFloat3(&_model.bounding_box.Extents, 0.5f * (vMax - vMin));
+    XMStoreFloat3(&temp_model.bounding_box.Center, 0.5f * (vMin + vMax));
+    XMStoreFloat3(&temp_model.bounding_box.Extents, 0.5f * (vMax - vMin));
 
     // Add struct to struct array (mesh and bounding box)
-    _models.push_back(_model);
+    _models.push_back(temp_model);
 
     return true;
 }
@@ -51,17 +53,16 @@ int ModelLoader::CountOfModelsLoaded()
 
 
 // private
-void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix) 
-{
+void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, const XMMATRIX& parentTransformMatrix, ModelStruct& temp_model) {
     XMMATRIX nodeTransformMatrix = XMMatrixTranspose(XMMATRIX(&node->mTransformation.a1)) * parentTransformMatrix;
 
     for (UINT i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        _model.meshes.push_back(ProcessMesh(mesh, scene, nodeTransformMatrix));
+        temp_model.meshes.push_back(ProcessMesh(mesh, scene, nodeTransformMatrix));
     }
 
     for (UINT i = 0; i < node->mNumChildren; i++) {
-        ProcessNode(node->mChildren[i], scene, nodeTransformMatrix);
+        ProcessNode(node->mChildren[i], scene, nodeTransformMatrix, temp_model);
     }
 }
 

@@ -2,10 +2,11 @@
 
 #include <motor/graphics/UpdatedModel.h>
 #include <motor/graphics/MeshForComponents.h>
+#include <motor/other/ModelLoader.h>
 
 using namespace DirectX;
 
-// New Components
+class Entity;
 
 // Component Done
 struct TagComponent 
@@ -61,28 +62,18 @@ struct DirectionalVectorsComponent
 // TODO: Undone
 struct MeshComponent 
 {
-    std::vector<MeshForComponents> meshes;
-    BoundingOrientedBox bounding_box;
+    BoundingOrientedBox transformed_bounding_box;
+    ModelStruct model;
 };
 
-
-
-// Old shit
-struct PositionRotation
+// Компонент указывает на то что entity является родлителем для данных entity
+struct ChildsComponent 
 {
-    XMFLOAT3 position;
-    XMFLOAT3 rotation;
-    XMMATRIX worldMatrix;
-
-    void UpdateMatrix() 
-    {
-        worldMatrix = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) * 
-                      XMMatrixTranslation(position.x, position.y, position.z);
-    }
+    std::vector<Entity> child_entities;
 };
 
-
-struct ObjectModel
+// Коспонет указывает на то что entity является чьим то ребенком
+struct ParentComponent 
 {
-    UpdatedModel model;
+    Entity* parent;
 };

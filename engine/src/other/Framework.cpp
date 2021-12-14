@@ -1,5 +1,6 @@
 ﻿#include <motor/other/Framework.h>
 #include <motor/other/Logs.h>
+#include <motor/ECS/ComponentSystems.h>
 
 using namespace DirectX;
 
@@ -14,9 +15,9 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
     lua_.open_libraries(sol::lib::base, sol::lib::jit);
     LoadImguiBindings();
 
-	lua_["addCube"] = [this](float x, float y, float z) {
-        gfx.addCube(x, y, z);
-    };
+	//lua_["addCube"] = [this](float x, float y, float z) {
+    //    gfx.addCube(x, y, z);
+    //};
     lua_["addLightCube"] = [this](float x, float y, float z) {
         gfx.addLightCube(x, y, z);
     };
@@ -46,7 +47,7 @@ bool Framework::ProcessMessages()
 
 void Framework::Update()
 {
-	float delta = timer.GetMilisecondsElapsed();
+	auto delta = static_cast<float>(timer.GetMilisecondsElapsed());
 	timer.Restart();
 
 	while (!display.keyboard.CharBufferIsEmpty())
@@ -106,6 +107,9 @@ void Framework::Update()
 	}
 
 	gfx.solar_system_scene.Update(delta);
+
+	ComponentSystems::AjustRotation(gfx.entity1, DirectX::XMFLOAT3(0.0001f, 0.0f, 0.0002f), delta);
+
 
 	//gfx.model1.AdjustRotation(0.0f, -0.001f * delta, 0.0f, false);
 	/*gfx.model1.SetPosition(0.0f, 0.0f, 0.0f, true);*/

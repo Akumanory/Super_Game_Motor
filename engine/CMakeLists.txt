@@ -21,8 +21,9 @@ set(ECS_HEADERS
     include/motor/ECS/Components.h
     include/motor/ECS/Scene.h
     include/motor/ECS/Factory.h
-    include/motor/ECS/CompRealization.h
     include/motor/ECS/ComponentSystems.h
+    include/motor/ECS/Entity.h
+    include/motor/ECS/SceneHierarchy.h
 )
 
 set(GRAPHICS_HEADERS
@@ -105,8 +106,9 @@ set(CORE_SYSTEM_SOURCES
 set(ECS_SOURCES
     src/ECS/Scene.cpp
     src/ECS/Factory.cpp
-    src/ECS/CompRealization.cpp
     src/ECS/ComponentSystems.cpp
+    src/ECS/Entity.cpp
+    src/ECS/SceneHierarchy.cpp
 )
 
 set(GRAPHICS_SOURCES

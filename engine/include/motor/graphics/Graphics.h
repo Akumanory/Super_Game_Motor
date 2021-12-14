@@ -16,6 +16,9 @@
 #include <motor/ECS/Scene.h>
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/other/ModelLoader.h>
+#include <motor/ECS/ComponentSystems.h>
+#include <motor/ECS/Entity.h>
+#include <motor/ECS/SceneHierarchy.h>
 
 // ImGui
 #include <imgui.h>
@@ -40,12 +43,19 @@ public:
 
 	// TODO: перенести в renderer
     void DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix);
+    void DrawDebugScene(Scene& scene);
+    void DrawModel();
+    void DrawMesh();
 
     CameraContainer cam_container;
 
 	Scene test_entt_scene;
+    SceneHierarchy scene_hierachy;
 
-	DirectX::BoundingFrustum f_culling;
+	Entity entity1;
+    Entity entity2;
+
+
     DirectX::XMMATRIX viewMatrix;
 
 	//TODO temp vartiables

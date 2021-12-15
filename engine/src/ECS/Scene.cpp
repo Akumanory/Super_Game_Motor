@@ -35,6 +35,32 @@ Entity Scene::CreateEntity(const std::string name)
 
 void Scene::DestroyEntity(Entity entity) 
 {
+    // избавится от зависимостей перед удалением
+    if (entity.HasComponent<ChildsComponent>()) 
+    {
+        auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+        for (auto&& i : childs) 
+        {
+            i.RemoveComponent<ParentComponent>();
+        }
+    }
+    if (entity.HasComponent<ParentComponent>()) 
+    {
+        // TODO: Что то потом с этим придумать а то выглядит ужасно
+        auto childs = entity.GetComponent<ParentComponent>().parent->GetComponent<ChildsComponent>().child_entities;
+        for (size_t i = 0; i < childs.size(); i++) 
+        {
+            if (childs[i] == entity) 
+            {
+                childs.erase(childs.begin() + i);
+            }
+        }
+        if (childs.size() == 0) 
+        {
+            entity.GetComponent<ParentComponent>().parent->RemoveComponent<ChildsComponent>();
+        }
+    }
+
     m_registry.destroy(entity);
 }
 

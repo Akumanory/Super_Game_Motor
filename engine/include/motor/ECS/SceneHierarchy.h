@@ -17,7 +17,7 @@ public:
 
 private:
     void DrawEntityNode(Entity entity);
-    void DrawEntitySubNode(Entity entity);
+    void DrawEntitySubNode(Entity entity, Entity& deliting_entity, bool& deleting_flag);
     void DrawSelectedEntityComponents(Entity entity);
 
 private:

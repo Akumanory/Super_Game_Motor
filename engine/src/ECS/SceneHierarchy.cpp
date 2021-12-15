@@ -26,10 +26,20 @@ void SceneHierarchy::OnImguiRender()
         if (!entity.HasComponent<ParentComponent>()) {
             DrawEntityNode(entity);
         }
+        //DrawEntityNode(entity);
     });
 
     if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
         m_selection_context = {};
+
+    if (ImGui::BeginPopupContextWindow(0, 1, false))
+    {
+        if (ImGui::MenuItem("Create Empty Entity")) 
+        {
+            m_context->CreateEntity("Empty Entity");
+        }
+        ImGui::EndPopup();
+    }
 
     ImGui::End();
 
@@ -47,41 +57,67 @@ void SceneHierarchy::DrawEntityNode(Entity entity) {
     ImGuiTreeNodeFlags flags = ((m_selection_context == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 
     bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
-    if (ImGui::IsItemClicked()) {
+    if (ImGui::IsItemClicked()) 
+    {
         m_selection_context = entity;
+    }
+
+    bool entity_deleted = false;
+    Entity deliting_entity;
+    if (ImGui::BeginPopupContextItem()) 
+    {
+        if (ImGui::MenuItem("Delete Entity")) 
+        {
+            entity_deleted = true;
+            deliting_entity = entity;
+        }
+        ImGui::EndPopup();
     }
 
     if (opened) 
     {
         if (entity.HasComponent<ChildsComponent>()) 
         {
-            auto& childs_comp = entity.GetComponent<ChildsComponent>();
-
-            for (auto&& i : childs_comp.child_entities) {
-                DrawEntitySubNode(i);
-            }
+            DrawEntitySubNode(entity, deliting_entity, entity_deleted);
         }
         ImGui::TreePop();
     } 
+
+    if (entity_deleted) 
+    {
+        m_context->DestroyEntity(deliting_entity);
+        if (m_selection_context == deliting_entity) 
+        {
+            m_selection_context = {};
+        }
+    }
 }
 
-void SceneHierarchy::DrawEntitySubNode(Entity entity) {
-    auto& tag = entity.GetComponent<TagComponent>().tag;
-    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
-    if (ImGui::IsItemClicked()) {
-        m_selection_context = entity;
-    }
-    if (opened) 
-    {
-        if (entity.HasComponent<ChildsComponent>()) {
-            auto& childs_comp = entity.GetComponent<ChildsComponent>();
+void SceneHierarchy::DrawEntitySubNode(Entity entity, Entity& deliting_entity, bool& deleting_flag) {
+    auto& childs_comp = entity.GetComponent<ChildsComponent>();
 
-            for (auto&& i : childs_comp.child_entities) {
-                DrawEntitySubNode(i);
-            }
+    for (auto i : childs_comp.child_entities) {
+        auto& tag = i.GetComponent<TagComponent>().tag;
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+        bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)i, flags, tag.c_str());
+        if (ImGui::IsItemClicked()) {
+            m_selection_context = i;
         }
-        ImGui::TreePop();
+
+        if (ImGui::BeginPopupContextItem()) {
+            if (ImGui::MenuItem("Delete Entity")) {
+                deliting_entity = i;
+                deleting_flag = true;
+            }
+            ImGui::EndPopup();
+        }
+
+        if (opened) {
+            if (i.HasComponent<ChildsComponent>()) {
+                DrawEntitySubNode(i, deliting_entity, deleting_flag);
+            }
+            ImGui::TreePop();
+        }
     }
 }
 

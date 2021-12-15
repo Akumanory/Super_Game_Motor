@@ -32,7 +32,7 @@ public:
     template <typename T>
     void RemoveComponent() {
         assert(HasComponent<T>() && "Entity does not have component");
-        return m_scene->m_registry.remove<T>(m_entity_handle);
+        m_scene->m_registry.remove<T>(m_entity_handle);
     }
 
     operator bool() const { return m_entity_handle != entt::null; }

@@ -20,7 +20,6 @@ private:
 	Timer timer;
 	Display display;
 	Graphics gfx;
-	Scene scene;
 
 	sol::state lua_;
     motor::ui_system::ConsoleUI consoleUI_;

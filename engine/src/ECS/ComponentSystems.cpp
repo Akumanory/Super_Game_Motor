@@ -85,7 +85,17 @@ DirectX::XMMATRIX ComponentSystems::GetTransformMatrix(Entity& entity) {
     if (entity.HasComponent<ParentComponent>()) 
     {
         auto child_transform = entity.GetComponent<TransformComponent>().GetTransformMatrix();
-        auto parent_transform = entity.GetComponent<ParentComponent>().parent->GetComponent<TransformComponent>().GetTransformMatrix();
+        DirectX::XMMATRIX parent_transform = DirectX::XMMatrixIdentity();
+        if (entity.GetComponent<ParentComponent>().parent->HasComponent<ParentComponent>()) 
+        {
+            Entity* parent = entity.GetComponent<ParentComponent>().parent;
+            parent_transform = GetTransformMatrix(*parent);
+        }
+        else 
+        {
+            parent_transform = entity.GetComponent<ParentComponent>().parent->GetComponent<TransformComponent>().GetTransformMatrix();
+        }
+        
         return child_transform * parent_transform;
     }
 

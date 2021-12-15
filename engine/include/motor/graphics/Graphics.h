@@ -54,6 +54,7 @@ public:
 
 	Entity entity1;
     Entity entity2;
+	Entity entity3;
 
 
     DirectX::XMMATRIX viewMatrix;

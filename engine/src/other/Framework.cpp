@@ -108,7 +108,7 @@ void Framework::Update()
 
 	gfx.solar_system_scene.Update(delta);
 
-	ComponentSystems::AjustRotation(gfx.entity1, DirectX::XMFLOAT3(0.0001f, 0.0f, 0.0002f), delta);
+	//ComponentSystems::AjustRotation(gfx.entity1, DirectX::XMFLOAT3(0.0001f, 0.0f, 0.0002f), delta);
 
 
 	//gfx.model1.AdjustRotation(0.0f, -0.001f * delta, 0.0f, false);

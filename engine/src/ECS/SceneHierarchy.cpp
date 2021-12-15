@@ -23,7 +23,9 @@ void SceneHierarchy::OnImguiRender()
 
     m_context->m_registry.each([&](auto entityID) {
         Entity entity{ entityID, m_context };
-        DrawEntityNode(entity);
+        if (!entity.HasComponent<ParentComponent>()) {
+            DrawEntityNode(entity);
+        }
     });
 
     ImGui::End();
@@ -46,11 +48,36 @@ void SceneHierarchy::DrawEntityNode(Entity entity) {
         m_selection_context = entity;
     }
 
-    if (opened) {
-        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-        bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
-        if (opened)
-            ImGui::TreePop();
+    if (opened) 
+    {
+        if (entity.HasComponent<ChildsComponent>()) 
+        {
+            auto& childs_comp = entity.GetComponent<ChildsComponent>();
+
+            for (auto&& i : childs_comp.child_entities) {
+                DrawEntitySubNode(i);
+            }
+        }
+        ImGui::TreePop();
+    } 
+}
+
+void SceneHierarchy::DrawEntitySubNode(Entity entity) {
+    auto& tag = entity.GetComponent<TagComponent>().tag;
+    ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+    bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+    if (ImGui::IsItemClicked()) {
+        m_selection_context = entity;
+    }
+    if (opened) 
+    {
+        if (entity.HasComponent<ChildsComponent>()) {
+            auto& childs_comp = entity.GetComponent<ChildsComponent>();
+
+            for (auto&& i : childs_comp.child_entities) {
+                DrawEntitySubNode(i);
+            }
+        }
         ImGui::TreePop();
     }
 }

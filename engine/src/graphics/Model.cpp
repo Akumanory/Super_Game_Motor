@@ -1,4 +1,5 @@
 ﻿#include <motor/graphics/Model.h>
+#include <motor/other/MathHelper.h>
 
 using namespace DirectX;
 
@@ -33,6 +34,12 @@ bool Model::InitializeCube(ID3D11Device* _device, ID3D11DeviceContext* _deviceCo
 	cb_vs_vertexshader = &_cb_vs_vertexshader;
 	theta = 0;
 
+	XMFLOAT3 vMinf3(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
+	XMFLOAT3 vMaxf3(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
+
+	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
+	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
+
 	try
 	{
 		//Textured Square
@@ -48,6 +55,16 @@ bool Model::InitializeCube(ID3D11Device* _device, ID3D11DeviceContext* _deviceCo
 			Vertex( 0.5f,  -0.5f,  0.5f, 1.0f, 1.0f, 1.0f,  -1.0f,  1.0f), //BACK Bottom Right     - [7]
 		};
 
+		for (size_t i = 0; i < ARRAYSIZE(v); i++) 
+		{
+			XMVECTOR P = XMLoadFloat3(&v[i].pos);
+
+			vMin = XMVectorMin(vMin, P);
+			vMax = XMVectorMax(vMax, P);
+        }
+
+		XMStoreFloat3(&bounding_box_frustum.Center, 0.5f * (vMin + vMax));
+        XMStoreFloat3(&bounding_box_frustum.Extents, 0.5f * (vMax - vMin));
 		//Load Vertex Data
 		HRESULT hr = vertex_buffer.Initialize(device, v, ARRAYSIZE(v));
 		COM_ERROR_IF_FAILED(hr, "Failed to initialize vertex buffer.");
@@ -114,6 +131,8 @@ void Model::Draw(const XMMATRIX& viewProjectionMatrix)
 	cb_vs_vertexshader->ApplyChanges();
 	deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertexshader->GetAddressOf());
 
+	//bounding_box_frustum.Transform(bounding_box_frustum, world_matrix);
+
 	deviceContext->PSSetShaderResources(0, 1, &texture); //Set Texture
 	deviceContext->IASetIndexBuffer(index_buffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
 	UINT offset = 0;
@@ -149,7 +168,10 @@ void Model::UpdateWorldMatrix(bool orbital)
 	else
 	{
 		world_matrix = XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z) * XMMatrixTranslation(pos.x, pos.y, pos.z)  * local_matrix;
+		//bounding_box_frustum.Transform(bounding_box_frustum, world_matrix);
 	}
+
+	
 
 	XMMATRIX vecRotationMatrix = XMMatrixRotationRollPitchYaw(rot.x, rot.y, 0.0f);
 	vec_forward = XMVector3TransformCoord(DEFAULT_FORWARD_VECTOR, vecRotationMatrix);
@@ -175,6 +197,8 @@ void Model::UpdateLocalMatrix(bool orbital)
 	{
 		local_matrix = XMMatrixRotationRollPitchYaw(local_rot.x, local_rot.y, local_rot.z) * XMMatrixTranslation(local_pos.x, local_pos.y, local_pos.z);
 	}
+
+	//bounding_box_frustum.Transform(bounding_box_frustum, local_matrix);
 
 	XMMATRIX vecRotationMatrix = XMMatrixRotationRollPitchYaw(0.0f, local_rot.y, 0.0f);
 	local_vec_forward = XMVector3TransformCoord(DEFAULT_FORWARD_VECTOR, vecRotationMatrix);

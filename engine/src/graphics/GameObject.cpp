@@ -238,6 +238,10 @@ const XMVECTOR& GameObject::GetLeftVector(bool omitY)
 		return this->vec_left;
 }
 
+const XMVECTOR& GameObject::GetUpVector() {
+    return vec_up;
+}
+
 DirectX::BoundingBox& GameObject::GetBoundingBox() 
 {
     return bounding_box;
@@ -255,6 +259,7 @@ void GameObject::UpdateDirectionVectors()
 	this->vec_backward = XMVector3TransformCoord(this->DEFAULT_BACKWARD_VECTOR, vecRotationMatrix);
 	this->vec_left = XMVector3TransformCoord(this->DEFAULT_LEFT_VECTOR, vecRotationMatrix);
 	this->vec_right = XMVector3TransformCoord(this->DEFAULT_RIGHT_VECTOR, vecRotationMatrix);
+	this->vec_up = XMVector3TransformCoord(this->DEFAULT_UP_VECTOR, vecRotationMatrix);
 
 	XMMATRIX vecRotationMatrixNoY = XMMatrixRotationRollPitchYaw(0.0f, this->rot.y, 0.0f);
 	this->vec_forward_noY = XMVector3TransformCoord(this->DEFAULT_FORWARD_VECTOR, vecRotationMatrixNoY);

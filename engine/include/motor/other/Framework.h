@@ -6,6 +6,8 @@
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/core_system/console.hpp>
 #include <motor/core_system/lua.hpp>
+#include <motor/ECS/Scene.h>
+
 
 class Framework
 {

@@ -32,5 +32,8 @@ void RenderableGameObject::UpdateMatrix()
 {
 	this->worldMatrix = XMMatrixRotationRollPitchYaw(this->rot.x, this->rot.y, this->rot.z) * XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
 	this->UpdateDirectionVectors();
-	bounding_box.Transform(bounding_box, worldMatrix);
+	// Пока только Translation так как BoundingBox не oriented
+	//bounding_box.Center = XMFLOAT3(0.0, 0.0, 0.0);
+	// TODO: Нельзя делать transform на том же самом боксе так как ломается Center Extends
+	bounding_box.Transform(bounding_box, XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z));
 }

@@ -1,23 +1,79 @@
-#pragma once
+﻿#pragma once
 
 #include <motor/graphics/UpdatedModel.h>
+#include <motor/graphics/MeshForComponents.h>
+#include <motor/other/ModelLoader.h>
 
+using namespace DirectX;
 
-struct PositionRotation
+class Entity;
+
+// Component Done
+struct TagComponent 
 {
-    DirectX::XMFLOAT3 position;
-    DirectX::XMFLOAT3 rotation;
-    DirectX::XMMATRIX worldMatrix;
+    std::string tag = "Undefined Tag";
+};
 
-    void UpdateMatrix() 
+// Component Done
+struct TransformComponent 
+{
+    XMFLOAT3 position = { 0.0, 0.0, 0.0 };
+    XMFLOAT3 rotation = { 0.0, 0.0, 0.0 };
+    XMFLOAT3 scale    = { 1.0, 1.0, 1.0 };
+
+    // Отдельно матрицы rotation, translation, scale
+    // .....
+    XMMATRIX GetScaleMatrix() const {
+
+        return XMMatrixScaling(scale.x, scale.y, scale.z);
+    }
+
+    XMMATRIX GetRotationMatrix() const 
     {
-        worldMatrix = DirectX::XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) * 
-                      DirectX::XMMatrixTranslation(position.x, position.y, position.z);
+        return XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+    }
+
+    XMMATRIX GetTranslationMatrix() const {
+
+        return XMMatrixTranslation(position.x, position.y, position.z);
+    }
+    // .....
+
+    // translation * rotation * scale
+    XMMATRIX GetTransformMatrix() const 
+    {
+        return XMMatrixScaling(scale.x, scale.y, scale.z) *
+               XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
+               XMMatrixTranslation(position.x, position.y, position.z);
     }
 };
 
-
-struct ObjectModel
+// Undone
+struct DirectionalVectorsComponent 
 {
-    UpdatedModel model;
+    const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+    const XMVECTOR DEFAULT_UP_VECTOR = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+    const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+
+    // Todo: UpdateDirectionalVectors
+
+};
+
+// TODO: Undone
+struct MeshComponent 
+{
+    BoundingOrientedBox transformed_bounding_box;
+    ModelStruct model;
+};
+
+// Компонент указывает на то что entity является родлителем для данных entity
+struct ChildsComponent 
+{
+    std::vector<Entity> child_entities;
+};
+
+// Коспонет указывает на то что entity является чьим то ребенком
+struct ParentComponent 
+{
+    Entity* parent;
 };

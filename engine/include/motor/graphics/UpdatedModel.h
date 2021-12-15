@@ -26,7 +26,6 @@ private:
 	ID3D11Device* device = nullptr;
 	ID3D11DeviceContext* deviceContext = nullptr;
 	ConstantBuffer<CB_VS_vertex_shader>* cb_vs_vertexshader = nullptr;
-	
 
 	DirectX::XMVECTOR vMin;
 	DirectX::XMVECTOR vMax;

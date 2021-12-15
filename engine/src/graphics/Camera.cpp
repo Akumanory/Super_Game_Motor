@@ -9,6 +9,7 @@ Camera::Camera()
 	this->posVector = XMLoadFloat3(&this->pos);
 	this->rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	this->rotVector = XMLoadFloat3(&this->rot);
+
 	this->UpdateMatrix();
 }
 
@@ -16,6 +17,7 @@ void Camera::SetProjectionValues(float fovDegrees, float aspectRatio, float near
 {
 	float fovRadians = (fovDegrees / 360.0f) * XM_2PI;
 	projection_matrix = XMMatrixPerspectiveFovLH(fovRadians, aspectRatio, nearZ, farZ);
+    DirectX::BoundingFrustum::CreateFromMatrix(f_culling, projection_matrix);
 }
 
 std::string Camera::GetCameraName() const
@@ -38,6 +40,10 @@ const XMMATRIX& Camera::GetProjectionMatrix() const
 	return projection_matrix;
 }
 
+const DirectX::BoundingFrustum& Camera::GetLocalBoundingFrustum() const {
+    return local_f_culling;
+}
+
 void Camera::UpdateMatrix() //Updates view matrix and also updates the movement vectors
 {
 	//Calculate camera rotation matrix
@@ -50,6 +56,11 @@ void Camera::UpdateMatrix() //Updates view matrix and also updates the movement 
 	XMVECTOR up_direction = XMVector3TransformCoord(DEFAULT_UP_VECTOR, cam_rotation_matrix);
 	//Rebuild view matrix
 	view_matrix = XMMatrixLookAtLH(this->posVector, cam_target, up_direction);
+
+	XMVECTOR Det = XMMatrixDeterminant(view_matrix);
+    XMMATRIX invView = XMMatrixInverse(&Det, view_matrix);
+
+	f_culling.Transform(local_f_culling, invView);
 
 	UpdateDirectionVectors();
 }

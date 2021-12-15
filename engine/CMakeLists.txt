@@ -24,7 +24,9 @@ set(ECS_HEADERS
     include/motor/ECS/Components.h
     include/motor/ECS/Scene.h
     include/motor/ECS/Factory.h
-    include/motor/ECS/CompRealization.h
+    include/motor/ECS/ComponentSystems.h
+    include/motor/ECS/Entity.h
+    include/motor/ECS/SceneHierarchy.h
 )
 
 set(GRAPHICS_HEADERS
@@ -46,6 +48,7 @@ set(GRAPHICS_HEADERS
     include/motor/graphics/VertexBuffer.h
     include/motor/graphics/CameraContainer.h
     include/motor/graphics/DebugDraw.h
+    include/motor/graphics/MeshForComponents.h
 )
 
 set(SCENES_HEADERS
@@ -72,6 +75,7 @@ set(OTHER_HEADERS
     include/motor/other/StringHelper.h
     include/motor/other/Timer.h
     include/motor/other/MathHelper.h
+    include/motor/other/ModelLoader.h
 )
 
 set(STATE_SYSTEM_HEADERS
@@ -108,7 +112,9 @@ set(CORE_SYSTEM_SOURCES
 set(ECS_SOURCES
     src/ECS/Scene.cpp
     src/ECS/Factory.cpp
-    src/ECS/CompRealization.cpp
+    src/ECS/ComponentSystems.cpp
+    src/ECS/Entity.cpp
+    src/ECS/SceneHierarchy.cpp
 )
 
 set(GRAPHICS_SOURCES
@@ -125,6 +131,7 @@ set(GRAPHICS_SOURCES
     src/graphics/UpdatedModel.cpp
     src/graphics/CameraContainer.cpp
     src/graphics/DebugDraw.cpp
+    src/graphics/MeshForComponents.cpp
 )
 
 set(KEYBOARD_SOURCES
@@ -145,6 +152,7 @@ set(OTHER_SOURCES
     src/other/StringHelper.cpp
     src/other/Timer.cpp
     src/other/MathHelper.cpp
+    src/other/ModelLoader.cpp
 )
 
 set(STATE_SYSTEM_SOURCES

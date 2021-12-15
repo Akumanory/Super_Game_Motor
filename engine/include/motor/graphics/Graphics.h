@@ -15,6 +15,10 @@
 #include <motor/graphics/DebugDraw.h>
 #include <motor/ECS/Scene.h>
 #include <motor/ui_system/ui_console.hpp>
+#include <motor/other/ModelLoader.h>
+#include <motor/ECS/ComponentSystems.h>
+#include <motor/ECS/Entity.h>
+#include <motor/ECS/SceneHierarchy.h>
 
 // ImGui
 #include <imgui.h>
@@ -36,11 +40,23 @@ public:
     void setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole);
     void addCube(float, float, float);
     void addLightCube(float, float, float);
+
+	// TODO: перенести в renderer
+    void DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix);
+    void DrawDebugScene(Scene& scene);
+    void DrawModel();
+    void DrawMesh();
+
     CameraContainer cam_container;
 
 	Scene test_entt_scene;
+    SceneHierarchy scene_hierachy;
 
-	DirectX::BoundingFrustum f_culling;
+	Entity entity1;
+    Entity entity2;
+	Entity entity3;
+
+
     DirectX::XMMATRIX viewMatrix;
 
 	//TODO temp vartiables

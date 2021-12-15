@@ -4,22 +4,12 @@ void ComponentSystems::SetPosition(Entity& entity, DirectX::XMFLOAT3 pos)
 {
     auto& transform_comp = entity.GetComponent<TransformComponent>();
     transform_comp.position = pos;
-
-    if (entity.HasComponent<MeshComponent>()) 
-    {
-        UpdateBoundingBox(entity);
-    }
 }
 
 void ComponentSystems::SetRotation(Entity& entity, DirectX::XMFLOAT3 rot) 
 {
     auto& transform_comp = entity.GetComponent<TransformComponent>();
     transform_comp.rotation = rot;
-
-    if (entity.HasComponent<MeshComponent>()) 
-    {
-        UpdateBoundingBox(entity);
-    }
 }
 
 void ComponentSystems::AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, float delta) 
@@ -28,22 +18,12 @@ void ComponentSystems::AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, floa
     transform_comp.rotation.x += rot.x * delta;
     transform_comp.rotation.y += rot.y * delta;
     transform_comp.rotation.z += rot.z * delta;
-
-    if (entity.HasComponent<MeshComponent>()) 
-    {
-        UpdateBoundingBox(entity);
-    }
 }
 
 void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
     auto& mesh_comp = entity.GetComponent<MeshComponent>();
     mesh_comp.model.meshes = model.meshes;
     mesh_comp.model.bounding_box = model.bounding_box;
-
-    if (entity.HasComponent<MeshComponent>()) 
-    {
-        UpdateBoundingBox(entity);
-    }
 }
 
 void ComponentSystems::UpdateBoundingBox(Entity& entity) 
@@ -76,7 +56,6 @@ void ComponentSystems::SetChildEntity(Entity* parent, Entity& child)
             }
             auto& childs_comp = parent->GetComponent<ChildsComponent>();
             childs_comp.child_entities.emplace_back(child);
-            UpdateBoundingBox(child);
         }
     }
 }
@@ -95,9 +74,7 @@ DirectX::XMMATRIX ComponentSystems::GetTransformMatrix(Entity& entity) {
         {
             parent_transform = entity.GetComponent<ParentComponent>().parent->GetComponent<TransformComponent>().GetTransformMatrix();
         }
-        
         return child_transform * parent_transform;
     }
-
     return entity.GetComponent<TransformComponent>().GetTransformMatrix();
 }

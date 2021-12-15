@@ -8,6 +8,7 @@ public:
     void AddCamera(Camera camera);
     Camera& GetCurrentCamera();
     Camera& GetCameraById(int id);
+    size_t CountCameras();
 
 private:
     std::vector<Camera> cameras;

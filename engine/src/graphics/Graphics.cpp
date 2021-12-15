@@ -653,7 +653,6 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
         auto&& meshes = i.GetComponent<MeshComponent>().model.meshes;
 
         auto worldMatrix = ComponentSystems::GetTransformMatrix(i);
-        
 
         DirectX::BoundingFrustum local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
         if (local_frustum.Contains(i.GetComponent<MeshComponent>().transformed_bounding_box) != DirectX::DISJOINT) 
@@ -690,11 +689,13 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
                 this->deviceContext->DrawIndexed(indexbuffer.IndexCount(), 0, 0);
             }
         }
+
+        ComponentSystems::UpdateBoundingBox(i);
     }
 }
 
-void Graphics::DrawDebugScene(Scene& scene) {
-
+void Graphics::DrawDebugScene(Scene& scene) 
+{
     auto renderableEntities = scene.GetRenderableEntities();
     for (auto&& i : renderableEntities) {
         Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);

@@ -53,15 +53,22 @@ void Scene::DestroyEntity(Entity entity)
             if (childs[i] == entity) 
             {
                 childs.erase(childs.begin() + i);
+                break;
             }
         }
         if (childs.size() == 0) 
         {
             entity.GetComponent<ParentComponent>().parent->RemoveComponent<ChildsComponent>();
+        } 
+        else 
+        {
+            entity.GetComponent<ParentComponent>().parent->RemoveComponent<ChildsComponent>();
+            entity.GetComponent<ParentComponent>().parent->AddComponent<ChildsComponent>().child_entities = childs;
         }
+        
     }
 
-    m_registry.destroy(entity);
+    m_registry.destroy((entt::entity)entity);
 }
 
 //void Scene::InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader) {

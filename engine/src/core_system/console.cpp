@@ -1,7 +1,6 @@
 #include <motor/core_system/console.hpp>
 
 using namespace motor;
-using namespace core_system;
 
 LuaConsole::LuaConsole(sol::state& lua)
     : lua_{ &lua } {

@@ -1,5 +1,6 @@
 ﻿#include <motor/task_system/thread_pool.hpp>
 #include <motor/task_system/constants.hpp>
+#include <motor/utils.hpp>
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -9,12 +10,11 @@
 using namespace motor;
 using namespace task_system;
 
-thread_pool::thread_pool() { }
-
 thread_pool::thread_pool(int32_t threads_count, uint64_t affinity_mask, std::vector<std::string_view> thread_names)
     : threads_{ threads_count }
     , threads_count_{ threads_count }
     , affinity_mask_{ affinity_mask } {
+    debug_assert(threads_count > 0);
 }
 
 thread_pool::~thread_pool() {

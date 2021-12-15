@@ -14,9 +14,8 @@ namespace task_system {
 
 class thread_pool {
 public:
-    thread_pool();
     explicit thread_pool(
-      int32_t threads_count,
+      int32_t threads_count = std::max(static_cast<int>(std::thread::hardware_concurrency()) - 2, 1),
       uint64_t affinity_mask = ~0ull,
       std::vector<std::string_view> thread_names = {});
 

@@ -21,6 +21,6 @@ private:
 
 	sol::state lua_;
     motor::ui_system::ConsoleUI consoleUI_;
-    motor::core_system::LuaConsole lua_console_{ lua_ };
+    motor::LuaConsole lua_console_{ lua_ };
     bool showConsole_{ true };
 };

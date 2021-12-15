@@ -43,6 +43,8 @@ private:
 
 void enable_console();
 
+auto last_error(const std::string& message) -> std::system_error;
+
 } // namespace utils
 
 class com_exception : public std::exception {

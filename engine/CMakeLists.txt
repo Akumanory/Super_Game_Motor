@@ -14,6 +14,9 @@ set(ASYNC_HEADERS
 set(CORE_SYSTEM_HEADERS
     include/motor/core_system/console.hpp
     include/motor/core_system/core.hpp
+    include/motor/core_system/display.hpp
+    include/motor/core_system/input_device.hpp
+    include/motor/core_system/logic.hpp
     include/motor/core_system/lua.hpp
 )
 
@@ -97,6 +100,9 @@ set(HEADERS
 set(CORE_SYSTEM_SOURCES
     src/core_system/console.cpp
     src/core_system/core.cpp
+    src/core_system/display.cpp
+    src/core_system/input_device.cpp
+    src/core_system/logic.cpp
 )
 
 set(ECS_SOURCES

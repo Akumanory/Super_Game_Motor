@@ -11,14 +11,15 @@ struct ModelStruct
 
     std::vector<MeshForComponents> meshes;
     DirectX::BoundingOrientedBox bounding_box;
+    std::string model_name;
 };
 
 class ModelLoader {
 public:
     bool Initialize(ID3D11Device* device);
-    bool LoadModel(const std::string& filePath);
+    bool LoadModel(const std::string& filePath, std::string name = "No name");
     ModelStruct& GetModelById(int id);
-    int CountOfModelsLoaded();
+
 
 private:
     std::vector<ModelStruct> _models;
@@ -35,4 +36,6 @@ private:
     DirectX::XMVECTOR vMax;
 
     std::string _directory = "";
-};
+
+    friend class SceneHierarchy;
+ };

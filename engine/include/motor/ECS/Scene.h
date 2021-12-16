@@ -30,6 +30,7 @@ public:
     void AddSimpleCube(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos);*/
 private:
     entt::registry m_registry;
+    ModelLoader m_model_manager;
 
     friend class Entity;
     friend class SceneHierarchy;

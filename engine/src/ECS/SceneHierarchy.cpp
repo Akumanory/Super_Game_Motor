@@ -6,15 +6,16 @@
 #include "imgui_internal.h"
 
 
-SceneHierarchy::SceneHierarchy(Scene* scene) 
+SceneHierarchy::SceneHierarchy(Scene* scene, ModelLoader& model_manager) 
 {
-    SetContext(scene);
+    SetContext(scene, model_manager);
 }
 
-void SceneHierarchy::SetContext(Scene* scene) 
+void SceneHierarchy::SetContext(Scene* scene, ModelLoader& model_manager) 
 {
     m_context = scene;
     m_selection_context = {};
+    m_model_manager = model_manager;
 }
 
 void SceneHierarchy::OnImguiRender() 
@@ -47,6 +48,19 @@ void SceneHierarchy::OnImguiRender()
     if (m_selection_context) 
     {
         DrawSelectedEntityComponents(m_selection_context);
+
+        /*if (ImGui::Button("Add Component")) 
+        {
+            ImGui::OpenPopup("AddComponent");
+        }
+
+        if (ImGui::BeginPopup("AddComponent")) 
+        {
+
+
+            ImGui::EndPopup();
+        }*/
+
     }
     ImGui::End();
 }
@@ -221,6 +235,30 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
             DrawVec3Control("Scale", transform_comp.scale, 1.0f);
 
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx((void*)typeid(MeshComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Model")) {
+            auto& mesh_comp = entity.GetComponent<MeshComponent>();
+            
+            static int item_current_idx = 0; // Here we store our selection data as an index.
+            const char* combo_preview_value = mesh_comp.model.model_name.c_str(); // Pass in the preview value visible before opening the combo (it could be anything)
+            if (ImGui::BeginCombo("Models", combo_preview_value, 0)) {
+                for (int n = 0; n < m_model_manager._models.size(); n++) {
+                    const bool is_selected = (item_current_idx == n);
+                    if (ImGui::Selectable(m_model_manager._models[n].model_name.c_str(), is_selected))
+                        item_current_idx = n;
+
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected) 
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndCombo();
+
+                ComponentSystems::SetModel(entity, m_model_manager._models[item_current_idx]);
+            }
             ImGui::TreePop();
         }
     }

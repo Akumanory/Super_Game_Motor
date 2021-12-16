@@ -461,8 +461,9 @@ bool Graphics::InitializeScene() {
 
         model_loader.Initialize(device.Get());
 
-        model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj");
-        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj");
+        model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj", "GrayCube");
+        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
+        
         // ---------------
 
         // Draw debug
@@ -577,7 +578,7 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
         ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity2.AddComponent<MeshComponent>();
-        ComponentSystems::SetModel(entity2, model_loader.GetModelById(1));
+        ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
 
         entity3 = test_entt_scene.CreateEntity("Third Entity");
         ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
@@ -589,8 +590,10 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetChildEntity(&entity1, entity2);
         ComponentSystems::SetChildEntity(&entity2, entity3);
 
-        scene_hierachy.SetContext(&test_entt_scene);
+        scene_hierachy.SetContext(&test_entt_scene, model_loader);
 
+
+        
 
     } catch (COMException& ex) {
         Logs::Error(ex);

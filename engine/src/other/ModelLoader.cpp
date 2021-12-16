@@ -9,9 +9,11 @@ bool ModelLoader::Initialize(ID3D11Device* device)
     return true;
 }
 
-bool ModelLoader::LoadModel(const std::string& filePath) 
+bool ModelLoader::LoadModel(const std::string& filePath, std::string name) 
 {
     ModelStruct temp_model;
+
+    temp_model.model_name = name;
 
     _directory = StringHelper::GetDirectoryFromPath(filePath);
 
@@ -44,11 +46,6 @@ bool ModelLoader::LoadModel(const std::string& filePath)
 ModelStruct& ModelLoader::GetModelById(int id) 
 {
     return _models[id];
-}
-
-int ModelLoader::CountOfModelsLoaded()
-{
-    return _models.size();
 }
 
 

@@ -2,14 +2,15 @@
 
 #include <motor/ECS/Entity.h>
 #include <motor/ECS/Scene.h>
+#include <motor/other/ModelLoader.h>
 
 class SceneHierarchy 
 {
 public:
     SceneHierarchy() = default;
-    SceneHierarchy(Scene* scene);
+    SceneHierarchy(Scene* scene, ModelLoader& model_manager);
 
-    void SetContext(Scene* scene);
+    void SetContext(Scene* scene, ModelLoader& model_manager);
     void OnImguiRender();
 
     Entity GetSelectedEntity() const { return m_selection_context; }
@@ -22,5 +23,6 @@ private:
 
 private:
     Scene* m_context;
+    ModelLoader m_model_manager;
     Entity m_selection_context;
 };

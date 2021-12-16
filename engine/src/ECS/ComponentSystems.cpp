@@ -24,6 +24,7 @@ void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
     auto& mesh_comp = entity.GetComponent<MeshComponent>();
     mesh_comp.model.meshes = model.meshes;
     mesh_comp.model.bounding_box = model.bounding_box;
+    mesh_comp.model.model_name = model.model_name;
 }
 
 void ComponentSystems::UpdateBoundingBox(Entity& entity) 

@@ -16,12 +16,12 @@ struct Vertex
 	DirectX::XMFLOAT3 normal;
 };
 
-struct SimpleVertex {
-    SimpleVertex() { }
-    SimpleVertex(
-      float x, float y, float z)
-        : pos(x, y, z)
-	{ }
-
-    DirectX::XMFLOAT3 pos;
-};
+//struct SimpleVertex {
+//    SimpleVertex() { }
+//    SimpleVertex(
+//      float x, float y, float z)
+//        : pos(x, y, z)
+//	{ }
+//
+//    DirectX::XMFLOAT3 pos;
+//};

@@ -358,7 +358,7 @@ bool Graphics::InitializeDirectX(HWND hWnd) {
         // Rasterizer
         CD3D11_RASTERIZER_DESC rasterizer_desc(D3D11_DEFAULT);
         rasterizer_desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; // Wireframe(D3D11_FILL_WIREFRAME) is a possible considiration
-        rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE; // Для того что бы не рендерилась задняя часть при риосвании против часовой трелки(короче если нормаль смотрит от нас)
+        rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK; // Для того что бы не рендерилась задняя часть при риосвании против часовой трелки(короче если нормаль смотрит от нас)
         //rasterizer_desc.FrontCounterClockwise = TRUE // Для того что бы рисовать треугольники против часовой стрелки
 
         hr = device->CreateRasterizerState(
@@ -457,12 +457,14 @@ bool Graphics::InitializeScene() {
 
         // LoadModels test
         // ---------------
-        ModelLoader model_loader;
-
         model_loader.Initialize(device.Get());
 
-        model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj");
-        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj");
+        model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj", "GrayCube");
+        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
+        model_loader.LoadModel("Data\\Objects\\BOTTLE_V1.fbx", "Bottle");
+        model_loader.LoadModel("Data\\Objects\\RubikCube.fbx", "RubikCube");
+        
+        
         // ---------------
 
         // Draw debug
@@ -577,7 +579,7 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
         ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity2.AddComponent<MeshComponent>();
-        ComponentSystems::SetModel(entity2, model_loader.GetModelById(1));
+        ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
 
         entity3 = test_entt_scene.CreateEntity("Third Entity");
         ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
@@ -589,7 +591,7 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetChildEntity(&entity1, entity2);
         ComponentSystems::SetChildEntity(&entity2, entity3);
 
-        scene_hierachy.SetContext(&test_entt_scene);
+        scene_hierachy.SetContext(&test_entt_scene, &model_loader);
 
 
     } catch (COMException& ex) {
@@ -653,7 +655,6 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
         auto&& meshes = i.GetComponent<MeshComponent>().model.meshes;
 
         auto worldMatrix = ComponentSystems::GetTransformMatrix(i);
-        
 
         DirectX::BoundingFrustum local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
         if (local_frustum.Contains(i.GetComponent<MeshComponent>().transformed_bounding_box) != DirectX::DISJOINT) 
@@ -690,11 +691,13 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
                 this->deviceContext->DrawIndexed(indexbuffer.IndexCount(), 0, 0);
             }
         }
+
+        ComponentSystems::UpdateBoundingBox(i);
     }
 }
 
-void Graphics::DrawDebugScene(Scene& scene) {
-
+void Graphics::DrawDebugScene(Scene& scene) 
+{
     auto renderableEntities = scene.GetRenderableEntities();
     for (auto&& i : renderableEntities) {
         Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);

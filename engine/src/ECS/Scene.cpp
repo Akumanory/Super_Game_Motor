@@ -4,6 +4,7 @@
 
 Scene::Scene() 
 {
+
 }
 
 Scene::~Scene() 
@@ -35,7 +36,40 @@ Entity Scene::CreateEntity(const std::string name)
 
 void Scene::DestroyEntity(Entity entity) 
 {
-    m_registry.destroy(entity);
+    // избавится от зависимостей перед удалением
+    if (entity.HasComponent<ChildsComponent>()) 
+    {
+        auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+        for (auto&& i : childs) 
+        {
+            i.RemoveComponent<ParentComponent>();
+        }
+    }
+    if (entity.HasComponent<ParentComponent>()) 
+    {
+        // TODO: Что то потом с этим придумать а то выглядит ужасно
+        auto childs = entity.GetComponent<ParentComponent>().parent->GetComponent<ChildsComponent>().child_entities;
+        for (size_t i = 0; i < childs.size(); i++) 
+        {
+            if (childs[i] == entity) 
+            {
+                childs.erase(childs.begin() + i);
+                break;
+            }
+        }
+        if (childs.size() == 0) 
+        {
+            entity.GetComponent<ParentComponent>().parent->RemoveComponent<ChildsComponent>();
+        } 
+        else 
+        {
+            entity.GetComponent<ParentComponent>().parent->RemoveComponent<ChildsComponent>();
+            entity.GetComponent<ParentComponent>().parent->AddComponent<ChildsComponent>().child_entities = childs;
+        }
+        
+    }
+
+    m_registry.destroy((entt::entity)entity);
 }
 
 //void Scene::InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader) {

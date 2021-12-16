@@ -49,17 +49,23 @@ void SceneHierarchy::OnImguiRender()
     {
         DrawSelectedEntityComponents(m_selection_context);
 
-        /*if (ImGui::Button("Add Component")) 
+        if (ImGui::Button("Add Component")) 
         {
             ImGui::OpenPopup("AddComponent");
         }
 
         if (ImGui::BeginPopup("AddComponent")) 
         {
+            if (ImGui::MenuItem("Model")) 
+            {
+                m_selection_context.AddComponent<MeshComponent>();
+                ComponentSystems::SetModel(m_selection_context, m_model_manager->GetModelById(0));
 
+                ImGui::CloseCurrentPopup();
+            }
 
             ImGui::EndPopup();
-        }*/
+        }
 
     }
     ImGui::End();
@@ -237,10 +243,13 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
             ImGui::TreePop();
         }
+    }
 
+    if (entity.HasComponent<MeshComponent>()) 
+    {
         if (ImGui::TreeNodeEx((void*)typeid(MeshComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Model")) {
             auto& mesh_comp = entity.GetComponent<MeshComponent>();
-            
+
             static int item_current_idx = 0; // Here we store our selection data as an index.
             const char* combo_preview_value = mesh_comp.model.model_name.c_str(); // Pass in the preview value visible before opening the combo (it could be anything)
             if (ImGui::BeginCombo("Models", combo_preview_value, 0)) {
@@ -250,8 +259,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
                         item_current_idx = n;
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected) 
-                    {
+                    if (is_selected) {
                         ImGui::SetItemDefaultFocus();
                     }
                 }

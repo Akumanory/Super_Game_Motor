@@ -358,7 +358,7 @@ bool Graphics::InitializeDirectX(HWND hWnd) {
         // Rasterizer
         CD3D11_RASTERIZER_DESC rasterizer_desc(D3D11_DEFAULT);
         rasterizer_desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; // Wireframe(D3D11_FILL_WIREFRAME) is a possible considiration
-        rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE; // Для того что бы не рендерилась задняя часть при риосвании против часовой трелки(короче если нормаль смотрит от нас)
+        rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK; // Для того что бы не рендерилась задняя часть при риосвании против часовой трелки(короче если нормаль смотрит от нас)
         //rasterizer_desc.FrontCounterClockwise = TRUE // Для того что бы рисовать треугольники против часовой стрелки
 
         hr = device->CreateRasterizerState(
@@ -460,6 +460,9 @@ bool Graphics::InitializeScene() {
         model_loader.Initialize(device.Get());
 
         model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj", "GrayCube");
+        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
+        model_loader.LoadModel("Data\\Objects\\BOTTLE_V1.fbx", "Bottle");
+        model_loader.LoadModel("Data\\Objects\\RubikCube.fbx", "RubikCube");
         
         
         // ---------------
@@ -589,8 +592,6 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetChildEntity(&entity2, entity3);
 
         scene_hierachy.SetContext(&test_entt_scene, &model_loader);
-
-        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
 
 
     } catch (COMException& ex) {

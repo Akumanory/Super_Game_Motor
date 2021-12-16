@@ -4,10 +4,7 @@
 
 Scene::Scene() 
 {
-    model_loader.Initialize(device.Get());
 
-    model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj", "GrayCube");
-    model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
 }
 
 Scene::~Scene() 

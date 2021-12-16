@@ -48,6 +48,7 @@ public:
     void DrawMesh();
 
     CameraContainer cam_container;
+    ModelLoader model_loader;
 
 	Scene test_entt_scene;
     SceneHierarchy scene_hierachy;

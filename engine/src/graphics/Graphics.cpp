@@ -457,12 +457,10 @@ bool Graphics::InitializeScene() {
 
         // LoadModels test
         // ---------------
-        ModelLoader model_loader;
-
         model_loader.Initialize(device.Get());
 
         model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj", "GrayCube");
-        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
+        
         
         // ---------------
 
@@ -590,10 +588,10 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetChildEntity(&entity1, entity2);
         ComponentSystems::SetChildEntity(&entity2, entity3);
 
-        scene_hierachy.SetContext(&test_entt_scene, model_loader);
+        scene_hierachy.SetContext(&test_entt_scene, &model_loader);
 
+        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
 
-        
 
     } catch (COMException& ex) {
         Logs::Error(ex);

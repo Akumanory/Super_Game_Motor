@@ -6,12 +6,12 @@
 #include "imgui_internal.h"
 
 
-SceneHierarchy::SceneHierarchy(Scene* scene, ModelLoader& model_manager) 
+SceneHierarchy::SceneHierarchy(Scene* scene, ModelLoader* model_manager) 
 {
     SetContext(scene, model_manager);
 }
 
-void SceneHierarchy::SetContext(Scene* scene, ModelLoader& model_manager) 
+void SceneHierarchy::SetContext(Scene* scene, ModelLoader* model_manager) 
 {
     m_context = scene;
     m_selection_context = {};
@@ -244,9 +244,9 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             static int item_current_idx = 0; // Here we store our selection data as an index.
             const char* combo_preview_value = mesh_comp.model.model_name.c_str(); // Pass in the preview value visible before opening the combo (it could be anything)
             if (ImGui::BeginCombo("Models", combo_preview_value, 0)) {
-                for (int n = 0; n < m_model_manager._models.size(); n++) {
+                for (int n = 0; n < m_model_manager->_models.size(); n++) {
                     const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(m_model_manager._models[n].model_name.c_str(), is_selected))
+                    if (ImGui::Selectable(m_model_manager->_models[n].model_name.c_str(), is_selected))
                         item_current_idx = n;
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -257,7 +257,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
                 }
                 ImGui::EndCombo();
 
-                ComponentSystems::SetModel(entity, m_model_manager._models[item_current_idx]);
+                ComponentSystems::SetModel(entity, m_model_manager->_models[item_current_idx]);
             }
             ImGui::TreePop();
         }

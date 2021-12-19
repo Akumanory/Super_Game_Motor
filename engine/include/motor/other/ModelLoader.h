@@ -5,6 +5,8 @@
 
 #include <DirectXCollision.h>
 
+#include <mutex>
+
 struct ModelStruct 
 {
     ModelStruct() = default;
@@ -22,6 +24,7 @@ public:
 
 
 private:
+    std::mutex _models_mtx;
     std::vector<ModelStruct> _models;
 
     void ProcessNode(aiNode* node, const aiScene* scene, const DirectX::XMMATRIX& parentTransformMatrix, ModelStruct& temp_model);
@@ -34,8 +37,6 @@ private:
 
     DirectX::XMVECTOR vMin;
     DirectX::XMVECTOR vMax;
-
-    std::string _directory = "";
 
     friend class SceneHierarchy;
  };

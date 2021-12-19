@@ -11,15 +11,33 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
 {
 	Logs::Debug("Framework constructor"); // Тестовый лог
 
+	tpool_ = std::make_unique<motor::task_system::thread_pool>();
+
 	lState = lua_.lua_state();
-    lua_.open_libraries(sol::lib::base, sol::lib::jit);
+    lua_.open_libraries(
+      sol::lib::base,
+      sol::lib::package,
+      sol::lib::math,
+      sol::lib::string,
+      sol::lib::table,
+      sol::lib::debug,
+      sol::lib::jit);
     LoadImguiBindings();
 
-	//lua_["addCube"] = [this](float x, float y, float z) {
-    //    gfx.addCube(x, y, z);
-    //};
+	lua_["addCube"] = [this](float x, float y, float z) {
+        gfx.addCube(x, y, z);
+    };
     lua_["addLightCube"] = [this](float x, float y, float z) {
         gfx.addLightCube(x, y, z);
+    };
+    lua_["inferno"] = [this] {
+        for (int i = 0; i <= 20; ++i) {
+            for (int j = 0; j <= 20; ++j) {
+                for (int k = 0; k <= 20; ++k) {
+                    gfx.addCube(5 + i * 3, 5 + j * 3, 5 + k * 3);
+                }
+            }
+        }
     };
 
 	gfx.setConsole(&consoleUI_, &showConsole_);
@@ -218,6 +236,46 @@ void Framework::Update()
 	{
 		gfx.cam_container.GetCurrentCamera().AdjustPosition(0.0f, -camera_speed * delta, 0.0f);
 	}
+
+
+    //=========================================
+    // Updating systems
+    //=========================================
+
+	using namespace motor;
+
+	std::vector<std::packaged_task<void(std::stop_token)>> frame_tasks;
+    frame_tasks.reserve(4);
+    frame_tasks.emplace_back([](std::stop_token) {
+        //utils::debug_write::info("Updating scripts...");
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    });
+    frame_tasks.emplace_back([](std::stop_token) {
+        //utils::debug_write::info("Updating physics...");
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    });
+    frame_tasks.emplace_back([](std::stop_token) {
+        //utils::debug_write::info("Updating sound...");
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    });
+    frame_tasks.emplace_back([](std::stop_token) {
+        //utils::debug_write::info("Updating AI...");
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    });
+
+    std::vector<std::future<void>> frame_futures;
+    frame_futures.reserve(frame_tasks.size());
+    for (auto&& task : frame_tasks) {
+        frame_futures.emplace_back(task.get_future());
+    }
+
+    for (auto&& task : frame_tasks) {
+        motor::ThreadPool().submit_frame([&task](std::stop_token token) { task(token); });
+    }
+
+    for (auto&& future : frame_futures) {
+        future.wait();
+    }
 }
 
 void Framework::RenderFrame()

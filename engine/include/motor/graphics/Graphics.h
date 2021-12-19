@@ -74,7 +74,7 @@ public:
 	//RenderableGameObject gameObject4;
 
 	std::vector<RenderableGameObject> renderable_objects;
-
+    std::mutex renderable_objects_mtx;
 
 	Light light;
 	//Model test_mesh_model;

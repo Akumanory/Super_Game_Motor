@@ -1,4 +1,5 @@
 ﻿#include <motor/graphics/Graphics.h>
+#include <motor/task_system.hpp>
 
 using namespace DirectX;
 
@@ -40,6 +41,7 @@ bool Graphics::Initialize(HWND hWnd, int width, int height) {
 }
 
 void Graphics::RenderFrame() {
+    std::lock_guard guard{ renderable_objects_mtx };
     // При Flip_Discard нужно при отображение кадра каждый раз устанавливать Render Targets
     deviceContext->OMSetRenderTargets(
       1,
@@ -435,6 +437,7 @@ bool Graphics::InitializeShaders() {
 
 bool Graphics::InitializeScene() {
     try {
+        std::lock_guard guard{ renderable_objects_mtx };
         Logs::Debug("	Initialize scene");
 
         // Texture
@@ -636,9 +639,20 @@ void Graphics::setConsole(motor::ui_system::ConsoleUI* console, bool* showConsol
     showConsole_ = showConsole;
 }
 
-//void Graphics::addCube(float x, float y, float z) {
-//    test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(x, y, z));
-//}
+void Graphics::addCube(float x, float y, float z) {
+    //test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(x, y, z));
+    motor::ThreadPool().submit([this, x, y, z] {
+        RenderableGameObject gameObject;
+
+        if (!gameObject.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+            throw std::runtime_error("could not load Cube.obj");
+        }
+
+        gameObject.SetPosition(x, y, z);
+        std::lock_guard guard{ renderable_objects_mtx };
+        renderable_objects.push_back(gameObject);
+    });
+}
 
 void Graphics::addLightCube(float x, float y, float z) {
     solar_system_scene.AddCube(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader, DirectX::XMFLOAT3{ x, y, z });

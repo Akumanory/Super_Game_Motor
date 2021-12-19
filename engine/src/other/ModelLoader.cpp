@@ -2,6 +2,8 @@
 
 using namespace DirectX;
 
+thread_local std::string _directory = "";
+
 // public
 bool ModelLoader::Initialize(ID3D11Device* device) 
 {
@@ -38,7 +40,9 @@ bool ModelLoader::LoadModel(const std::string& filePath, std::string name)
     XMStoreFloat3(&temp_model.bounding_box.Extents, 0.5f * (vMax - vMin));
 
     // Add struct to struct array (mesh and bounding box)
+    _models_mtx.lock();
     _models.push_back(temp_model);
+    _models_mtx.unlock();
 
     return true;
 }

@@ -17,4 +17,6 @@ public:
     static void SetChildEntity(Entity* parent, Entity& child);
     static DirectX::XMMATRIX GetTransformMatrix(Entity& entity);
 
+private:
+    static DirectX::XMMATRIX ParentTransformMatrix(Entity* entity);
 };

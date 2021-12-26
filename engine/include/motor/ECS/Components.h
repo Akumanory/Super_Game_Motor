@@ -17,34 +17,25 @@ struct TagComponent
 // Component Done
 struct TransformComponent 
 {
-    XMFLOAT3 position = { 0.0, 0.0, 0.0 };
-    XMFLOAT3 rotation = { 0.0, 0.0, 0.0 };
-    XMFLOAT3 scale    = { 1.0, 1.0, 1.0 };
-
-    // Отдельно матрицы rotation, translation, scale
-    // .....
-    XMMATRIX GetScaleMatrix() const {
-
-        return XMMatrixScaling(scale.x, scale.y, scale.z);
-    }
-
-    XMMATRIX GetRotationMatrix() const 
-    {
-        return XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
-    }
-
-    XMMATRIX GetTranslationMatrix() const {
-
-        return XMMatrixTranslation(position.x, position.y, position.z);
-    }
-    // .....
+    XMFLOAT3 world_position = { 0.0, 0.0, 0.0 };
+    XMFLOAT3 world_rotation = { 0.0, 0.0, 0.0 };
+    
+    XMFLOAT3 local_position = { 0.0, 0.0, 0.0 };
+    XMFLOAT3 local_rotation = { 0.0, 0.0, 0.0 };
+    XMFLOAT3 local_scale    = { 1.0, 1.0, 1.0 };
 
     // translation * rotation * scale
-    XMMATRIX GetTransformMatrix() const 
+    XMMATRIX GetWorldTransformMatrix() const 
     {
-        return XMMatrixScaling(scale.x, scale.y, scale.z) *
-               XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z) *
-               XMMatrixTranslation(position.x, position.y, position.z);
+        return XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z) *
+               XMMatrixTranslation(world_position.x, world_position.y, world_position.z);
+    }
+
+    XMMATRIX GetLocalTransformMatrix() const {
+        return XMMatrixScaling(local_scale.x, local_scale.y, local_scale.z) * 
+               XMMatrixRotationRollPitchYaw(local_rotation.x, local_rotation.y, local_rotation.z) * 
+               XMMatrixTranslation(local_position.x, local_position.y, local_position.z) * 
+               GetWorldTransformMatrix();
     }
 };
 

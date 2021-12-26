@@ -3,21 +3,21 @@
 void ComponentSystems::SetPosition(Entity& entity, DirectX::XMFLOAT3 pos) 
 {
     auto& transform_comp = entity.GetComponent<TransformComponent>();
-    transform_comp.position = pos;
+    transform_comp.world_position = pos;
 }
 
 void ComponentSystems::SetRotation(Entity& entity, DirectX::XMFLOAT3 rot) 
 {
     auto& transform_comp = entity.GetComponent<TransformComponent>();
-    transform_comp.rotation = rot;
+    transform_comp.world_rotation = rot;
 }
 
 void ComponentSystems::AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, float delta) 
 {
     auto& transform_comp = entity.GetComponent<TransformComponent>();
-    transform_comp.rotation.x += rot.x * delta;
-    transform_comp.rotation.y += rot.y * delta;
-    transform_comp.rotation.z += rot.z * delta;
+    transform_comp.world_rotation.x += rot.x * delta;
+    transform_comp.world_rotation.y += rot.y * delta;
+    transform_comp.world_rotation.z += rot.z * delta;
 }
 
 void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
@@ -64,18 +64,23 @@ void ComponentSystems::SetChildEntity(Entity* parent, Entity& child)
 DirectX::XMMATRIX ComponentSystems::GetTransformMatrix(Entity& entity) {
     if (entity.HasComponent<ParentComponent>()) 
     {
-        auto child_transform = entity.GetComponent<TransformComponent>().GetTransformMatrix();
-        DirectX::XMMATRIX parent_transform = DirectX::XMMatrixIdentity();
-        if (entity.GetComponent<ParentComponent>().parent->HasComponent<ParentComponent>()) 
-        {
-            Entity* parent = entity.GetComponent<ParentComponent>().parent;
-            parent_transform = GetTransformMatrix(*parent);
-        }
-        else 
-        {
-            parent_transform = entity.GetComponent<ParentComponent>().parent->GetComponent<TransformComponent>().GetTransformMatrix();
-        }
+        auto child_transform = entity.GetComponent<TransformComponent>().GetLocalTransformMatrix();
+
+        DirectX::XMMATRIX parent_transform = ParentTransformMatrix(entity.GetComponent<ParentComponent>().parent);
+
         return child_transform * parent_transform;
     }
-    return entity.GetComponent<TransformComponent>().GetTransformMatrix();
+    return entity.GetComponent<TransformComponent>().GetLocalTransformMatrix();
+}
+
+DirectX::XMMATRIX ComponentSystems::ParentTransformMatrix(Entity* entity) 
+{
+    DirectX::XMMATRIX parent_transform = DirectX::XMMatrixIdentity();
+
+    auto child_transform = entity->GetComponent<TransformComponent>().GetWorldTransformMatrix();
+    if (entity->HasComponent<ParentComponent>()) {
+        Entity* parent = entity->GetComponent<ParentComponent>().parent;
+        parent_transform = ParentTransformMatrix(parent);
+    } 
+    return child_transform * parent_transform;
 }

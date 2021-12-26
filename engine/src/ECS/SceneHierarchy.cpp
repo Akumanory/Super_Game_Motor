@@ -49,6 +49,8 @@ void SceneHierarchy::OnImguiRender()
     {
         DrawSelectedEntityComponents(m_selection_context);
 
+        ImGui::NewLine();
+
         if (ImGui::Button("Add Component")) 
         {
             ImGui::OpenPopup("AddComponent");
@@ -56,13 +58,16 @@ void SceneHierarchy::OnImguiRender()
 
         if (ImGui::BeginPopup("AddComponent")) 
         {
-            if (ImGui::MenuItem("Model")) 
+            if (!m_selection_context.HasComponent<MeshComponent>()) 
             {
-                m_selection_context.AddComponent<MeshComponent>();
-                ComponentSystems::SetModel(m_selection_context, m_model_manager->GetModelById(0));
+                if (ImGui::MenuItem("Model")) {
+                    m_selection_context.AddComponent<MeshComponent>();
+                    ComponentSystems::SetModel(m_selection_context, m_model_manager->GetModelById(0));
 
-                ImGui::CloseCurrentPopup();
+                    ImGui::CloseCurrentPopup();
+                }
             }
+            
 
             ImGui::EndPopup();
         }
@@ -141,7 +146,7 @@ void SceneHierarchy::DrawEntitySubNode(Entity entity, Entity& deliting_entity, b
     }
 }
 
-static void DrawVec3Control(const std::string& label, DirectX::XMFLOAT3& values, float resetValue = 0.0f, float columnWidth = 100.0f) {
+static void DrawVec3Control(const std::string& label, DirectX::XMFLOAT3& values, float resetValue = 0.0f, float columnWidth = 150.0f) {
     ImGuiIO& io = ImGui::GetIO();
     auto boldFont = io.Fonts->Fonts[0];
 
@@ -218,6 +223,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
         {
             tag = std::string(buffer);
         }
+        ImGui::NewLine();
     }
 
     if (entity.HasComponent<TransformComponent>()) 
@@ -226,20 +232,49 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
         {
             auto& transform_comp = entity.GetComponent<TransformComponent>();
 
-            DrawVec3Control("Position", transform_comp.position);
+            /*ImGuiIO& io = ImGui::GetIO();
+            auto boldFont = io.Fonts->Fonts[1];*/
 
-            DirectX::XMFLOAT3 rotation = DirectX::XMFLOAT3(
-              DirectX::XMConvertToDegrees(transform_comp.rotation.x),
-              DirectX::XMConvertToDegrees(transform_comp.rotation.y),
-              DirectX::XMConvertToDegrees(transform_comp.rotation.z));
+            ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
+            ImGui::Text("World_Transform");
+            ImGui::PopStyleColor();
 
-            DrawVec3Control("Rotation", rotation);
+            DrawVec3Control("WorldPosition", transform_comp.world_position);
 
-            transform_comp.rotation.x = DirectX::XMConvertToRadians(rotation.x);
-            transform_comp.rotation.y = DirectX::XMConvertToRadians(rotation.y);
-            transform_comp.rotation.z = DirectX::XMConvertToRadians(rotation.z);
+            DirectX::XMFLOAT3 w_rotation = DirectX::XMFLOAT3(
+              DirectX::XMConvertToDegrees(transform_comp.world_rotation.x),
+              DirectX::XMConvertToDegrees(transform_comp.world_rotation.y),
+              DirectX::XMConvertToDegrees(transform_comp.world_rotation.z));
 
-            DrawVec3Control("Scale", transform_comp.scale, 1.0f);
+            DrawVec3Control("WorldRotation", w_rotation);
+
+            transform_comp.world_rotation.x = DirectX::XMConvertToRadians(w_rotation.x);
+            transform_comp.world_rotation.y = DirectX::XMConvertToRadians(w_rotation.y);
+            transform_comp.world_rotation.z = DirectX::XMConvertToRadians(w_rotation.z);
+
+            ImGui::NewLine();
+
+            ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
+            ImGui::Text("Local_Transform");
+            ImGui::PopStyleColor();
+
+
+            DrawVec3Control("LocalPosition", transform_comp.local_position);
+
+            DirectX::XMFLOAT3 l_rotation = DirectX::XMFLOAT3(
+              DirectX::XMConvertToDegrees(transform_comp.local_rotation.x),
+              DirectX::XMConvertToDegrees(transform_comp.local_rotation.y),
+              DirectX::XMConvertToDegrees(transform_comp.local_rotation.z));
+
+            DrawVec3Control("LocalRotation", l_rotation);
+
+            transform_comp.local_rotation.x = DirectX::XMConvertToRadians(l_rotation.x);
+            transform_comp.local_rotation.y = DirectX::XMConvertToRadians(l_rotation.y);
+            transform_comp.local_rotation.z = DirectX::XMConvertToRadians(l_rotation.z);
+
+            DrawVec3Control("LocalScale", transform_comp.local_scale, 1.0f);
+
+            ImGui::NewLine();
 
             ImGui::TreePop();
         }
@@ -267,6 +302,9 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
                 ComponentSystems::SetModel(entity, m_model_manager->_models[item_current_idx]);
             }
+
+            ImGui::NewLine();
+
             ImGui::TreePop();
         }
     }

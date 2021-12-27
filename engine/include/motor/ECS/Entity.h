@@ -2,8 +2,8 @@
 
 #include <entt/entt.hpp>
 #include <assert.h>
-
 #include <motor/ECS/Scene.h>
+
 
 class Entity {
 public:
@@ -15,6 +15,7 @@ public:
     T& AddComponent() {
         assert(!HasComponent<T>() && "Entity already has component");
         T& component = m_scene->m_registry.emplace<T>(m_entity_handle);
+        m_scene->OnComponentAdded<T>(*this, component);
         return component;
     }
 

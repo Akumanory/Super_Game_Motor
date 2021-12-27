@@ -40,15 +40,14 @@ struct TransformComponent
 };
 
 // Undone
-struct DirectionalVectorsComponent 
-{
-    const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-    const XMVECTOR DEFAULT_UP_VECTOR = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-    const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-
-    // Todo: UpdateDirectionalVectors
-
-};
+//struct DirectionalVectorsComponent 
+//{
+//    const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+//    const XMVECTOR DEFAULT_UP_VECTOR      = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+//    const XMVECTOR DEFAULT_RIGHT_VECTOR   = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+//
+//    // Todo: UpdateDirectionalVectors
+//};
 
 // TODO: Undone
 struct MeshComponent 
@@ -68,3 +67,9 @@ struct ParentComponent
 {
     Entity* parent;
 };
+
+//struct CameraComponent
+//{
+//    SceneCamera camera;
+//    bool primary;
+//};

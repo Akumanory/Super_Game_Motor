@@ -306,5 +306,37 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             ImGui::TreePop();
         }
     }
+
+    if (entity.HasComponent<ParentComponent>()) 
+    {
+        if (ImGui::TreeNodeEx((void*)typeid(ParentComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Parent")) 
+        {
+            ImGui::Text("Parent:");
+            ImGui::SameLine();
+            ImGui::Text(entity.GetComponent<ParentComponent>().parent->GetComponent<TagComponent>().tag.c_str());
+        
+            ImGui::NewLine();
+
+            ImGui::TreePop();
+        }
+    }
+
+    if (entity.HasComponent<ChildsComponent>()) {
+        if (ImGui::TreeNodeEx((void*)typeid(ChildsComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Childs")) {
+            
+            auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+
+            ImGui::Text("Childs:");
+
+            for (auto& i : childs) 
+            {
+                ImGui::Text(i.GetComponent<TagComponent>().tag.c_str());
+            }
+
+            ImGui::NewLine();
+
+            ImGui::TreePop();
+        }
+    }
 }
 

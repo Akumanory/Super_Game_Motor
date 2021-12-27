@@ -595,7 +595,7 @@ bool Graphics::InitializeScene() {
 
 
         ComponentSystems::SetChildEntity(&entity1, entity2);
-        ComponentSystems::SetChildEntity(&entity2, entity3);
+        ComponentSystems::SetChildEntity(&entity1, entity3);
 
         scene_hierachy.SetContext(&test_entt_scene);
 

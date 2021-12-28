@@ -1,4 +1,5 @@
 #pragma once
+
 #undef max
 #include <entt/entt.hpp>
 #include <rapidjson/document.h>

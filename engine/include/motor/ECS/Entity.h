@@ -1,8 +1,7 @@
 #pragma once
 
-#include <entt/entt.hpp>
-#include <assert.h>
 #include <motor/ECS/Scene.h>
+#include <assert.h>
 
 
 class Entity {

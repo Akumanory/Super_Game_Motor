@@ -1,5 +1,4 @@
 #include <motor/ECS/SceneHierarchy.h>
-#include <motor/ECS/Components.h>
 #include <motor/ECS/ComponentSystems.h>
 
 #include "imgui.h"
@@ -322,7 +321,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
         {
             ImGui::Text("Parent:");
             ImGui::SameLine();
-            ImGui::Text(entity.GetComponent<ParentComponent>().parent->GetComponent<TagComponent>().tag.c_str());
+            ImGui::Text(entity.GetComponent<ParentComponent>().parent.GetComponent<TagComponent>().tag.c_str());
         
             ImGui::NewLine();
 

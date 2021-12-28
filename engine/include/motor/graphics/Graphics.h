@@ -13,11 +13,9 @@
 #include <motor/graphics/CameraContainer.h>
 #include <motor/graphics/scenes/SolarSystem.h>
 #include <motor/graphics/DebugDraw.h>
-#include <motor/ECS/Scene.h>
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
-#include <motor/ECS/Entity.h>
 #include <motor/ECS/SceneHierarchy.h>
 
 // ImGui

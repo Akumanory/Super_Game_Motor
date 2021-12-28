@@ -1,5 +1,4 @@
 ﻿#include <motor/ECS/Scene.h>
-#include <motor/ECS/Entity.h>
 #include <motor/ECS/Archive.hpp>
 #include <motor/graphics/CameraContainer.h>
 #include <motor/ECS/ComponentSystems.h>
@@ -69,7 +68,7 @@ void Scene::DestroyEntity(Entity entity)
     if (entity.HasComponent<ParentComponent>()) 
     {
         // TODO: Что то потом с этим придумать а то выглядит ужасно
-        auto childs = entity.GetComponent<ParentComponent>().parent->GetComponent<ChildsComponent>().child_entities;
+        auto childs = entity.GetComponent<ParentComponent>().parent.GetComponent<ChildsComponent>().child_entities;
         for (size_t i = 0; i < childs.size(); i++) 
         {
             if (childs[i] == entity) 
@@ -80,12 +79,12 @@ void Scene::DestroyEntity(Entity entity)
         }
         if (childs.size() == 0) 
         {
-            entity.GetComponent<ParentComponent>().parent->RemoveComponent<ChildsComponent>();
+            entity.GetComponent<ParentComponent>().parent.RemoveComponent<ChildsComponent>();
         } 
         else 
         {
-            entity.GetComponent<ParentComponent>().parent->RemoveComponent<ChildsComponent>();
-            entity.GetComponent<ParentComponent>().parent->AddComponent<ChildsComponent>().child_entities = childs;
+            entity.GetComponent<ParentComponent>().parent.RemoveComponent<ChildsComponent>();
+            entity.GetComponent<ParentComponent>().parent.AddComponent<ChildsComponent>().child_entities = childs;
         }
         
     }

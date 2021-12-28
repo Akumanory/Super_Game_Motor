@@ -1,7 +1,6 @@
 #pragma once 
 
 #include <motor/ECS/Entity.h>
-#include <motor/ECS/Scene.h>
 #include <motor/other/ModelLoader.h>
 
 class SceneHierarchy 

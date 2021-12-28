@@ -594,8 +594,8 @@ bool Graphics::InitializeScene() {
         //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
 
 
-        ComponentSystems::SetChildEntity(&entity1, entity2);
-        ComponentSystems::SetChildEntity(&entity1, entity3);
+        ComponentSystems::SetChildEntity(entity1, entity2);
+        ComponentSystems::SetChildEntity(entity1, entity3);
 
         scene_hierachy.SetContext(&test_entt_scene);
 

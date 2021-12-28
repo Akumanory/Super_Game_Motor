@@ -1,6 +1,6 @@
 #pragma once
-#include <motor/ECS/Components.h>
-#include <motor/ECS/Factory.h>
+
+#include <motor/other/ModelLoader.h>
 #include <entt/entt.hpp>
 
 

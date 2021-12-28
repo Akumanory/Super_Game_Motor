@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <motor/ECS/Entity.h>
 #include <motor/graphics/UpdatedModel.h>
 #include <motor/graphics/MeshForComponents.h>
 #include <motor/other/ModelLoader.h>
@@ -9,8 +10,6 @@
 using namespace DirectX;
 
 namespace rj = rapidjson;
-
-class Entity;
 
 // Component Done
 struct TagComponent {
@@ -67,7 +66,7 @@ struct ChildsComponent {
 
 // Коспонет указывает на то что entity является чьим то ребенком
 struct ParentComponent {
-    Entity* parent;
+    Entity parent;
 };
 
 //struct CameraComponent

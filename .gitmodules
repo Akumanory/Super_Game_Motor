@@ -26,3 +26,7 @@
 	path = lib/luasocket
 	url = https://github.com/diegonehab/luasocket.git
 	branch = master
+[submodule "lib/ImGuizmo"]
+	path = lib/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git
+	branch = master

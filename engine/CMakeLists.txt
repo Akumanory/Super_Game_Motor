@@ -181,6 +181,7 @@ set(LIBRARIES
     d3dcompiler
     dxguid
     imgui-cmake
+    ImGuizmo-cmake
     assimp
     DirectXTK
     liblua-static

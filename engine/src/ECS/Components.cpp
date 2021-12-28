@@ -2,6 +2,8 @@
 #include <motor/ECS/Entity.h>
 #include <entt/entt.hpp>
 
+Scene* CurrentScene = nullptr;
+
 auto TagComponent::from_json(rj::Value& obj) -> TagComponent {
     return TagComponent{ .tag = obj["tag"].GetString() };
 }
@@ -68,7 +70,7 @@ auto ChildsComponent::from_json(rj::Value& obj) -> ChildsComponent {
     ChildsComponent comp;
     comp.child_entities.reserve(child_entities_j.Size());
     for (auto& v : child_entities_j.GetArray()) {
-        comp.child_entities.emplace_back(v.IsNull() ? entt::null : (entt::entity)(v.GetUint()), nullptr);
+        comp.child_entities.emplace_back(v.IsNull() ? entt::null : (entt::entity)(v.GetUint()), CurrentScene);
     }
     return comp;
 }
@@ -82,4 +84,18 @@ auto ChildsComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAll
         }
     }
     obj.AddMember("child_entities", child_entities_j, rjAllocator);
+}
+
+auto ParentComponent::from_json(rj::Value& obj) -> ParentComponent {
+    auto& parent_j = obj["parent"];
+    return ParentComponent{
+        .parent = { parent_j.IsNull() ? entt::null : (entt::entity)(parent_j.GetUint()), CurrentScene }
+    };
+}
+auto ParentComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void {
+    rj::Value parent_j(rj::kNullType);
+    if (parent) {
+        parent_j.SetUint((std::uint32_t)(parent));
+    }
+    obj.AddMember("parent", parent_j, rjAllocator);
 }

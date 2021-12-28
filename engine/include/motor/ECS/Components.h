@@ -67,6 +67,8 @@ struct ChildsComponent {
 // Коспонет указывает на то что entity является чьим то ребенком
 struct ParentComponent {
     Entity parent;
+    static auto from_json(rj::Value& obj) -> ParentComponent;
+    auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };
 
 //struct CameraComponent

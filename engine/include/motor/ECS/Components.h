@@ -43,13 +43,14 @@ struct TransformComponent {
 };
 
 // Undone
-struct DirectionalVectorsComponent {
-    const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-    const XMVECTOR DEFAULT_UP_VECTOR = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-    const XMVECTOR DEFAULT_RIGHT_VECTOR = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-
-    // Todo: UpdateDirectionalVectors
-};
+//struct DirectionalVectorsComponent 
+//{
+//    const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+//    const XMVECTOR DEFAULT_UP_VECTOR      = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+//    const XMVECTOR DEFAULT_RIGHT_VECTOR   = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+//
+//    // Todo: UpdateDirectionalVectors
+//};
 
 // TODO: Undone
 struct MeshComponent {
@@ -67,10 +68,10 @@ struct ChildsComponent {
 // Коспонет указывает на то что entity является чьим то ребенком
 struct ParentComponent {
     Entity* parent;
-
-    //static auto from_json(rj::Value& obj) -> ParentComponent {
-    //
-    //}
-    //auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) -> void {
-    //}
 };
+
+//struct CameraComponent
+//{
+//    SceneCamera camera;
+//    bool primary;
+//};

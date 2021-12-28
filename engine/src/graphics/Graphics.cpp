@@ -572,29 +572,32 @@ bool Graphics::InitializeScene() {
 
         // Create Entities for Scene
 
+        test_entt_scene.SetModelLoader(&model_loader);
+        test_entt_scene.SetAspectRatioParams(windowHeight, windowWidth);
+
         entity1 = test_entt_scene.CreateEntity("First Entity");
         ComponentSystems::SetPosition(entity1, DirectX::XMFLOAT3(0.0f, 4.0f, 0.0f));
         ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity1.AddComponent<MeshComponent>();
-        ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
+        //ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
 
         entity2 = test_entt_scene.CreateEntity("Second Entity");
         ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
         ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity2.AddComponent<MeshComponent>();
-        ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
+        //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
 
         entity3 = test_entt_scene.CreateEntity("Third Entity");
         ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
         ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity3.AddComponent<MeshComponent>();
-        ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
+        //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
 
 
         ComponentSystems::SetChildEntity(&entity1, entity2);
-        ComponentSystems::SetChildEntity(&entity2, entity3);
+        ComponentSystems::SetChildEntity(&entity1, entity3);
 
-        scene_hierachy.SetContext(&test_entt_scene, &model_loader);
+        scene_hierachy.SetContext(&test_entt_scene);
 
 
     } catch (COMException& ex) {

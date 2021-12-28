@@ -8,9 +8,9 @@ class SceneHierarchy
 {
 public:
     SceneHierarchy() = default;
-    SceneHierarchy(Scene* scene, ModelLoader* model_manager);
+    SceneHierarchy(Scene* scene);
 
-    void SetContext(Scene* scene, ModelLoader* model_manager);
+    void SetContext(Scene* scene);
     void OnImguiRender();
 
     Entity GetSelectedEntity() const { return m_selection_context; }
@@ -23,6 +23,5 @@ private:
 
 private:
     Scene* m_context;
-    ModelLoader* m_model_manager;
     Entity m_selection_context;
 };

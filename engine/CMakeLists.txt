@@ -21,6 +21,7 @@ set(CORE_SYSTEM_HEADERS
 )
 
 set(ECS_HEADERS
+    include/motor/ECS/Archive.hpp
     include/motor/ECS/Components.h
     include/motor/ECS/Scene.h
     include/motor/ECS/Factory.h
@@ -110,6 +111,7 @@ set(CORE_SYSTEM_SOURCES
 )
 
 set(ECS_SOURCES
+    src/ECS/Components.cpp
     src/ECS/Scene.cpp
     src/ECS/Factory.cpp
     src/ECS/ComponentSystems.cpp

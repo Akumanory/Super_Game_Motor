@@ -1,6 +1,9 @@
 ﻿#include <motor/ECS/Scene.h>
 #include <motor/ECS/Entity.h>
+#include <motor/ECS/Archive.hpp>
 #include <motor/graphics/CameraContainer.h>
+
+#include <fstream>
 
 Scene::Scene() 
 {
@@ -170,3 +173,48 @@ void Scene::DestroyEntity(Entity entity)
 //    this->UpdateMatrix();
 //    return true;
 //}
+
+const char* FileName = "scene.json";
+
+void Scene::Save() {
+    RapidJsonOutputArchive json_archive;
+    entt::basic_snapshot snapshot(m_registry);
+    snapshot.entities(json_archive)
+      .component<TagComponent, TransformComponent, ChildsComponent>(json_archive);
+    json_archive.Close();
+    std::string json_output = json_archive.AsString();
+    std::ofstream file_out(FileName);
+    file_out << json_output;
+}
+
+void Scene::Load() {
+    std::ifstream file_in(FileName);
+    //RapidJsonInputArchive json_in(file_in);
+
+    //std::stringstream json_input;
+    //json_input << file_in.rdbuf();
+    //RapidJsonInputArchive json_in(json_input.str());
+
+    std::string json_input;
+    std::string s;
+    while (std::getline(file_in, s)) {
+        json_input += s;
+    }
+    RapidJsonInputArchive json_in(json_input);
+
+    //entt::registry reg2;
+    //entt::basic_snapshot_loader loader(reg2);
+    //loader.entities(json_in)
+    //  .component<TagComponent, TransformComponent, ChildsComponent>(json_in);
+    entt::registry reg;
+    entt::snapshot_loader{ reg }
+      .entities(json_in)
+      .component<TagComponent, TransformComponent, ChildsComponent>(json_in)
+      .orphans();
+    auto view = reg.view<TagComponent, TransformComponent>();
+    auto m_view = m_registry.view<TagComponent, TransformComponent>();
+    m_view.each([&view](const auto entity, auto& tag, auto& transform) {
+        tag = view.get<TagComponent>(entity);
+        transform = view.get<TransformComponent>(entity);
+    });
+}

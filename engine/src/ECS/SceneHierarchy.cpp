@@ -74,6 +74,15 @@ void SceneHierarchy::OnImguiRender()
 
     }
     ImGui::End();
+
+    ImGui::Begin("Serialization");
+    if (ImGui::Button("Save")) {
+        m_context->Save();
+    }
+    if (ImGui::Button("Load")) {
+        m_context->Load();
+    }
+    ImGui::End();
 }
 
 void SceneHierarchy::DrawEntityNode(Entity entity) {

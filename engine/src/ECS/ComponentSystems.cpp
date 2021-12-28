@@ -25,6 +25,7 @@ void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
     mesh_comp.model.meshes = model.meshes;
     mesh_comp.model.bounding_box = model.bounding_box;
     mesh_comp.model.model_name = model.model_name;
+    mesh_comp.model.file_path = model.file_path;
 }
 
 void ComponentSystems::UpdateBoundingBox(Entity& entity) 

@@ -296,7 +296,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             if (ImGui::BeginCombo("Models", combo_preview_value, 0)) {
                 for (int n = 0; n < m_context->m_model_manager->_models.size(); n++) {
                     const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(m_context->m_model_manager->_models[n].model_name.c_str(), is_selected))
+                    if (ImGui::Selectable(m_context->m_model_manager->_models[n]->model_name.c_str(), is_selected))
                         item_current_idx = n;
 
                     // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
@@ -306,7 +306,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
                 }
                 ImGui::EndCombo();
 
-                ComponentSystems::SetModel(entity, m_context->m_model_manager->_models[item_current_idx]);
+                ComponentSystems::SetModel(entity, *(m_context->m_model_manager->_models[item_current_idx]));
             }
 
             ImGui::NewLine();

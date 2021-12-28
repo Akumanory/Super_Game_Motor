@@ -126,7 +126,12 @@ void Scene::Save() {
     RapidJsonOutputArchive json_archive;
     entt::basic_snapshot snapshot(m_registry);
     snapshot.entities(json_archive)
-      .component<TagComponent, TransformComponent, ChildsComponent, ParentComponent>(json_archive);
+      .component<
+        TagComponent,
+        TransformComponent,
+        MeshComponent,
+        ChildsComponent,
+        ParentComponent>(json_archive);
     json_archive.Close();
     std::string json_output = json_archive.AsString();
     std::ofstream file_out(FileName);
@@ -134,9 +139,11 @@ void Scene::Save() {
 }
 
 extern Scene* CurrentScene;
+extern ModelLoader* CurrentModelLoader;
 
 void Scene::Load() {
     CurrentScene = this;
+    CurrentModelLoader = m_model_manager;
     std::ifstream file_in(FileName);
     //RapidJsonInputArchive json_in(file_in);
 
@@ -158,11 +165,16 @@ void Scene::Load() {
     entt::registry reg;
     entt::snapshot_loader{ reg }
       .entities(json_in)
-      .component<TagComponent, TransformComponent, ChildsComponent, ParentComponent>(json_in)
+      .component<
+        TagComponent,
+        TransformComponent,
+        MeshComponent,
+        ChildsComponent,
+        ParentComponent>(json_in)
       .orphans();
-    auto m_view = m_registry.view<MeshComponent>();
-    m_view.each([&reg](const auto entity, auto& mesh) {
-        reg.emplace<MeshComponent>(entity, std::move(mesh));
-    });
+    //auto m_view = m_registry.view<MeshComponent>();
+    //m_view.each([&reg](const auto entity, auto& mesh) {
+    //    reg.emplace<MeshComponent>(entity, std::move(mesh));
+    //});
     std::swap(m_registry, reg);
 }

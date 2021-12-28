@@ -55,6 +55,8 @@ struct TransformComponent {
 struct MeshComponent {
     BoundingOrientedBox transformed_bounding_box;
     ModelStruct model;
+    static auto from_json(rj::Value& obj) -> MeshComponent;
+    auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };
 
 // Компонент указывает на то что entity является родлителем для данных entity

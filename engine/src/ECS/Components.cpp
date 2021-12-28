@@ -65,6 +65,34 @@ auto TransformComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rj
     obj.AddMember("local_scale", local_scale_j, rjAllocator);
 }
 
+ModelLoader* CurrentModelLoader = nullptr;
+
+auto MeshComponent::from_json(rj::Value& obj) -> MeshComponent {
+    std::string model_name{ obj["model_name"].GetString() };
+    std::string file_path{ obj["file_path"].GetString() };
+    auto loaded_model = CurrentModelLoader->GetModelByFilePath(file_path);
+    if (!loaded_model) {
+        CurrentModelLoader->LoadModel(file_path, model_name);
+        loaded_model = CurrentModelLoader->LastLoadedModel();
+    }
+    return MeshComponent{
+        .transformed_bounding_box = {},
+        .model = {
+          .meshes = { loaded_model->meshes },
+          .bounding_box = { loaded_model->bounding_box },
+          .model_name = { loaded_model->model_name },
+          .file_path = { loaded_model->file_path } }
+    };
+}
+auto MeshComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void {
+    rj::Value model_name_j;
+    rj::Value file_path_j;
+    model_name_j.SetString(model.model_name.c_str(), model.model_name.length(), rjAllocator);
+    file_path_j.SetString(model.file_path.c_str(), model.file_path.length(), rjAllocator);
+    obj.AddMember("model_name", model_name_j, rjAllocator);
+    obj.AddMember("file_path", file_path_j, rjAllocator);
+}
+
 auto ChildsComponent::from_json(rj::Value& obj) -> ChildsComponent {
     auto& child_entities_j = obj["child_entities"];
     ChildsComponent comp;

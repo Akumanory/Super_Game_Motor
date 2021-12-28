@@ -93,6 +93,25 @@ void SceneHierarchy::DrawEntityNode(Entity entity) {
         m_selection_context = entity;
     }
 
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+        // Set payload to carry the index of our item (could be anything)
+        ImGui::SetDragDropPayload("Entity", &entity, sizeof(entity));
+
+        ImGui::EndDragDropSource();
+    }
+
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
+            IM_ASSERT(payload->DataSize == sizeof(entity));
+            Entity payload_entity = *(const Entity*)payload->Data;
+
+            //entity.GetComponent<TagComponent>().tag = payload_entity.GetComponent<TagComponent>().tag;
+
+            payload_entity.AddComponent<ParentComponent>(entity);
+        }
+        ImGui::EndDragDropTarget();
+    }
+
     bool entity_deleted = false;
     Entity deliting_entity;
     if (ImGui::BeginPopupContextItem()) 

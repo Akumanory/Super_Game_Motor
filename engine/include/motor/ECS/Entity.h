@@ -10,10 +10,10 @@ public:
     Entity(entt::entity handle, Scene* scene);
     Entity(const Entity& other) = default;
 
-    template <typename T>
-    T& AddComponent() {
+    template <typename T, typename... Args>
+    T& AddComponent(Args&&... args) {
         assert(!HasComponent<T>() && "Entity already has component");
-        T& component = m_scene->m_registry.emplace<T>(m_entity_handle);
+        T& component = m_scene->m_registry.emplace<T>(m_entity_handle, std::forward<Args>(args)...);
         m_scene->OnComponentAdded<T>(*this, component);
         return component;
     }

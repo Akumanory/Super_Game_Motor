@@ -590,12 +590,14 @@ bool Graphics::InitializeScene() {
         entity3 = test_entt_scene.CreateEntity("Third Entity");
         ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
         ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-        entity3.AddComponent<MeshComponent>();
+        //entity3.AddComponent<MeshComponent>();
         //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
 
 
-        ComponentSystems::SetChildEntity(entity1, entity2);
-        ComponentSystems::SetChildEntity(entity1, entity3);
+        entity3.AddComponent<ParentComponent>(entity1);
+
+        //ComponentSystems::SetChildEntity(entity1, entity2);
+        //ComponentSystems::SetChildEntity(entity1, entity3);
 
         scene_hierachy.SetContext(&test_entt_scene);
 

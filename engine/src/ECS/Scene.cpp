@@ -114,6 +114,11 @@ void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& compon
 
 template <>
 void Scene::OnComponentAdded<ParentComponent>(Entity entity, ParentComponent& component) {
+    if (!component.parent.HasComponent<ChildsComponent>()) {
+        component.parent.AddComponent<ChildsComponent>();
+    }
+    auto& childs_comp = component.parent.GetComponent<ChildsComponent>();
+    childs_comp.child_entities.emplace_back(entity);
 }
 
 template <>

@@ -37,29 +37,32 @@ void ComponentSystems::UpdateBoundingBox(Entity& entity)
         auto childs = entity.GetComponent<ChildsComponent>().child_entities;
         for (auto&& i : childs) 
         {
-            UpdateBoundingBox(i);
-        }
-    }
-}
-
-void ComponentSystems::SetChildEntity(Entity parent, Entity& child) 
-{
-    if (parent.HasComponent<TransformComponent>() && child.HasComponent<TransformComponent>()) 
-    {
-        if (!child.HasComponent<ParentComponent>()) {
-            // Нельязя что бы реебнок был зависи от двух родителей, но родитель может являтся доччерним компонентом другоко компонента
-            child.AddComponent<ParentComponent>();
-            auto& parent_comp = child.GetComponent<ParentComponent>();
-            parent_comp.parent = parent;
-
-            if (!parent.HasComponent<ChildsComponent>()) {
-                parent.AddComponent<ChildsComponent>();
+            if (i.HasComponent<MeshComponent>()) 
+            {
+                UpdateBoundingBox(i);
             }
-            auto& childs_comp = parent.GetComponent<ChildsComponent>();
-            childs_comp.child_entities.emplace_back(child);
         }
     }
 }
+
+//void ComponentSystems::SetChildEntity(Entity parent, Entity& child) 
+//{
+//    if (parent.HasComponent<TransformComponent>() && child.HasComponent<TransformComponent>()) 
+//    {
+//        if (!child.HasComponent<ParentComponent>()) {
+//            // Нельязя что бы реебнок был зависи от двух родителей, но родитель может являтся доччерним компонентом другоко компонента
+//            child.AddComponent<ParentComponent>();
+//            auto& parent_comp = child.GetComponent<ParentComponent>();
+//            parent_comp.parent = parent;
+//
+//            if (!parent.HasComponent<ChildsComponent>()) {
+//                parent.AddComponent<ChildsComponent>();
+//            }
+//            auto& childs_comp = parent.GetComponent<ChildsComponent>();
+//            childs_comp.child_entities.emplace_back(child);
+//        }
+//    }
+//}
 
 DirectX::XMMATRIX ComponentSystems::GetTransformMatrix(Entity& entity) {
     if (entity.HasComponent<ParentComponent>()) 

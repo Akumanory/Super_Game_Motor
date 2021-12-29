@@ -22,11 +22,11 @@ public:
     ~Scene();
 
     void SetModelLoader(ModelLoader* model_manager);
-    void SetAspectRatioParams(int& height, int& width);
+    void SetAspectRatioParams(int height, int width);
     Entity CreateEntity(const std::string name);
     void DestroyEntity(Entity entity);
     std::vector<Entity> GetRenderableEntities();
-    //Entity GetPrimaryCamera();
+    Entity GetPrimaryCamera();
 
     /*void Initialize(ModelLoader& model_loader);
     void InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader);

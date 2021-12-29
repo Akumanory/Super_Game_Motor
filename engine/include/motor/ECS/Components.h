@@ -4,6 +4,7 @@
 #include <motor/graphics/UpdatedModel.h>
 #include <motor/graphics/MeshForComponents.h>
 #include <motor/other/ModelLoader.h>
+#include <motor/graphics/SceneCamera.h>
 #undef max
 #include <rapidjson/document.h>
 
@@ -26,7 +27,29 @@ struct TransformComponent {
 
     XMFLOAT3 local_position = { 0.0, 0.0, 0.0 };
     XMFLOAT3 local_rotation = { 0.0, 0.0, 0.0 };
-    XMFLOAT3 local_scale = { 1.0, 1.0, 1.0 };
+    XMFLOAT3 local_scale    = { 1.0, 1.0, 1.0 };
+
+
+    XMVECTOR GetUpVector() 
+    {
+        return XMVector3TransformCoord(
+          DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f),
+          XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+    }
+
+    XMVECTOR GetForwardVector() 
+    {
+        return XMVector3TransformCoord(
+            DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), 
+            XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+    }
+
+    XMVECTOR GetRightVector() 
+    {
+        return XMVector3TransformCoord(
+          DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f),
+          XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+    }
 
     // translation * rotation * scale
     XMMATRIX GetWorldTransformMatrix() const {
@@ -73,8 +96,8 @@ struct ParentComponent {
     auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };
 
-//struct CameraComponent
-//{
-//    SceneCamera camera;
-//    bool primary;
-//};
+struct CameraComponent
+{
+    SceneCamera camera;
+    bool primary = false;
+};

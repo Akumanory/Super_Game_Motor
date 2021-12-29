@@ -20,6 +20,26 @@ void ComponentSystems::AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, floa
     transform_comp.world_rotation.z += rot.z * delta;
 }
 
+
+void ComponentSystems::AjustPosition(Entity& entity, DirectX::XMFLOAT3 pos, float delta) 
+{
+    auto& transform_comp = entity.GetComponent<TransformComponent>();
+    transform_comp.world_position.x += pos.x * delta;
+    transform_comp.world_position.y += pos.y * delta;
+    transform_comp.world_position.z += pos.z * delta;
+}
+
+void ComponentSystems::AjustPosition(Entity& entity, DirectX::XMVECTOR pos, float delta) {
+    auto& transform_comp = entity.GetComponent<TransformComponent>();
+
+    XMFLOAT3 temp_float = XMFLOAT3();
+    XMStoreFloat3(&temp_float, pos);
+
+    transform_comp.world_position.x += temp_float.x * delta;
+    transform_comp.world_position.y += temp_float.y * delta;
+    transform_comp.world_position.z += temp_float.z * delta;
+}
+
 void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
     auto& mesh_comp = entity.GetComponent<MeshComponent>();
     mesh_comp.model.meshes = model.meshes;

@@ -87,7 +87,7 @@ void Graphics::RenderFrame() {
 	model3.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());*/
     //test_mesh_model.DrawMeshes(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 
-    DrawObjects(true);
+    //DrawObjects(true);
 
     /// -------------------------------------------------------------------
 
@@ -138,12 +138,29 @@ void Graphics::RenderFrame() {
     //solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), cam_container.GetCameraById(0).GetLocalBoundingFrustum());
 
     deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
-    light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+    //light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
     // Simple batch
     m_effect->SetVertexColorEnabled(true);
-    m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
-    m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
+
+
+    // TODO: Костыль для теста
+    Entity primary_camera = test_entt_scene.GetPrimaryCamera();
+
+    if (primary_camera) {
+        auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix();
+        XMVECTOR Det = XMMatrixDeterminant(transform);
+        XMMATRIX view = XMMatrixInverse(&Det, transform);
+        XMMATRIX t_viewProjectionMatrix = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
+        m_effect->SetView(view);
+        m_effect->SetProjection(primary_camera.GetComponent<CameraComponent>().camera.GetProjection());
+    } else {
+        m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
+        m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
+    }
+
+
+    
 
     {
         void const* shaderByteCode;
@@ -668,6 +685,8 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
     deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertex_shader.GetAddressOf());
 
+    Entity primary_camera = scene.GetPrimaryCamera();
+
     auto renderableEntities = scene.GetRenderableEntities();
     for (auto&& i : renderableEntities)
     {
@@ -675,11 +694,26 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
         auto worldMatrix = ComponentSystems::GetTransformMatrix(i);
 
+        // переписать под новые камеры
+        
+
         DirectX::BoundingFrustum local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
         if (local_frustum.Contains(i.GetComponent<MeshComponent>().transformed_bounding_box) != DirectX::DISJOINT) 
         {
             for (int i = 0; i < meshes.size(); i++) {
-                cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
+                // TODO: Костыль для теста что бы проверить работоспособность компонента камеры
+                if (primary_camera) 
+                {
+                    auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix(); 
+                    XMVECTOR Det = XMMatrixDeterminant(transform);
+                    XMMATRIX view = XMMatrixInverse(&Det,transform);
+                    XMMATRIX t_viewProjectionMatrix = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
+                    cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * t_viewProjectionMatrix; //Calculate World-View-Projection Matrix
+                } 
+                else 
+                {
+                    cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
+                }
                 cb_vs_vertex_shader.data.worldMatrix = meshes[i].GetMeshTransform() * worldMatrix; //Calculate World
                 cb_vs_vertex_shader.ApplyChanges();
 

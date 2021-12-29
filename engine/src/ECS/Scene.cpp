@@ -25,7 +25,7 @@ void Scene::SetModelLoader(ModelLoader* model_manager)
     m_model_manager = model_manager;
 }
 
-void Scene::SetAspectRatioParams(int& height, int& width) 
+void Scene::SetAspectRatioParams(int height, int width) 
 {
     m_window_height = height;
     m_window_width = width;
@@ -44,6 +44,16 @@ std::vector<Entity> Scene::GetRenderableEntities() {
     return renderable_e;
 }
 
+Entity Scene::GetPrimaryCamera() 
+{
+    auto view = m_registry.view<CameraComponent>();
+    for (auto entity : view) {
+        const auto& camera = view.get<CameraComponent>(entity);
+        if (camera.primary)
+            return Entity{ entity, this };
+    }
+    return {};
+}
 
 Entity Scene::CreateEntity(const std::string name) 
 {
@@ -59,8 +69,8 @@ void Scene::DestroyEntity(Entity entity)
     // избавится от зависимостей перед удалением
     if (entity.HasComponent<ChildsComponent>()) 
     {
-        auto childs = entity.GetComponent<ChildsComponent>().child_entities;
-        for (auto&& i : childs) 
+        auto& childs = entity.GetComponent<ChildsComponent>().child_entities;
+        for (auto& i : childs) 
         {
             i.RemoveComponent<ParentComponent>();
         }
@@ -68,7 +78,7 @@ void Scene::DestroyEntity(Entity entity)
     if (entity.HasComponent<ParentComponent>()) 
     {
         // TODO: Что то потом с этим придумать а то выглядит ужасно
-        auto childs = entity.GetComponent<ParentComponent>().parent.GetComponent<ChildsComponent>().child_entities;
+        auto& childs = entity.GetComponent<ParentComponent>().parent.GetComponent<ChildsComponent>().child_entities;
         for (size_t i = 0; i < childs.size(); i++) 
         {
             if (childs[i] == entity) 
@@ -104,6 +114,13 @@ void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& componen
 
 template <>
 void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {
+}
+
+template <>
+void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) 
+{
+    if (m_window_width > 0 && m_window_height > 0)
+        component.camera.SetViewPortSize(m_window_height, m_window_width);
 }
 
 template <>

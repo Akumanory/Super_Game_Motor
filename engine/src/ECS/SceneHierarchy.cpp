@@ -60,7 +60,14 @@ void SceneHierarchy::OnImguiRender()
             {
                 if (ImGui::MenuItem("Model")) {
                     m_selection_context.AddComponent<MeshComponent>();
-                    ComponentSystems::SetModel(m_selection_context, m_context->m_model_manager->GetModelById(0));
+
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+
+            if (!m_selection_context.HasComponent<CameraComponent>()) {
+                if (ImGui::MenuItem("Camera")) {
+                    m_selection_context.AddComponent<CameraComponent>();
 
                     ImGui::CloseCurrentPopup();
                 }
@@ -104,8 +111,6 @@ void SceneHierarchy::DrawEntityNode(Entity entity) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
             IM_ASSERT(payload->DataSize == sizeof(entity));
             Entity payload_entity = *(const Entity*)payload->Data;
-
-            //entity.GetComponent<TagComponent>().tag = payload_entity.GetComponent<TagComponent>().tag;
 
             payload_entity.AddComponent<ParentComponent>(entity);
         }
@@ -351,13 +356,43 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
     if (entity.HasComponent<ChildsComponent>()) {
         if (ImGui::TreeNodeEx((void*)typeid(ChildsComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Childs")) {
             
-            auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+            auto& childs = entity.GetComponent<ChildsComponent>().child_entities;
 
             ImGui::Text("Childs:");
 
             for (auto& i : childs) 
             {
                 ImGui::Text(i.GetComponent<TagComponent>().tag.c_str());
+            }
+
+            ImGui::NewLine();
+
+            ImGui::TreePop();
+        }
+    }
+
+    if (entity.HasComponent<CameraComponent>()) {
+        if (ImGui::TreeNodeEx((void*)typeid(CameraComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Camera")) {
+
+            auto& comp = entity.GetComponent<CameraComponent>();
+
+            ImGui::Checkbox("Primary", &comp.primary);
+
+            float fov = comp.camera.GetVerticalFOV();
+            if (ImGui::DragFloat("FOV", &fov, 1.0f, 1.0f, 179.0f))
+            {
+                comp.camera.SetVerticalFOV(fov);
+            }
+
+            float nearZ = comp.camera.GetNearZ();
+            float farZ = comp.camera.GetFarZ();
+            if (ImGui::DragFloat("NearZ", &nearZ, 1.0f, 0.1f, farZ - 1.0f))
+            {
+                comp.camera.SetNearZ(nearZ);
+            }
+            if (ImGui::DragFloat("FarZ", &farZ, 1.0f, nearZ + 1.0f, 1000.0f)) 
+            {
+                comp.camera.SetFarZ(farZ);
             }
 
             ImGui::NewLine();

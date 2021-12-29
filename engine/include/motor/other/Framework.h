@@ -4,6 +4,7 @@
 #include <motor/graphics/Graphics.h>
 #include <motor/other/Timer.h>
 #include <motor/ui_system/ui_console.hpp>
+#include <motor/ui_system/ui_asset_viewer.hpp>
 #include <motor/core_system/console.hpp>
 #include <motor/core_system/lua.hpp>
 #include <motor/ECS/Scene.h>
@@ -32,6 +33,8 @@ private:
     motor::ui_system::ConsoleUI consoleUI_;
     motor::LuaConsole lua_console_{ lua_ };
     bool showConsole_{ true };
+    motor::ui_system::AssetViewerUI assetViewerUI_{ std::filesystem::current_path() };
+    bool showAssetViewer_{ true };
 
 	std::unique_ptr<motor::task_system::thread_pool> tpool_;
 };

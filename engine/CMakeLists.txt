@@ -68,6 +68,7 @@ set(MOUSE_HEADERS
 )
 
 set(OTHER_HEADERS
+    include/motor/other/AssetManager.hpp
     include/motor/other/COMException.h
     include/motor/other/DirectXIncludes.h
     include/motor/other/Display.h
@@ -95,10 +96,12 @@ set(TASK_SYSTEM_HEADERS
 
 set(UI_SYSTEM_HEADERS
     include/motor/ui_system/ui.hpp
+    include/motor/ui_system/ui_asset_viewer.hpp
     include/motor/ui_system/ui_console.hpp
 )
 
 set(HEADERS
+    include/imfilebrowser/imfilebrowser.hpp
     include/motor/task_system.hpp
     include/motor/utils.hpp
 )
@@ -148,6 +151,7 @@ set(MOUSE_SOURCES
 )
 
 set(OTHER_SOURCES
+    src/other/AssetManager.cpp
     src/other/Display.cpp
     src/other/Framework.cpp
     src/other/Logs.cpp
@@ -167,10 +171,12 @@ set(TASK_SYSTEM_SOURCES
 )
 
 set(UI_SYSTEM_SOURCES
+    src/ui_system/ui_asset_viewer.cpp
     src/ui_system/ui_console.cpp
 )
 
 set(SOURCES
+    src/imfilebrowser.cpp
     src/imgui_lua_bindings.cpp
     src/utils.cpp
 )

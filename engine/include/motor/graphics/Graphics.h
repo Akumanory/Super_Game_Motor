@@ -14,6 +14,7 @@
 #include <motor/graphics/scenes/SolarSystem.h>
 #include <motor/graphics/DebugDraw.h>
 #include <motor/ui_system/ui_console.hpp>
+#include <motor/ui_system/ui_asset_viewer.hpp>
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
 #include <motor/ECS/SceneHierarchy.h>
@@ -36,6 +37,7 @@ public:
 	void RenderFrame();
 	void DrawObjects(bool f_culling_enabled);
     void setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole);
+	void setAssetViewer(motor::ui_system::AssetViewerUI* assetViewer, bool* showAssetViewer);
     void addCube(float, float, float);
     void addLightCube(float, float, float);
 
@@ -115,4 +117,6 @@ private:
 
 	bool* showConsole_{ nullptr };
     motor::ui_system::ConsoleUI* consoleUI_{ nullptr };
+    bool* showAssetViewer_{ nullptr };
+    motor::ui_system::AssetViewerUI* assetViewerUI_{ nullptr };
 };

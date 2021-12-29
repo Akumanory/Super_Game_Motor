@@ -1,5 +1,6 @@
 ﻿#include <motor/graphics/Graphics.h>
 #include <motor/task_system.hpp>
+#include <imfilebrowser/imfilebrowser.hpp>
 
 using namespace DirectX;
 
@@ -247,6 +248,12 @@ void Graphics::RenderFrame() {
     if (showConsole_ != nullptr && consoleUI_ != nullptr) {
         if (*showConsole_) {
             consoleUI_->Draw("Lua Console", showConsole_);
+        }
+    }
+
+    if (showAssetViewer_ != nullptr && showAssetViewer_ != nullptr) {
+        if (*showAssetViewer_) {
+            assetViewerUI_->Draw("Asset Viewer", showAssetViewer_);
         }
     }
 
@@ -642,6 +649,11 @@ void Graphics::DrawObjects(bool f_culling_enabled) {
 void Graphics::setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole) {
     consoleUI_ = console;
     showConsole_ = showConsole;
+}
+
+void Graphics::setAssetViewer(motor::ui_system::AssetViewerUI* assetViewer, bool* showAssetViewer) {
+    assetViewerUI_ = assetViewer;
+    showAssetViewer_ = showAssetViewer;
 }
 
 void Graphics::addCube(float x, float y, float z) {

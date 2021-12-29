@@ -1,5 +1,6 @@
 ﻿#include <motor/other/Framework.h>
 #include <motor/other/Logs.h>
+#include <motor/other/AssetManager.hpp>
 #include <motor/ECS/ComponentSystems.h>
 
 using namespace DirectX;
@@ -41,6 +42,7 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
     };
 
 	gfx.setConsole(&consoleUI_, &showConsole_);
+    gfx.setAssetViewer(&assetViewerUI_, &showAssetViewer_);
 
 	timer.Start();
 	if (!display.Initialize(hInstance, window_class, width, height))

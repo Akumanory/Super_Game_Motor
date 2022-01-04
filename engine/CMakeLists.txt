@@ -79,6 +79,8 @@ set(OTHER_HEADERS
     include/motor/other/Timer.h
     include/motor/other/MathHelper.h
     include/motor/other/ModelLoader.h
+    include/motor/other/Project.hpp
+    include/motor/other/Json.hpp
 )
 
 set(STATE_SYSTEM_HEADERS
@@ -160,6 +162,7 @@ set(OTHER_SOURCES
     src/other/Timer.cpp
     src/other/MathHelper.cpp
     src/other/ModelLoader.cpp
+    src/other/Project.cpp
 )
 
 set(STATE_SYSTEM_SOURCES

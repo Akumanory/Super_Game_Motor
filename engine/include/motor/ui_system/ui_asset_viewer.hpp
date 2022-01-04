@@ -28,7 +28,7 @@ public:
         fileDialog_.Display();
 
         if (fileDialog_.HasSelected()) {
-            utils::debug_write::info("Selected filename: {}\n", fileDialog_.GetSelected().string());
+            utils::debug_write::info("Selected filename: {}\n", fileDialog_.GetSelected().generic_string());
             fileDialog_.ClearSelected();
         }
 

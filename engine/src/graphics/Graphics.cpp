@@ -61,40 +61,40 @@ void Graphics::RenderFrame() {
     // -------------------------------------------------------------------
     // TODO: Перенести в InitializeScene или InitializeScene
     // Setup before draw
-    deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
-    deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
-
-    deviceContext->RSSetState(rasterizer_state.Get());
-    deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
-
-    deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
-    deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
-    deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
+//    deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
+//    deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
+//
+//    deviceContext->RSSetState(rasterizer_state.Get());
+//    deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+//
+//    deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
+//    deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
+//    deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
 
     // ------------------------------------------------------------------
-    UINT offset = 0;
+//    UINT offset = 0;
 
-    cb_ps_light.data.dynamicLightColor = light.lightColor;
-    cb_ps_light.data.dynamicLightStrength = light.lightStrength;
-    cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
-    cb_ps_light.data.dynamicLightAttenuation_A = light.attennuation_A;
-    cb_ps_light.data.dynamicLightAttenuation_B = light.attennuation_B;
-    cb_ps_light.data.dynamicLightAttenuation_C = light.attennuation_C;
-    cb_ps_light.ApplyChanges();
-    deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
+//    cb_ps_light.data.dynamicLightColor = light.lightColor;
+//    cb_ps_light.data.dynamicLightStrength = light.lightStrength;
+//    cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
+//    cb_ps_light.data.dynamicLightAttenuation_A = light.attennuation_A;
+//    cb_ps_light.data.dynamicLightAttenuation_B = light.attennuation_B;
+//    cb_ps_light.data.dynamicLightAttenuation_C = light.attennuation_C;
+//    cb_ps_light.ApplyChanges();
+//    deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
 
     /*model1.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	model2.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	model3.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());*/
     //test_mesh_model.DrawMeshes(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 
-    DrawObjects(true);
+//    DrawObjects(true);
 
     /// -------------------------------------------------------------------
 
     //test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), localSpaceFrustum);
     /// -------------------------------------------------------------------
-    DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+//    DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
     /*
 	// object
 	XMMATRIX world = renderable_objects[0].GetWorldMatrix();
@@ -138,47 +138,47 @@ void Graphics::RenderFrame() {
 
     //solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), cam_container.GetCameraById(0).GetLocalBoundingFrustum());
 
-    deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
-    light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+//    deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
+//    light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
     // Simple batch
-    m_effect->SetVertexColorEnabled(true);
-    m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
-    m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
-
-    {
-        void const* shaderByteCode;
-        size_t byteCodeLength;
-
-        m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
-
-        device->CreateInputLayout(
-          VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
-          shaderByteCode, byteCodeLength,
-          m_inputLayout.ReleaseAndGetAddressOf());
-    }
-
-    deviceContext->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
-    deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
-    deviceContext->RSSetState(m_states->CullNone());
-
-    m_effect->Apply(deviceContext.Get());
-
-    deviceContext->IASetInputLayout(m_inputLayout.Get());
-
-    m_batch->Begin();
-
-    DrawDebugScene(test_entt_scene);
-    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetForwardVector(), true, DirectX::Colors::LightGreen);
-    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetRightVector(), true, DirectX::Colors::Red);
-    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetUpVector(), true, DirectX::Colors::LightBlue);
-    Draw(m_batch.get(), renderable_objects[0].GetBoundingBox(), DirectX::Colors::Green);
-    Draw(m_batch.get(), renderable_objects[1].GetBoundingBox(), DirectX::Colors::Blue);
-    Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Olive);
-    Draw(m_batch.get(), renderable_objects[3].GetBoundingBox(), DirectX::Colors::DarkSeaGreen);
-    Draw(m_batch.get(), renderable_objects[4].GetBoundingBox(), DirectX::Colors::Yellow);
-
-    m_batch->End();
+//    m_effect->SetVertexColorEnabled(true);
+//    m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
+//    m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
+//
+//    {
+//        void const* shaderByteCode;
+//        size_t byteCodeLength;
+//
+//        m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+//
+//        device->CreateInputLayout(
+//          VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
+//          shaderByteCode, byteCodeLength,
+//          m_inputLayout.ReleaseAndGetAddressOf());
+//    }
+//
+//    deviceContext->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
+//    deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
+//    deviceContext->RSSetState(m_states->CullNone());
+//
+//    m_effect->Apply(deviceContext.Get());
+//
+//    deviceContext->IASetInputLayout(m_inputLayout.Get());
+//
+//    m_batch->Begin();
+//
+//    DrawDebugScene(test_entt_scene);
+//    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetForwardVector(), true, DirectX::Colors::LightGreen);
+//    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetRightVector(), true, DirectX::Colors::Red);
+//    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetUpVector(), true, DirectX::Colors::LightBlue);
+//    Draw(m_batch.get(), renderable_objects[0].GetBoundingBox(), DirectX::Colors::Green);
+//    Draw(m_batch.get(), renderable_objects[1].GetBoundingBox(), DirectX::Colors::Blue);
+//    Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Olive);
+//    Draw(m_batch.get(), renderable_objects[3].GetBoundingBox(), DirectX::Colors::DarkSeaGreen);
+//    Draw(m_batch.get(), renderable_objects[4].GetBoundingBox(), DirectX::Colors::Yellow);
+//
+//    m_batch->End();
 
     // Draw Text and fps
     static int fps_counter = 0;
@@ -209,33 +209,33 @@ void Graphics::RenderFrame() {
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
     // Creater ImGui test window
-    ImGui::Begin("Light Controls");
+//    ImGui::Begin("Light Controls");
+//
+//    ImGui::DragFloat3(
+//      "Ambient Light Color",
+//      &cb_ps_light.data.ambientLightColor.x,
+//      0.01f,
+//      0.0f,
+//      1.0f);
+//
+//    ImGui::DragFloat(
+//      "Ambient Light strength",
+//      &cb_ps_light.data.ambientLightStrength,
+//      0.01f,
+//      0.0f,
+//      1.0f);
+//    ImGui::NewLine();
+//    ImGui::DragFloat3("Dynamic Light Color", &this->light.lightColor.x, 0.01f, 0.0f, 10.0f);
+//    ImGui::DragFloat("Dynamic Light Strength", &this->light.lightStrength, 0.01f, 0.0f, 10.0f);
+//    ImGui::DragFloat("Dynamic Light Attenuation A", &this->light.attennuation_A, 0.01f, 0.1f, 10.0f);
+//    ImGui::DragFloat("Dynamic Light Attenuation B", &this->light.attennuation_B, 0.01f, 0.0f, 10.0f);
+//    ImGui::DragFloat("Dynamic Light Attenuation C", &this->light.attennuation_C, 0.01f, 0.0f, 10.0f);
+//
+//    ImGui::End();
 
-    ImGui::DragFloat3(
-      "Ambient Light Color",
-      &cb_ps_light.data.ambientLightColor.x,
-      0.01f,
-      0.0f,
-      1.0f);
-
-    ImGui::DragFloat(
-      "Ambient Light strength",
-      &cb_ps_light.data.ambientLightStrength,
-      0.01f,
-      0.0f,
-      1.0f);
-    ImGui::NewLine();
-    ImGui::DragFloat3("Dynamic Light Color", &this->light.lightColor.x, 0.01f, 0.0f, 10.0f);
-    ImGui::DragFloat("Dynamic Light Strength", &this->light.lightStrength, 0.01f, 0.0f, 10.0f);
-    ImGui::DragFloat("Dynamic Light Attenuation A", &this->light.attennuation_A, 0.01f, 0.1f, 10.0f);
-    ImGui::DragFloat("Dynamic Light Attenuation B", &this->light.attennuation_B, 0.01f, 0.0f, 10.0f);
-    ImGui::DragFloat("Dynamic Light Attenuation C", &this->light.attennuation_C, 0.01f, 0.0f, 10.0f);
-
-    ImGui::End();
-
-    cam_container.ImGUIWindow();
-
-    scene_hierachy.OnImguiRender();
+//    cam_container.ImGUIWindow();
+//
+//    scene_hierachy.OnImguiRender();
 
     /*std::vector<std::string> test = { "A", "B" };
 
@@ -245,16 +245,45 @@ void Graphics::RenderFrame() {
 
 	ImGui::End;*/
 
-    if (showConsole_ != nullptr && consoleUI_ != nullptr) {
+    if (showConsole_ != nullptr and consoleUI_ != nullptr) {
         if (*showConsole_) {
             consoleUI_->Draw("Lua Console", showConsole_);
         }
     }
 
-    if (showAssetViewer_ != nullptr && showAssetViewer_ != nullptr) {
+    if (showAssetViewer_ != nullptr and assetViewerUI_ != nullptr) {
         if (*showAssetViewer_) {
             assetViewerUI_->Draw("Asset Viewer", showAssetViewer_);
         }
+    }
+
+    if (showProject_ != nullptr and projectUI_ != nullptr) {
+        if (not project_->IsOpened()) {
+            if (not *showProject_) {
+                *showProject_ = true;
+                ImGui::OpenPopup("Project");
+            }
+            projectUI_->Draw("Project", showProject_);
+        } else {
+            if (not loaded_) {
+                Load_();
+            }
+            if (ImGui::Button("Close project")) {
+                project_->CloseProject();
+                Unload_();
+            }
+        }
+        //if (!project_->IsOpened() and !*showProject_) {
+        //    *showProject_ = true;
+        //    ImGui::OpenPopup("Project");
+        //}
+        //if (*showProject_) {
+        //    projectUI_->Draw("Project", showProject_);
+        //} else {
+        //    if (ImGui::Button("Close project")) {
+        //        project_->CloseProject();
+        //    }
+        //}
     }
 
     // Assemble together Draw Data
@@ -656,6 +685,12 @@ void Graphics::setAssetViewer(motor::ui_system::AssetViewerUI* assetViewer, bool
     showAssetViewer_ = showAssetViewer;
 }
 
+void Graphics::setProject(motor::ui_system::ProjectUI* projectUI, bool* showProject, motor::Project* project) {
+    projectUI_ = projectUI;
+    showProject_ = showProject;
+    project_ = project;
+}
+
 void Graphics::addCube(float x, float y, float z) {
     //test_entt_scene.AddSimpleCube("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader, XMFLOAT3(x, y, z));
     motor::ThreadPool().submit([this, x, y, z] {
@@ -739,3 +774,14 @@ void Graphics::DrawDebugScene(Scene& scene)
 //{
 //
 //}
+
+void Graphics::Unload_() {
+    motor::utils::debug_write::info("Unloading...\n");
+    loaded_ = false;
+}
+
+void Graphics::Load_() {
+    debug_assert(project_->IsOpened());
+    motor::utils::debug_write::info("Loading...\n");
+    loaded_ = true;
+}

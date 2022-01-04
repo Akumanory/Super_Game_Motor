@@ -152,16 +152,17 @@ void Scene::Load() {
     std::ifstream file_in(FileName);
     //RapidJsonInputArchive json_in(file_in);
 
-    //std::stringstream json_input;
-    //json_input << file_in.rdbuf();
-    //RapidJsonInputArchive json_in(json_input.str());
+    std::stringstream json_input;
+    json_input << file_in.rdbuf();
+    auto json_sv = json_input.view();
+    RapidJsonInputArchive json_in(json_sv);
 
-    std::string json_input;
-    std::string s;
-    while (std::getline(file_in, s)) {
-        json_input += s;
-    }
-    RapidJsonInputArchive json_in(json_input);
+   // std::string json_input;
+   // std::string s;
+   // while (std::getline(file_in, s)) {
+   //     json_input += s;
+   // }
+   // RapidJsonInputArchive json_in(json_input);
 
     //entt::registry reg2;
     //entt::basic_snapshot_loader loader(reg2);

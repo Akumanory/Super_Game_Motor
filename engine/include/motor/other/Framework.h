@@ -3,8 +3,10 @@
 #include <motor/other/Display.h>
 #include <motor/graphics/Graphics.h>
 #include <motor/other/Timer.h>
+#include <motor/other/Project.hpp>
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/ui_system/ui_asset_viewer.hpp>
+#include <motor/ui_system/ui_project.hpp>
 #include <motor/core_system/console.hpp>
 #include <motor/core_system/lua.hpp>
 #include <motor/ECS/Scene.h>
@@ -35,6 +37,8 @@ private:
     bool showConsole_{ true };
     motor::ui_system::AssetViewerUI assetViewerUI_{ std::filesystem::current_path() };
     bool showAssetViewer_{ true };
-
+    motor::Project project_{};
+    motor::ui_system::ProjectUI projectUI_{ project_ };
+    bool showProject_{ false };
 	std::unique_ptr<motor::task_system::thread_pool> tpool_;
 };

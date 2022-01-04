@@ -43,6 +43,7 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
 
 	gfx.setConsole(&consoleUI_, &showConsole_);
     gfx.setAssetViewer(&assetViewerUI_, &showAssetViewer_);
+    gfx.setProject(&projectUI_, &showProject_, &project_);
 
 	timer.Start();
 	if (!display.Initialize(hInstance, window_class, width, height))

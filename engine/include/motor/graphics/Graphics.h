@@ -15,6 +15,7 @@
 #include <motor/graphics/DebugDraw.h>
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/ui_system/ui_asset_viewer.hpp>
+#include <motor/ui_system/ui_project.hpp>
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
 #include <motor/ECS/SceneHierarchy.h>
@@ -38,6 +39,7 @@ public:
 	void DrawObjects(bool f_culling_enabled);
     void setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole);
 	void setAssetViewer(motor::ui_system::AssetViewerUI* assetViewer, bool* showAssetViewer);
+    void setProject(motor::ui_system::ProjectUI* projectUI, bool* showProject, motor::Project* project);
     void addCube(float, float, float);
     void addLightCube(float, float, float);
 
@@ -84,6 +86,8 @@ private:
 	bool InitializeDirectX(HWND hwnd);
 	bool InitializeShaders();
 	bool InitializeScene();
+    void Load_();
+    void Unload_();
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;
@@ -119,4 +123,8 @@ private:
     motor::ui_system::ConsoleUI* consoleUI_{ nullptr };
     bool* showAssetViewer_{ nullptr };
     motor::ui_system::AssetViewerUI* assetViewerUI_{ nullptr };
+    bool* showProject_{ nullptr };
+    bool loaded_{ false };
+    motor::ui_system::ProjectUI* projectUI_{ nullptr };
+    motor::Project* project_{ nullptr };
 };

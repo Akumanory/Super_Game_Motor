@@ -104,8 +104,15 @@ set(UI_SYSTEM_HEADERS
 
 set(HEADERS
     include/imfilebrowser/imfilebrowser.hpp
+    include/motor/converters.hpp
     include/motor/task_system.hpp
     include/motor/utils.hpp
+)
+
+set(CONVERTERS_SOURCES
+    src/converters/converters.cpp
+    src/converters/uconverters.cpp
+    src/converters/wconverters.cpp
 )
 
 set(CORE_SYSTEM_SOURCES
@@ -208,6 +215,7 @@ add_library (${PROJECT_NAME}
     ${TASK_SYSTEM_HEADERS}
     ${HEADERS}
 
+    ${CONVERTERS_SOURCES}
     ${CORE_SYSTEM_SOURCES}
     ${ECS_SOURCES}
     ${GRAPHICS_SOURCES}
@@ -269,6 +277,7 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 set(TEST_FILES
     tests/task_system/ticker.cpp
+    tests/converters.cpp
     tests/debug_test.cpp
     tests/shared_resource.cpp
 )

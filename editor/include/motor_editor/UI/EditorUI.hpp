@@ -18,6 +18,7 @@ public:
             ImGui::Text("Hello editor");
             ImGui::End();
         }
+        ImGui::ShowDemoWindow();
     }
 
 private:

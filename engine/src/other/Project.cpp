@@ -26,6 +26,12 @@ auto Project::OpenProject(fs::path path) -> void {
     fs::current_path(path);
     SetProjectDir(path);
     projectConfig_ = json::readFile<ProjectConfig>(path / "config.json");
+    if (not fs::exists(path / "scenes")) {
+        fs::create_directories(path / "scenes");
+    }
+    if (not fs::exists(path / "assets")) {
+        fs::create_directories(path / "assets");
+    }
     opened_ = true;
 }
 
@@ -37,10 +43,13 @@ auto Project::CreateProject(std::string name, fs::path path) -> void {
     SetProjectDir(path);
     projectConfig_.name = std::move(name);
     json::writeFile(path / "config.json", projectConfig_);
+    fs::create_directories(path / "scenes");
+    fs::create_directories(path / "assets");
     opened_ = true;
 }
 
 auto Project::CloseProject() -> void {
+    json::writeFile("config.json", projectConfig_);
     opened_ = false;
     projectDir_ = fs::path{};
 }
@@ -73,7 +82,7 @@ auto Project::CreateScene(std::string name) -> void {
       .path = fs::path{ name },
       .isMainScene = false,
       .isIncluded = true });
-    fs::create_directory(fs::path{ name });
+    fs::create_directory("scenes" / fs::path{ name });
 }
 
 auto Project::DeleteScene(std::string name) -> void {
@@ -155,8 +164,8 @@ auto Project::SceneDesc::to_json(rj::Value& obj, rj::Document::AllocatorType& rj
     rj::Value name_j{ rj::kStringType };
     name_j.SetString(name.c_str(), name.length(), rjAllocator);
     rj::Value path_j{ rj::kStringType };
-    auto path_str = path.generic_string();
-    path_j.SetString(path_str.c_str(), path_str.length(), rjAllocator);
+    auto path_str = path.generic_u8string();
+    path_j.SetString((const char*)path_str.c_str(), path_str.length(), rjAllocator);
     rj::Value isMainScene_j;
     isMainScene_j.SetBool(isMainScene);
     rj::Value isIncluded_j;

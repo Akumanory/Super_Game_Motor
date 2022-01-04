@@ -265,25 +265,44 @@ void Graphics::RenderFrame() {
             }
             projectUI_->Draw("Project", showProject_);
         } else {
-            if (not loaded_) {
-                Load_();
+            if (not loadedProject_) {
+                LoadProject_();
             }
             if (ImGui::Button("Close project")) {
                 project_->CloseProject();
-                Unload_();
+                UnloadProject_();
             }
         }
-        //if (!project_->IsOpened() and !*showProject_) {
-        //    *showProject_ = true;
-        //    ImGui::OpenPopup("Project");
-        //}
-        //if (*showProject_) {
-        //    projectUI_->Draw("Project", showProject_);
-        //} else {
-        //    if (ImGui::Button("Close project")) {
-        //        project_->CloseProject();
-        //    }
-        //}
+    }
+
+    if (showScenes_) {
+        if (loadedProject_) {
+            ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_FirstUseEver);
+            if (!ImGui::Begin("Scenes", &showScenes_)) {
+                ImGui::End();
+                return;
+            }
+
+            static char newSceneName[128]{};
+            ImGui::Text("Create scene:");
+            ImGui::SameLine();
+            ImGui::InputText("NewSceneName", newSceneName, IM_ARRAYSIZE(newSceneName));
+            ImGui::SameLine();
+            if (ImGui::Button("Create")) {
+                project_->CreateScene(newSceneName);
+            }
+
+            auto scenes = project_->GetScenes();
+
+            for (auto& scene : scenes) {
+                ImGui::Text(scene.name.c_str());
+                if (ImGui::IsItemClicked(ImGuiMouseButton_Left) and ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                    motor::utils::debug_write::info("Opening scene {} ...\n", scene.name);
+                }
+            }
+
+            ImGui::End();
+        }
     }
 
     // Assemble together Draw Data
@@ -675,17 +694,16 @@ void Graphics::DrawObjects(bool f_culling_enabled) {
     }
 }
 
-void Graphics::setConsole(motor::ui_system::ConsoleUI* console, bool* showConsole) {
+void Graphics::setWidgets(
+  motor::ui_system::ConsoleUI* console, bool* showConsole,
+  motor::ui_system::AssetViewerUI* assetViewer, bool* showAssetViewer,
+  motor::ui_system::ProjectUI* projectUI, bool* showProject, motor::Project* project) {
     consoleUI_ = console;
     showConsole_ = showConsole;
-}
 
-void Graphics::setAssetViewer(motor::ui_system::AssetViewerUI* assetViewer, bool* showAssetViewer) {
     assetViewerUI_ = assetViewer;
     showAssetViewer_ = showAssetViewer;
-}
 
-void Graphics::setProject(motor::ui_system::ProjectUI* projectUI, bool* showProject, motor::Project* project) {
     projectUI_ = projectUI;
     showProject_ = showProject;
     project_ = project;
@@ -775,13 +793,16 @@ void Graphics::DrawDebugScene(Scene& scene)
 //
 //}
 
-void Graphics::Unload_() {
-    motor::utils::debug_write::info("Unloading...\n");
-    loaded_ = false;
+void Graphics::UnloadProject_() {
+    motor::utils::debug_write::info("Unloading project...\n");
+    showScenes_ = false;
+    loadedProject_ = false;
 }
 
-void Graphics::Load_() {
+void Graphics::LoadProject_() {
     debug_assert(project_->IsOpened());
-    motor::utils::debug_write::info("Loading...\n");
-    loaded_ = true;
+    motor::utils::debug_write::info("Loading project...\n");
+    assetViewerUI_->SetRoot(std::filesystem::current_path());
+    showScenes_ = true;
+    loadedProject_ = true;
 }

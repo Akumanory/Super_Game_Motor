@@ -100,6 +100,7 @@ set(UI_SYSTEM_HEADERS
     include/motor/ui_system/ui.hpp
     include/motor/ui_system/ui_asset_viewer.hpp
     include/motor/ui_system/ui_console.hpp
+    include/motor/ui_system/ui_project.hpp
 )
 
 set(HEADERS

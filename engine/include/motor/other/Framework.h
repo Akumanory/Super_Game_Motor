@@ -35,10 +35,11 @@ private:
     motor::ui_system::ConsoleUI consoleUI_;
     motor::LuaConsole lua_console_{ lua_ };
     bool showConsole_{ true };
-    motor::ui_system::AssetViewerUI assetViewerUI_{ std::filesystem::current_path() };
+    motor::ui_system::AssetViewerUI assetViewerUI_{};
     bool showAssetViewer_{ true };
     motor::Project project_{};
     motor::ui_system::ProjectUI projectUI_{ project_ };
     bool showProject_{ false };
+
 	std::unique_ptr<motor::task_system::thread_pool> tpool_;
 };

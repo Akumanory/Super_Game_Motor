@@ -3,6 +3,7 @@
 #include <motor/ui_system/ui.hpp>
 #include <motor/other/Project.hpp>
 #include <imfilebrowser/imfilebrowser.hpp>
+#include <motor/converters.hpp>
 
 namespace motor {
 namespace ui_system {
@@ -40,7 +41,7 @@ public:
             auto projPath = fileBrowser_.GetSelected();
             fileBrowser_.ClearSelected();
 
-            utils::debug_write::info("Open project: {} ...\n", projPath.generic_string());
+            utils::debug_write::info("Open project: {} ...\n", converters::u8_to_mb(projPath.generic_u8string()));
             project_.OpenProject(std::move(projPath));
             ImGui::CloseCurrentPopup();
             *p_open = false;
@@ -52,8 +53,8 @@ public:
             if (!std::filesystem::is_empty(projPath)) {
                 ImGui::OpenPopup("Not empty");
             } else {
-                auto projName = projPath.filename().generic_string();
-                utils::debug_write::info("Create project with name {} and path {} ...\n", projName, projPath.generic_string());
+                auto projName = converters::u8_to_mb(projPath.filename().generic_u8string());
+                utils::debug_write::info("Create project with name {} and path {} ...\n", projName, converters::u8_to_mb(projPath.generic_u8string()));
                 project_.CreateProject(std::move(projName), std::move(projPath));
                 ImGui::CloseCurrentPopup();
                 *p_open = false;

@@ -1,6 +1,7 @@
 #pragma once 
 
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 
 class SceneCamera
 {
@@ -24,6 +25,7 @@ public:
     float GetFarZ();
 
     DirectX::XMMATRIX& GetProjection();
+    DirectX::BoundingFrustum& GetFrustum();
     void UpdateProjection();
 
 private:
@@ -31,6 +33,8 @@ private:
     float aspect_ratio = 1.0f;
     float near_z = 0.1f;
     float far_z = 1000.0f;
+
+    DirectX::BoundingFrustum base_frustum;
 
     DirectX::XMMATRIX camera_projection;
 };

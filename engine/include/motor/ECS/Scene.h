@@ -28,6 +28,9 @@ public:
     std::vector<Entity> GetRenderableEntities();
     Entity GetPrimaryCamera();
 
+    void OnRednerUpdate();
+
+
     /*void Initialize(ModelLoader& model_loader);
     void InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader);
     void DrawSceneEntt(const DirectX::XMMATRIX& viewProjectionMatrix, DirectX::BoundingFrustum& f_culling);

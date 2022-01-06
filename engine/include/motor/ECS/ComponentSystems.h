@@ -13,6 +13,7 @@ public:
     static void AjustPosition(Entity& entity, DirectX::XMVECTOR pos, float delta);
     static void SetModel(Entity& entity, ModelStruct& model);
     static void UpdateBoundingBox(Entity& entity);
+    static void UpdateBoundingFrustum(Entity& entity);
     //static void SetChildEntity(Entity parent, Entity& child);
     static DirectX::XMMATRIX GetTransformMatrix(Entity& entity);
 

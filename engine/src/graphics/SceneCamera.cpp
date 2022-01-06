@@ -57,8 +57,14 @@ DirectX::XMMATRIX& SceneCamera::GetProjection()
     return camera_projection;
 }
 
+DirectX::BoundingFrustum& SceneCamera::GetFrustum() 
+{
+    return base_frustum;
+}
+
 void SceneCamera::UpdateProjection() 
 {
     float fovRadians = (fov_degrees / 360.0f) * DirectX::XM_2PI;
     camera_projection = DirectX::XMMatrixPerspectiveFovLH(fovRadians, aspect_ratio, near_z, far_z);
+    DirectX::BoundingFrustum::CreateFromMatrix(base_frustum, camera_projection);
 }

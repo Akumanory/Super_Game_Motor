@@ -93,73 +93,37 @@ void Graphics::RenderFrame() {
 
     //test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), localSpaceFrustum);
     /// -------------------------------------------------------------------
+    test_entt_scene.OnRednerUpdate();
+    
     DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-    /*
-	// object
-	XMMATRIX world = renderable_objects[0].GetWorldMatrix();
-    XMVECTOR Det2 = XMMatrixDeterminant(world);
-    XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
-    XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
-    FrustumCulling local_culling; 
-	f_culling.Transform(local_culling, viewToLocal);
-    if (local_culling.ContainsByPositonPoint(renderable_objects[0].GetPositionVector())) 
-	{
-		renderable_objects[0].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-    } 
-	else 
-	{
-        Logs::Debug("Object not rendered");    
-	}
-
-
-	// object1
-    world = renderable_objects[1].GetWorldMatrix();
-    Det2 = XMMatrixDeterminant(world);
-    invWorld = XMMatrixInverse(&Det2, world);
-    viewToLocal = XMMatrixMultiply(invView, invWorld);
-    FrustumCulling local_culling2; 
-    f_culling.Transform(local_culling2, viewToLocal);
-    if (local_culling.ContainsByPositonPoint(renderable_objects[1].GetPositionVector())) {
-        renderable_objects[1].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-    } 
-	else {
-        Logs::Debug("Object1 not rendered");
-    }
-	
-	//gameObject.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-	
-	//gameObject1.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-    renderable_objects[2].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-    renderable_objects[3].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-    renderable_objects[4].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-
-	*/
-
-    //solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), cam_container.GetCameraById(0).GetLocalBoundingFrustum());
-
+  
     deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
     //light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
     // Simple batch
+    
+
+
+    //// TODO: Костыль для теста
+    //Entity primary_camera = test_entt_scene.GetPrimaryCamera();
+
+    //if (primary_camera) {
+    //    auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix();
+    //    XMVECTOR Det = XMMatrixDeterminant(transform);
+    //    XMMATRIX view = XMMatrixInverse(&Det, transform);
+    //    XMMATRIX t_viewProjectionMatrix = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
+    //    m_effect->SetVertexColorEnabled(true);
+    //    m_effect->SetView(view);
+    //    m_effect->SetProjection(primary_camera.GetComponent<CameraComponent>().camera.GetProjection());
+    //} else {
+    //    m_effect->SetVertexColorEnabled(true);
+    //    m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
+    //    m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
+    //}
+
     m_effect->SetVertexColorEnabled(true);
-
-
-    // TODO: Костыль для теста
-    Entity primary_camera = test_entt_scene.GetPrimaryCamera();
-
-    if (primary_camera) {
-        auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix();
-        XMVECTOR Det = XMMatrixDeterminant(transform);
-        XMMATRIX view = XMMatrixInverse(&Det, transform);
-        XMMATRIX t_viewProjectionMatrix = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
-        m_effect->SetView(view);
-        m_effect->SetProjection(primary_camera.GetComponent<CameraComponent>().camera.GetProjection());
-    } else {
-        m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
-        m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
-    }
-
-
+    m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
+    m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
     
 
     {
@@ -694,26 +658,38 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
         auto worldMatrix = ComponentSystems::GetTransformMatrix(i);
 
-        // переписать под новые камеры
-        
+        DirectX::BoundingFrustum local_frustum;
 
-        DirectX::BoundingFrustum local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
+        // переписать под новые камеры
+        if (primary_camera) 
+        {
+            local_frustum = primary_camera.GetComponent<CameraComponent>().camera.GetFrustum();
+        } 
+        else 
+        {
+            local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
+        }
+
+        
         if (local_frustum.Contains(i.GetComponent<MeshComponent>().transformed_bounding_box) != DirectX::DISJOINT) 
         {
             for (int i = 0; i < meshes.size(); i++) {
-                // TODO: Костыль для теста что бы проверить работоспособность компонента камеры
-                if (primary_camera) 
-                {
-                    auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix(); 
-                    XMVECTOR Det = XMMatrixDeterminant(transform);
-                    XMMATRIX view = XMMatrixInverse(&Det,transform);
-                    XMMATRIX t_viewProjectionMatrix = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
-                    cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * t_viewProjectionMatrix; //Calculate World-View-Projection Matrix
-                } 
-                else 
-                {
-                    cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
-                }
+                //TODO: Костыль для теста что бы проверить работоспособность компонента камеры
+                //if (primary_camera)
+                //{
+                //    auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix(); 
+                //    XMVECTOR Det = XMMatrixDeterminant(transform);
+                //    XMMATRIX view = XMMatrixInverse(&Det,transform);
+                //    XMMATRIX t_viewProjectionMatrix = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
+                //    cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * t_viewProjectionMatrix; //Calculate World-View-Projection Matrix
+                //} 
+                //else 
+                //{
+                //    cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
+                //}
+
+
+                cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; 
                 cb_vs_vertex_shader.data.worldMatrix = meshes[i].GetMeshTransform() * worldMatrix; //Calculate World
                 cb_vs_vertex_shader.ApplyChanges();
 
@@ -744,8 +720,6 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
                 this->deviceContext->DrawIndexed(indexbuffer.IndexCount(), 0, 0);
             }
         }
-
-        ComponentSystems::UpdateBoundingBox(i);
     }
 }
 
@@ -755,9 +729,11 @@ void Graphics::DrawDebugScene(Scene& scene)
     for (auto&& i : renderableEntities) {
         Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);
     }
-}
 
-//void Graphics::DrawModel(RenderableEntities renderable_entity)
-//{
-//
-//}
+    auto primary_camera = scene.GetPrimaryCamera();
+    if (primary_camera) 
+    {
+        Draw(m_batch.get(), primary_camera.GetComponent<CameraComponent>().camera.GetFrustum(), DirectX::Colors::Orange);
+    }
+    
+}

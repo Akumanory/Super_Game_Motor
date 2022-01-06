@@ -55,6 +55,16 @@ Entity Scene::GetPrimaryCamera()
     return {};
 }
 
+void Scene::OnRednerUpdate() 
+{
+    auto view = m_registry.view<TransformComponent>();
+    for (auto entity : view) {
+        Entity temp = Entity{ entity, this };
+        ComponentSystems::UpdateBoundingBox(temp);
+        ComponentSystems::UpdateBoundingFrustum(temp);
+    }
+}
+
 Entity Scene::CreateEntity(const std::string name) 
 {
     Entity entity = { m_registry.create(), this };

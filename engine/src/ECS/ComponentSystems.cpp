@@ -50,19 +50,28 @@ void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
 
 void ComponentSystems::UpdateBoundingBox(Entity& entity) 
 {
-    auto& mesh_comp = entity.GetComponent<MeshComponent>();
-    //const auto& transform_comp = entity.GetComponent<TransformComponent>();
-    mesh_comp.model.bounding_box.Transform(mesh_comp.transformed_bounding_box, GetTransformMatrix(entity));
-    if (entity.HasComponent<ChildsComponent>()) 
+    if (entity.HasComponent<TransformComponent>() && entity.HasComponent<MeshComponent>()) 
     {
-        auto childs = entity.GetComponent<ChildsComponent>().child_entities;
-        for (auto&& i : childs) 
-        {
-            if (i.HasComponent<MeshComponent>()) 
-            {
+        auto& mesh_comp = entity.GetComponent<MeshComponent>();
+        //const auto& transform_comp = entity.GetComponent<TransformComponent>();
+        mesh_comp.model.bounding_box.Transform(mesh_comp.transformed_bounding_box, GetTransformMatrix(entity));
+        if (entity.HasComponent<ChildsComponent>()) {
+            auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+            for (auto&& i : childs) {
                 UpdateBoundingBox(i);
             }
         }
+    }
+}
+
+void ComponentSystems::UpdateBoundingFrustum(Entity& entity) 
+{
+    if (entity.HasComponent<TransformComponent>() && entity.HasComponent<CameraComponent>()) 
+    {
+        auto& camera_comp = entity.GetComponent<CameraComponent>();
+        camera_comp.camera.UpdateProjection();
+        auto& frustum = camera_comp.camera.GetFrustum();
+        frustum.Transform(frustum, entity.GetComponent<TransformComponent>().GetLocalTransformMatrix());
     }
 }
 

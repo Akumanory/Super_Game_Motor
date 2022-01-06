@@ -1,6 +1,7 @@
 ﻿#include <motor/other/Framework.h>
 #include <motor/other/Logs.h>
 #include <motor/ECS/ComponentSystems.h>
+#include <motor/RBS/ReteNet/Net.h>
 
 using namespace DirectX;
 

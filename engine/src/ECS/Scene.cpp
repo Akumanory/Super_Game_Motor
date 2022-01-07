@@ -44,6 +44,19 @@ std::vector<Entity> Scene::GetRenderableEntities() {
     return renderable_e;
 }
 
+std::vector<Entity> Scene::GetCamerasEntities() 
+{
+    std::vector<Entity> cameras_e;
+
+    auto view = m_registry.view<TransformComponent, CameraComponent>();
+
+    for (entt::entity entity : view) {
+        Entity tmp = { entity, this };
+        cameras_e.emplace_back(tmp);
+    }
+    return cameras_e;
+}
+
 Entity Scene::GetPrimaryCamera() 
 {
     auto view = m_registry.view<CameraComponent>();

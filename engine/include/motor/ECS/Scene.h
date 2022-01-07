@@ -26,7 +26,9 @@ public:
     Entity CreateEntity(const std::string name);
     void DestroyEntity(Entity entity);
     std::vector<Entity> GetRenderableEntities();
+    std::vector<Entity> GetCamerasEntities();
     Entity GetPrimaryCamera();
+    
 
     void OnRednerUpdate();
 

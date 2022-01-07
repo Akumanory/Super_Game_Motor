@@ -121,6 +121,13 @@ void Framework::Update()
 		}
 	}
 	
+
+    // TODO: Тест для проверки симуляции потом убрать
+    if (gfx.state == Graphics::States::Simulate) 
+    {
+        auto& transform_comp = gfx.entity1.GetComponent<TransformComponent>();
+        ComponentSystems::AjustPosition(gfx.entity1, XMFLOAT3(0.0f, 0.002f, 0.003f), delta);
+    }
 	
 	if (primary_camera) 
 	{

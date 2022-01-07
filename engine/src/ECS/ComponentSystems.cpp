@@ -71,7 +71,7 @@ void ComponentSystems::UpdateBoundingFrustum(Entity& entity)
         auto& camera_comp = entity.GetComponent<CameraComponent>();
         camera_comp.camera.UpdateProjection();
         auto& frustum = camera_comp.camera.GetFrustum();
-        frustum.Transform(frustum, entity.GetComponent<TransformComponent>().GetLocalTransformMatrix());
+        frustum.Transform(frustum, GetTransformMatrix(entity));
     }
 }
 

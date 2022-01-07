@@ -92,6 +92,13 @@ public:
                     }
                 } else {
                     ImGui::Text((const char*)entry.path().filename().generic_u8string().c_str());
+                    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                        dragdrop_ = entry.path();
+                        strcpy_s(dragdropName_, (const char*)dragdrop_.filename().generic_u8string().c_str());
+                        ImGui::SetDragDropPayload("Asset##Payload", &dragdropName_, strlen(dragdropName_), ImGuiCond_Once);
+                        ImGui::Text("%s", ImGui::GetDragDropPayload()->Data);
+                        ImGui::EndDragDropSource();
+                    }
                 }
             }
         }
@@ -102,6 +109,10 @@ public:
     void SetRoot(std::filesystem::path root) {
         root_ = root;
         current_ = root;
+    }
+
+    std::filesystem::path GetDragDrop() {
+        return dragdrop_;
     }
 
 private:
@@ -120,6 +131,8 @@ private:
     std::filesystem::path where_;
     std::filesystem::path current_;
     std::filesystem::path root_;
+    std::filesystem::path dragdrop_;
+    char dragdropName_[256]{};
 };
 
 } // namespace ui_system

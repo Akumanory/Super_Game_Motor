@@ -16,6 +16,7 @@
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/ui_system/ui_asset_viewer.hpp>
 #include <motor/ui_system/ui_project.hpp>
+#include <motor/ui_system/ui_loading.hpp>
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
 #include <motor/ECS/SceneHierarchy.h>
@@ -131,4 +132,6 @@ private:
     motor::ui_system::ProjectUI* projectUI_{ nullptr };
     motor::Project* project_{ nullptr };
     bool showScenes_{ false };
+
+	motor::ui_system::LoadingUI loadingUI_;
 };

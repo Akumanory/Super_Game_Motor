@@ -230,3 +230,10 @@ int ModelLoader::GetTextureIndex(aiString* pStr) {
     assert(pStr->length >= 2);
     return atoi(&pStr->C_Str()[1]);
 }
+
+void ModelLoader::Reset() {
+    std::lock_guard lock{ _models_mtx };
+    _models.clear();
+    _filePathMap.clear();
+    _device = nullptr;
+}

@@ -17,15 +17,15 @@ bool Graphics::Initialize(HWND hWnd, int width, int height) {
         return false;
     }
 
-    if (!InitializeShaders()) {
-        Logs::Error("	InitializeShaders is not initialized");
-        return false;
-    }
+    //if (!InitializeShaders()) {
+    //    Logs::Error("	InitializeShaders is not initialized");
+    //    return false;
+    //}
 
-    if (!InitializeScene()) {
-        Logs::Error("	InitializeScene is not initialized");
-        return false;
-    }
+    //if (!InitializeScene()) {
+    //    Logs::Error("	InitializeScene is not initialized");
+    //    return false;
+    //}
 
     // Setup ImGui
     IMGUI_CHECKVERSION();
@@ -67,9 +67,9 @@ void Graphics::RenderFrame() {
     //    deviceContext->RSSetState(rasterizer_state.Get());
     //    deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
     //
-    //    deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
-    //    deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
-    //    deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
+        deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
+        deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
+        deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
 
     // ------------------------------------------------------------------
     //    UINT offset = 0;
@@ -94,7 +94,10 @@ void Graphics::RenderFrame() {
 
     //test_entt_scene.DrawSceneEntt(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), localSpaceFrustum);
     /// -------------------------------------------------------------------
-    //    DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+
+    if (loadedScene_) {
+        DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+    }
     /*
 	// object
 	XMMATRIX world = renderable_objects[0].GetWorldMatrix();
@@ -298,6 +301,9 @@ void Graphics::RenderFrame() {
                 ImGui::Text(scene.name.c_str());
                 if (ImGui::IsItemClicked(ImGuiMouseButton_Left) and ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     motor::utils::debug_write::info("Opening scene {} ...\n", scene.name);
+                    UnloadScene_();
+                    InitializeScene();
+                    loadedScene_ = true;
                 }
             }
 
@@ -511,36 +517,52 @@ bool Graphics::InitializeShaders() {
 
     UINT numElements = ARRAYSIZE(layoutDesc);
 
-    if (!vertex_shader.Initialize(device, L"vertexshader.hlsl", layoutDesc, numElements)) {
+    if (!vertex_shader.Initialize(device, L"assets/shaders/vertex_shaders/vertexshader.hlsl", layoutDesc, numElements)) {
         Logs::Error("		Vertex shader not initialized");
         return false;
     }
 
-    if (!pixel_shader.Initialize(device, L"pixelshader.hlsl")) {
+    if (!pixel_shader.Initialize(device, L"assets/shaders/pixel_shaders/pixelshader.hlsl")) {
         Logs::Error("		Pixel shader not initialized");
         return false;
     }
 
-    if (!pixel_shader_no_light.Initialize(device, L"pixelshader_nolight.hlsl")) {
+    if (!pixel_shader_no_light.Initialize(device, L"assets/shaders/pixel_shaders/pixelshader_nolight.hlsl")) {
         Logs::Error("		Pixel shader not initialized");
         return false;
     }
+
+    deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
+    deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
+    
+    deviceContext->RSSetState(rasterizer_state.Get());
+    deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+    
+    deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
+    deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
+    deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
 
     return true;
 }
 
 bool Graphics::InitializeScene() {
-    try {
-        std::lock_guard guard{ renderable_objects_mtx };
+    //try {
+        //std::lock_guard guard{ renderable_objects_mtx };
         Logs::Debug("	Initialize scene");
 
+        if (!InitializeShaders()) {
+            Logs::Error("	InitializeShaders is not initialized");
+            return false;
+        }
+
         // Texture
-        HRESULT hr = DirectX::CreateWICTextureFromFile(
-          device.Get(),
-          L"Data\\Textures\\hylics_texture.jpg",
-          nullptr,
-          texture.GetAddressOf());
-        COM_ERROR_IF_FAILED(hr, "Failed to load wic texture from file.");
+        HRESULT hr;//
+       // = DirectX::CreateWICTextureFromFile(
+       //   device.Get(),
+       //   L"Data\\Textures\\hylics_texture.jpg",
+       //   nullptr,
+       //   texture.GetAddressOf());
+       // COM_ERROR_IF_FAILED(hr, "Failed to load wic texture from file.");
 
         // Constant buffer
         hr = cb_vs_vertex_shader.Initialize(device.Get(), deviceContext.Get());
@@ -556,10 +578,10 @@ bool Graphics::InitializeScene() {
         // ---------------
         model_loader.Initialize(device.Get());
 
-        model_loader.LoadModel("Data\\Objects\\Cube\\Cube.obj", "GrayCube");
-        model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
-        model_loader.LoadModel("Data\\Objects\\BOTTLE_V1.fbx", "Bottle");
-        model_loader.LoadModel("Data\\Objects\\RubikCube.fbx", "RubikCube");
+        model_loader.LoadModel("assets\\Cube\\Cube.obj", "GrayCube");
+       // model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
+       // model_loader.LoadModel("Data\\Objects\\BOTTLE_V1.fbx", "Bottle");
+       // model_loader.LoadModel("Data\\Objects\\RubikCube.fbx", "RubikCube");
         
         
         // ---------------
@@ -569,61 +591,61 @@ bool Graphics::InitializeScene() {
         m_states = std::make_unique<CommonStates>(device.Get());
         m_effect = std::make_unique<BasicEffect>(device.Get());
 
-        RenderableGameObject gameObject;
-
-        if (!gameObject.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
-            return false;
-        }
-
-        renderable_objects.push_back(gameObject);
-
-        RenderableGameObject gameObject1;
-
-        if (!gameObject1.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
-            return false;
-        }
-
-        renderable_objects.push_back(gameObject1);
-
-        RenderableGameObject gameObject2;
-
-        if (!gameObject2.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
-            return false;
-        }
-
-        renderable_objects.push_back(gameObject2);
-
-        RenderableGameObject gameObject3;
-
-        if (!gameObject3.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
-            return false;
-        }
-
-        renderable_objects.push_back(gameObject3);
-
-        RenderableGameObject gameObject4;
-
-        if (!gameObject4.Initialize("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
-            return false;
-        }
-
-        renderable_objects.push_back(gameObject4);
+      //  RenderableGameObject gameObject;
+      //
+      //  if (!gameObject.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+      //      return false;
+      //  }
+      //
+      //  renderable_objects.push_back(gameObject);
+      //
+      //  RenderableGameObject gameObject1;
+      //
+      //  if (!gameObject1.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+      //      return false;
+      //  }
+      //
+      //  renderable_objects.push_back(gameObject1);
+      //
+      //  RenderableGameObject gameObject2;
+      //
+      //  if (!gameObject2.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+      //      return false;
+      //  }
+      //
+      //  renderable_objects.push_back(gameObject2);
+      //
+      //  RenderableGameObject gameObject3;
+      //
+      //  if (!gameObject3.Initialize("Data\\Objects\\Cube\\Cube.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+      //      return false;
+      //  }
+      //
+      //  renderable_objects.push_back(gameObject3);
+      //
+      //  RenderableGameObject gameObject4;
+      //
+      //  if (!gameObject4.Initialize("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+      //      return false;
+      //  }
+      //
+      //  renderable_objects.push_back(gameObject4);
 
         if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
             return false;
         }
 
-        if (!solar_system_scene.Initialize(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader)) {
-            return false;
-        }
+      //  if (!solar_system_scene.Initialize(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader)) {
+      //      return false;
+      //  }
 
-        renderable_objects[1].SetPosition(4.0f, 0.0f, 0.0f);
-        //----------------------
-        renderable_objects[1].SetRotation(0.0f, 0.5f, 0.0f);
-        // ---------------------
-        renderable_objects[2].SetPosition(6.0f, 4.0f, 2.0f);
-        renderable_objects[3].SetPosition(-8.0f, -2.0f, -2.0f);
-        renderable_objects[4].SetPosition(3.0f, -4.0f, -6.0f);
+      //  renderable_objects[1].SetPosition(4.0f, 0.0f, 0.0f);
+      //  //----------------------
+      //  renderable_objects[1].SetRotation(0.0f, 0.5f, 0.0f);
+      //  // ---------------------
+      //  renderable_objects[2].SetPosition(6.0f, 4.0f, 2.0f);
+      //  renderable_objects[3].SetPosition(-8.0f, -2.0f, -2.0f);
+      //  renderable_objects[4].SetPosition(3.0f, -4.0f, -6.0f);
 
         //gameObject1.SetPosition(4.0f, 0.0f, 0.0f);
         //gameObject2.SetPosition(6.0f, 4.0f, 2.0f);
@@ -696,42 +718,42 @@ bool Graphics::InitializeScene() {
         scene_hierachy.SetContext(&test_entt_scene);
 
 
-    } catch (COMException& ex) {
-        Logs::Error(ex);
-        return false;
-    }
+    //} catch (COMException& ex) {
+    //    Logs::Error(ex);
+    //    return false;
+    //}
     return true;
 }
 
-void Graphics::DrawObjects(bool f_culling_enabled) {
-    // Check Frustrum culling
-    viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
-    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
-    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
-
-    BoundingFrustum localSpaceFrustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
-
-    for (size_t i = 0; i < renderable_objects.size(); i++) {
-
-        if (f_culling_enabled) { /*
-            XMMATRIX world = renderable_objects[i].GetWorldMatrix();
-            XMVECTOR Det2 = XMMatrixDeterminant(world);
-            XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
-            XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
-
-            BoundingFrustum localSpaceFrustum;
-            f_culling.Transform(localSpaceFrustum, viewToLocal);*/
-
-            if (localSpaceFrustum.Contains(renderable_objects[i].GetBoundingBox()) != DirectX::DISJOINT) {
-                renderable_objects[i].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-            } else {
-                //Logs::Debug("Object not rendered");
-            }
-        } else {
-            renderable_objects[i].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-        }
-    }
-}
+//void Graphics::DrawObjects(bool f_culling_enabled) {
+//    // Check Frustrum culling
+//    viewMatrix = cam_container.GetCameraById(0).GetViewMatrix();
+//    XMVECTOR Det = XMMatrixDeterminant(viewMatrix);
+//    XMMATRIX invView = XMMatrixInverse(&Det, viewMatrix);
+//
+//    BoundingFrustum localSpaceFrustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
+//
+//    for (size_t i = 0; i < renderable_objects.size(); i++) {
+//
+//        if (f_culling_enabled) { /*
+//            XMMATRIX world = renderable_objects[i].GetWorldMatrix();
+//            XMVECTOR Det2 = XMMatrixDeterminant(world);
+//            XMMATRIX invWorld = XMMatrixInverse(&Det2, world);
+//            XMMATRIX viewToLocal = XMMatrixMultiply(invView, invWorld);
+//
+//            BoundingFrustum localSpaceFrustum;
+//            f_culling.Transform(localSpaceFrustum, viewToLocal);*/
+//
+//            if (localSpaceFrustum.Contains(renderable_objects[i].GetBoundingBox()) != DirectX::DISJOINT) {
+//                renderable_objects[i].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+//            } else {
+//                //Logs::Debug("Object not rendered");
+//            }
+//        } else {
+//            renderable_objects[i].Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+//        }
+//    }
+//}
 
 void Graphics::setWidgets(
   motor::ui_system::ConsoleUI* console, bool* showConsole,
@@ -789,7 +811,7 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
                 UINT offset = 0;
 
-                auto textures = meshes[i].GetTextures();
+                auto& textures = meshes[i].GetTextures();
 
 
                 if (textures.size() != 0) 
@@ -806,8 +828,8 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
                 }
                 
 
-                auto vertexbuffer = meshes[i].GetVertexBuffer();
-                auto indexbuffer = meshes[i].GetIndexBuffer();
+                auto& vertexbuffer = meshes[i].GetVertexBuffer();
+                auto& indexbuffer = meshes[i].GetIndexBuffer();
 
                 this->deviceContext->IASetVertexBuffers(0, 1, vertexbuffer.GetAddressOf(), vertexbuffer.StridePtr(), &offset);
                 this->deviceContext->IASetIndexBuffer(indexbuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);
@@ -834,6 +856,7 @@ void Graphics::DrawDebugScene(Scene& scene)
 
 void Graphics::UnloadProject_() {
     motor::utils::debug_write::info("Unloading project...\n");
+    UnloadScene_();
     showScenes_ = false;
     loadedProject_ = false;
 }
@@ -844,4 +867,11 @@ void Graphics::LoadProject_() {
     assetViewerUI_->SetRoot(std::filesystem::current_path());
     showScenes_ = true;
     loadedProject_ = true;
+}
+
+void Graphics::UnloadScene_() {
+    test_entt_scene.Reset();
+    model_loader.Reset();
+    cam_container.Reset();
+    loadedScene_ = false;
 }

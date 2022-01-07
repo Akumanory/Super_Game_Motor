@@ -17,15 +17,16 @@ class Entity;
 class Scene
 {
 public:
-    Scene();
+    Scene() = default;
     Scene(int& height, int& width, ModelLoader* model_manager);
-    ~Scene();
+    ~Scene() = default;
 
     void SetModelLoader(ModelLoader* model_manager);
     void SetAspectRatioParams(int& height, int& width);
     Entity CreateEntity(const std::string name);
     void DestroyEntity(Entity entity);
     std::vector<Entity> GetRenderableEntities();
+    void Reset();
     //Entity GetPrimaryCamera();
 
     /*void Initialize(ModelLoader& model_loader);

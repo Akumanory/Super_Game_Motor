@@ -28,9 +28,9 @@ public:
 	Texture(ID3D11Device* device, const Color* colorData, UINT width, UINT height, aiTextureType type); //Generate texture of specific color data
 	Texture(ID3D11Device* device, const std::string& filePath, aiTextureType type);
 	Texture(ID3D11Device* device, const uint8_t* pData, size_t size, aiTextureType type);
-	aiTextureType GetType();
+	aiTextureType GetType() const;
 	ID3D11ShaderResourceView* GetTextureResourceView();
-	ID3D11ShaderResourceView** GetTextureResourceViewAddress();
+	ID3D11ShaderResourceView* const* GetTextureResourceViewAddress() const;
 
 private:
 	void Initialize1x1ColorTexture(ID3D11Device* device, const Color& colorData, aiTextureType type);

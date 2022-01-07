@@ -90,6 +90,7 @@ private:
 	bool InitializeScene();
     void LoadProject_();
     void UnloadProject_();
+    void UnloadScene_();
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;

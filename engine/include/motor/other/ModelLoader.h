@@ -23,6 +23,7 @@ public:
     ModelStruct& GetModelById(int id);
     ModelStruct* GetModelByFilePath(std::string filePath);
     ModelStruct* LastLoadedModel();
+    void Reset();
 
 
 private:

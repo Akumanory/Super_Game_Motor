@@ -9,6 +9,7 @@ public:
     Camera& GetCurrentCamera();
     Camera& GetCameraById(int id);
     size_t CountCameras();
+    void Reset();
 
 private:
     std::vector<Camera> cameras;

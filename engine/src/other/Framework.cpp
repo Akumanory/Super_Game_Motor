@@ -128,7 +128,7 @@ void Framework::Update()
 		OutputDebugStringA(outmsg.c_str());*/
 	}
 
-	gfx.solar_system_scene.Update(delta);
+	//gfx.solar_system_scene.Update(delta);
 
 	//ComponentSystems::AjustRotation(gfx.entity1, DirectX::XMFLOAT3(0.0001f, 0.0f, 0.0002f), delta);
 

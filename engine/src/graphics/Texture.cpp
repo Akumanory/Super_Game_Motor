@@ -44,7 +44,7 @@ Texture::Texture(ID3D11Device* device, const uint8_t* pData, size_t size, aiText
 	COM_ERROR_IF_FAILED(hr, "Failed to create Texture from memory.");
 }
 
-aiTextureType Texture::GetType()
+aiTextureType Texture::GetType() const
 {
 	return this->type;
 }
@@ -54,7 +54,7 @@ ID3D11ShaderResourceView* Texture::GetTextureResourceView()
 	return this->textureView.Get();
 }
 
-ID3D11ShaderResourceView** Texture::GetTextureResourceViewAddress()
+ID3D11ShaderResourceView* const* Texture::GetTextureResourceViewAddress() const
 {
 	return this->textureView.GetAddressOf();
 }

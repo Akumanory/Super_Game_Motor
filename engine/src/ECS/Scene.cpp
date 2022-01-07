@@ -5,19 +5,10 @@
 
 #include <fstream>
 
-Scene::Scene() 
-{
-
-}
-
 Scene::Scene(int& height, int& width, ModelLoader* model_manager) 
 {
     SetModelLoader(model_manager);
     SetAspectRatioParams(height, width);
-}
-
-Scene::~Scene() 
-{
 }
 
 void Scene::SetModelLoader(ModelLoader* model_manager) 
@@ -183,4 +174,11 @@ void Scene::Load() {
     //    reg.emplace<MeshComponent>(entity, std::move(mesh));
     //});
     std::swap(m_registry, reg);
+}
+
+void Scene::Reset() {
+    m_model_manager = nullptr;
+    m_registry.clear();
+    m_window_width = 0;
+    m_window_height = 0;
 }

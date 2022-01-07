@@ -46,3 +46,8 @@ size_t CameraContainer::CountCameras()
 {
     return cameras.size();
 }
+
+void CameraContainer::Reset() {
+    cameras.clear();
+    _selectedCameraId = 0;
+}

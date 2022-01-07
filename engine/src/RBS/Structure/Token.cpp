@@ -1,7 +1,7 @@
-#include "Token.h"
+#include <motor/RBS/Structure/Token.h>
 
-#include "../Utils/VectorPrinter.h"
+#include <motor/RBS/VectorPrinter.h>
 
 void Token::print(int level) const {
-	VectorPrinter::print(*this, level);
+    VectorPrinter::print(*this, level);
 }

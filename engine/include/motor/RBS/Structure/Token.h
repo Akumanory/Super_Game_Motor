@@ -1,11 +1,11 @@
 #pragma once
 
-#include "WME.h"
+#include <motor/RBS/Structure/WME.h>
 
 class Token : public std::vector<WME> {
 public:
 
-	void print(int level) const;
+    void print(int level) const;
 
 };
 

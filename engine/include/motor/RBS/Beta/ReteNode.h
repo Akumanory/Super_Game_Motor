@@ -2,27 +2,27 @@
 
 #include <memory>
 
-#include "../Structure/Node.h"
-#include "../Structure/Token.h"
+#include <motor/RBS/Structure/Node.h>
+#include <motor/RBS/Structure/Token.h>
 
 class ReteNode : public Node<TokenVector> {
 protected:
 
-	bool isReadyForOutput;
+    bool isReadyForOutput;
 
 public:
 
-	ReteNode(bool isReadyForOutput);
+    ReteNode(bool isReadyForOutput);
 
 };
 
 using ReteNodePtr = std::shared_ptr<ReteNode>;
 
 namespace std {
-	template<>
-	struct std::hash<ReteNode> {
-		size_t operator()(const ReteNode& node) const {
-			return hash<size_t>()(node.serialNumber);
-		}
-	};
+    template<>
+    struct std::hash<ReteNode> {
+        size_t operator()(const ReteNode& node) const {
+            return hash<size_t>()(node.serialNumber);
+        }
+    };
 }

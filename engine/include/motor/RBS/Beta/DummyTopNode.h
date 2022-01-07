@@ -1,14 +1,14 @@
 #pragma once
 
-#include "ReteNode.h"
+#include <motor/RBS/Beta/ReteNode.h>
 
 struct DummyTopNode : public ReteNode {
 public:
 
-	DummyTopNode();
+    DummyTopNode();
 
-	void ClearStatus() override;
+    void ClearStatus() override;
 
-	const TokenVector& GetOutput() override;
+    const TokenVector& GetOutput() override;
 
 };

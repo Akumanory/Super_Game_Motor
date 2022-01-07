@@ -26,6 +26,43 @@ set(ECS_HEADERS
     include/motor/ECS/SceneHierarchy.h
 )
 
+set(RBS_HEADERS
+    include/motor/RBS/StringOp.h
+    include/motor/RBS/PublicDefine.h
+    include/motor/RBS/VectorPrinter.h
+)
+
+set(ALPHA_HEADERS
+    include/motor/RBS/Alpha/AlphaMemory.h
+)
+
+set(BETA_HEADERS
+    include/motor/RBS/Beta/BetaNode.h
+    include/motor/RBS/Beta/DummyTopNode.h
+    include/motor/RBS/Beta/JoinNode.h
+    include/motor/RBS/Beta/ProductionNode.h
+    include/motor/RBS/Beta/ReteNode.h
+    include/motor/RBS/Beta/TokenFilterNode.h
+)
+
+set(RETE_HEADERS
+    include/motor/RBS/ReteNet/Net.h
+)
+
+set(STRUCT_HEADERS
+    include/motor/RBS/Structure/Condition.h
+    include/motor/RBS/Structure/Field.h
+    include/motor/RBS/Structure/Node.h
+    include/motor/RBS/Structure/Token.h
+    include/motor/RBS/Structure/Triples.h
+    include/motor/RBS/Structure/WME.h
+)
+
+set(TEST_HEADERS
+    include/motor/RBS/TestNode/ParamTestNode.h
+    include/motor/RBS/TestNode/TestAtTokenFilterNode.h
+)
+
 set(GRAPHICS_HEADERS
     include/motor/graphics/Camera.h
     include/motor/graphics/Color.h
@@ -111,6 +148,39 @@ set(ECS_SOURCES
     src/ECS/SceneHierarchy.cpp
 )
 
+set(RBS_SOURCES
+    src/RBS/StringOp.cpp
+)
+
+set(ALPHA_SOURCES
+    src/RBS/Alpha/AlphaMemory.cpp
+)
+
+set(BETA_SOURCES
+    src/RBS/Beta/BetaNode.cpp
+    src/RBS/Beta/DummyTopNode.cpp
+    src/RBS/Beta/JoinNode.cpp
+    src/RBS/Beta/ProductionNode.cpp
+    src/RBS/Beta/ReteNode.cpp
+    src/RBS/Beta/TokenFilterNode.cpp
+)
+
+set(RETE_SOURCES
+    src/RBS/ReteNet/Net.cpp
+)
+
+set(STRUCT_SOURCES
+    src/RBS/Structure/Condition.cpp
+    src/RBS/Structure/Field.cpp
+    src/RBS/Structure/Token.cpp
+    src/RBS/Structure/Triples.cpp
+)
+
+set(TEST_SOURCES
+    src/RBS/TestNode/ParamTestNode.cpp
+    src/RBS/TestNode/TestAtTokenFilterNode.cpp
+)
+
 set(GRAPHICS_SOURCES
     src/graphics/Camera.cpp
     src/graphics/Color.cpp
@@ -181,6 +251,12 @@ add_library (${PROJECT_NAME}
     ${ASYNC_HEADERS}
     ${CORE_SYSTEM_HEADERS}
     ${ECS_HEADERS}
+    ${RBS_HEADERS}
+    ${ALPHA_HEADERS}
+    ${BETA_HEADERS}
+    ${RETE_HEADERS}
+    ${STRUCT_HEADERS}
+    ${TEST_HEADERS}
     ${GRAPHICS_HEADERS}
     ${SCENES_HEADERS}
     ${KEYBOARD_HEADERS}
@@ -192,6 +268,12 @@ add_library (${PROJECT_NAME}
 
     ${CORE_SYSTEM_SOURCES}
     ${ECS_SOURCES}
+    ${RBS_SOURCES}
+    ${ALPHA_SOURCES}
+    ${BETA_SOURCES}
+    ${RETE_SOURCES}
+    ${STRUCT_SOURCES}
+    ${TEST_SOURCES}
     ${GRAPHICS_SOURCES}
     ${KEYBOARD_SOURCES}
     ${MOUSE_SOURCES}
@@ -206,6 +288,12 @@ add_library (${PROJECT_NAME}
 
 source_group ("include/motor/async"                     FILES ${ASYNC_HEADERS})
 source_group ("include/motor/ECS"                       FILES ${ECS_HEADERS})
+source_group ("include/motor/RBS"                       FILES ${RBS_HEADERS})
+source_group ("include/motor/RBS/Alpha"                 FILES ${ALPHA_HEADERS})
+source_group ("include/motor/RBS/Beta"                  FILES ${BETA_HEADERS})
+source_group ("include/motor/RBS/ReteNet"               FILES ${RETE_HEADERS})
+source_group ("include/motor/RBS/Structure"             FILES ${STRUCT_HEADERS})
+source_group ("include/motor/RBS/TestNode"              FILES ${TEST_HEADERS})
 source_group ("include/motor/graphics"                  FILES ${GRAPHICS_HEADERS})
 source_group ("include/motor/graphics/scenes"           FILES ${SCENES_HEADERS})
 source_group ("include/motor/keyboard"                  FILES ${KEYBOARD_HEADERS})
@@ -216,6 +304,12 @@ source_group ("include/motor"                           FILES ${HEADERS})
 
 source_group ("src/core_system"                         FILES ${CORE_SYSTEM_SOURCES})
 source_group ("src/ECS"                                 FILES ${ECS_SOURCES})
+source_group ("src/RBS"                                 FILES ${RBS_SOURCES})
+source_group ("src/RBS/Alpha"                           FILES ${ALPHA_SOURCES})
+source_group ("src/RBS/Beta"                            FILES ${BETA_SOURCES})
+source_group ("src/RBS/ReteNet"                         FILES ${RETE_SOURCES})
+source_group ("src/RBS/Structure"                       FILES ${STRUCT_SOURCES})
+source_group ("src/RBS/TestNode"                        FILES ${TEST_SOURCES})
 source_group ("src/graphics"                            FILES ${GRAPHICS_SOURCES})
 source_group ("src/keyboard"                            FILES ${KEYBOARD_SOURCES})
 source_group ("src/mouse"                               FILES ${MOUSE_SOURCES})

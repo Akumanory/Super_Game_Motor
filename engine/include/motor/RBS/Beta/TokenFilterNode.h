@@ -1,20 +1,20 @@
 #pragma once
 
-#include "BetaNode.h"
-#include "../TestNode/TestAtTokenFilterNode.h"
+#include <motor/RBS/Beta/BetaNode.h>
+#include <motor/RBS/TestNode/TestAtTokenFilterNode.h>
 
 class TokenFilterNode : public BetaNode {
 public:
 
-	TokenFilterNode(ReteNodePtr leftParent, AlphaMemoryPtr rightParent,
-		const ParamTestNodeVector & tests, const Condition& c, TestAtTokenFilterNode& testAtTokenFilterNode);
+    TokenFilterNode(ReteNodePtr leftParent, AlphaMemoryPtr rightParent,
+        const ParamTestNodeVector & tests, const Condition& c, TestAtTokenFilterNode& testAtTokenFilterNode);
 
-	const TokenVector& GetOutput() override;
+    const TokenVector& GetOutput() override;
 
 private:
 
-	Condition c;
-	bool isPositive;
-	TestAtTokenFilterNode& testAtTokenFilterNode;
+    Condition c;
+    bool isPositive;
+    TestAtTokenFilterNode& testAtTokenFilterNode;
 
 };

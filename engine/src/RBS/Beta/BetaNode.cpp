@@ -1,15 +1,16 @@
-#include "BetaNode.h"
+#include <motor/RBS/Beta/BetaNode.h>
 
-BetaNode::BetaNode(ReteNodePtr leftParent, AlphaMemoryPtr rightParent
-	, const ParamTestNodeVector & tests)
-	: ReteNode(false), LeftParent(leftParent), RightParent(rightParent), Tests(tests) {
+#include <motor/RBS/Alpha/AlphaMemory.h>
+
+BetaNode::BetaNode(ReteNodePtr leftParent, AlphaMemoryPtr rightParent, const ParamTestNodeVector& tests)
+    : ReteNode(false), LeftParent(leftParent), RightParent(rightParent), Tests(tests) {
 }
 
 void BetaNode::ClearStatus() {
-	if (isReadyForOutput) {
-		isReadyForOutput = false;
-		output.clear();
-		LeftParent->ClearStatus();
-		RightParent->ClearStatus();
-	}
+    if (isReadyForOutput) {
+        isReadyForOutput = false;
+        output.clear();
+        LeftParent->ClearStatus();
+        RightParent->ClearStatus();
+    }
 }

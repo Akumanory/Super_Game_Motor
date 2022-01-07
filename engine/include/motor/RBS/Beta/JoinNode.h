@@ -2,19 +2,19 @@
 
 #include <iterator>
 
-#include "BetaNode.h"
-#include "../Structure/Condition.h"
+#include <motor/RBS/Beta/BetaNode.h>
+#include <motor/RBS/Structure/Condition.h>
 
 class JoinNode : public BetaNode {
 public:
 
-	JoinNode(ReteNodePtr leftParent, AlphaMemoryPtr rightParent, 
-		const ParamTestNodeVector& tests, const Condition& c);
+    JoinNode(ReteNodePtr leftParent, AlphaMemoryPtr rightParent, 
+        const ParamTestNodeVector& tests, const Condition& c);
 
-	const TokenVector& GetOutput() override;
+    const TokenVector& GetOutput() override;
 
 private:
 
-	bool isPositive;
+    bool isPositive;
 
 };

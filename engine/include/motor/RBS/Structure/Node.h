@@ -3,23 +3,23 @@
 template <typename O>
 class Node {
 
-	static size_t count;
+    static size_t count;
 
 protected:
 
-	O output;
+    O output;
 
 public:
 
-	size_t serialNumber;
+    size_t serialNumber;
 
-	Node();
+    Node();
 
-	virtual const O& GetOutput() = 0;
+    virtual const O& GetOutput() = 0;
 
-	virtual void ClearStatus() = 0;
+    virtual void ClearStatus() = 0;
 
-	bool operator==(const Node<O>& rhs) const;
+    bool operator==(const Node<O>& rhs) const;
 
 };
 
@@ -32,5 +32,5 @@ inline Node<O>::Node() : serialNumber(count++) {
 
 template<typename O>
 inline bool Node<O>::operator==(const Node<O>& rhs) const {
-	return serialNumber == rhs.serialNumber;
+    return serialNumber == rhs.serialNumber;
 }

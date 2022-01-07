@@ -3,8 +3,8 @@
 #include <iostream>
 
 inline void breakpointFunction() {
-	int i = 0;
- 	std::cout << i++ << std::endl;
+    int i = 0;
+    std::cout << i++ << std::endl;
 }
 
 #define DEBUG_OUTPUT
@@ -12,33 +12,33 @@ inline void breakpointFunction() {
 
 #ifdef DEBUG_ASSERT
 #define myAssert(exp) \
-	if (!(exp))  {  \
-		std::cout << "Assertion failed: " << #exp << std::endl; \
-        std::cout << "line: " << __LINE__ << std::endl; \
-        std::cout << "file: " << __FILE__ << std::endl; \
-		breakpointFunction(); \
-		system("pause"); \
-        exit(EXIT_FAILURE); \
+    if (!(exp))  {  \
+            std::cout << "Assertion failed: " << #exp << std::endl; \
+    std::cout << "line: " << __LINE__ << std::endl; \
+    std::cout << "file: " << __FILE__ << std::endl; \
+            breakpointFunction(); \
+            system("pause"); \
+    exit(EXIT_FAILURE); \
     }
 #define myAssertPlus(exp, message) \
-	if (!(exp))  {  \
-		std::cout << "Assertion failed: " << #exp << std::endl; \
-        std::cout << "Message: " << message << std::endl; \
-        std::cout << "line: " << __LINE__ << std::endl; \
-        std::cout << "file: " << __FILE__ << std::endl; \
-		breakpointFunction(); \
-		system("pause"); \
-        exit(EXIT_FAILURE); \
+    if (!(exp))  {  \
+            std::cout << "Assertion failed: " << #exp << std::endl; \
+    std::cout << "Message: " << message << std::endl; \
+    std::cout << "line: " << __LINE__ << std::endl; \
+    std::cout << "file: " << __FILE__ << std::endl; \
+            breakpointFunction(); \
+            system("pause"); \
+    exit(EXIT_FAILURE); \
     }
 #define myAssertWithFunction(exp, func) \
-	if (!(exp))  {  \
-		std::cout << "Assertion failed: " << #exp << std::endl; \
-        std::cout << "line: " << __LINE__ << std::endl; \
-        std::cout << "file: " << __FILE__ << std::endl; \
-		func(); \
-		breakpointFunction(); \
-		system("pause"); \
-        exit(EXIT_FAILURE); \
+    if (!(exp))  {  \
+            std::cout << "Assertion failed: " << #exp << std::endl; \
+    std::cout << "line: " << __LINE__ << std::endl; \
+    std::cout << "file: " << __FILE__ << std::endl; \
+            func(); \
+            breakpointFunction(); \
+            system("pause"); \
+    exit(EXIT_FAILURE); \
     }
 #else
 #define myAssert(exp)

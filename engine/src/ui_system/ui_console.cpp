@@ -40,9 +40,10 @@ void ConsoleUI::Draw(const char* title, bool* p_open) {
     const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
     ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar);
     if (ImGui::BeginPopupContextWindow()) {
-        if (ImGui::Selectable("Clear"))
+        if (ImGui::Selectable("Clear")) {
             //ClearLog();
-            ImGui::EndPopup();
+        }
+        ImGui::EndPopup();
     }
 
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing

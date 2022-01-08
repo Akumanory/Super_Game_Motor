@@ -70,6 +70,7 @@ set(MOUSE_HEADERS
 set(OTHER_HEADERS
     include/motor/other/AssetManager.hpp
     include/motor/other/COMException.h
+    include/motor/other/Config.hpp
     include/motor/other/DirectXIncludes.h
     include/motor/other/Display.h
     include/motor/other/Framework.h

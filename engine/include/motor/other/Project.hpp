@@ -1,5 +1,7 @@
 #pragma once
 
+#include <motor/other/Config.hpp>
+
 #include <rapidjson/document.h>
 
 #include <filesystem>
@@ -48,6 +50,7 @@ public:
     auto DeleteScene(std::string name) -> void;
     auto SetMainScene(std::string name) -> void;
     auto SetIncludeScene(std::string name, bool include) -> void;
+    auto GetEngineConfig() -> Config&;
 
 private:
     auto FindScene_(std::string const& name) -> std::vector<SceneDesc>::iterator;
@@ -58,6 +61,7 @@ private:
     std::filesystem::path projectDir_;
     ProjectConfig projectConfig_;
     bool opened_{ false };
+    Config config_;
 };
 
 } // namespace motor

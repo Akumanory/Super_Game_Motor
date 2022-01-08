@@ -100,7 +100,7 @@ void Framework::Update()
 		MouseEvent me = display.mouse.ReadEvent();
 		if (display.mouse.IsRightDown())
 		{
-			if (me.GetType() == MouseEvent::EventType::RAW_MOVE)
+			if (me.GetType() == MouseEvent::EventType::RAW_MOVE and gfx.cam_container.CountCameras() != 0)
 			{
 				gfx.cam_container.GetCurrentCamera().AdjustRotation(
 					(float)me.GetPosY() * 0.005f,

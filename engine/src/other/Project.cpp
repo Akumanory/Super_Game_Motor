@@ -1,5 +1,7 @@
 #include <motor/other/Project.hpp>
 #include <motor/other/Json.hpp>
+#include <motor/other/Config.hpp>
+#include <motor/converters.hpp>
 
 using namespace motor;
 namespace fs = std::filesystem;
@@ -32,6 +34,7 @@ auto Project::OpenProject(fs::path path) -> void {
     if (not fs::exists(path / "assets")) {
         fs::create_directories(path / "assets");
     }
+    config_.AddLastProject(motor::converters::mb_to_u8(projectConfig_.name), std::filesystem::absolute(path));
     opened_ = true;
 }
 
@@ -45,6 +48,7 @@ auto Project::CreateProject(std::string name, fs::path path) -> void {
     json::writeFile(path / "config.json", projectConfig_);
     fs::create_directories(path / "scenes");
     fs::create_directories(path / "assets");
+    config_.AddLastProject(motor::converters::mb_to_u8(projectConfig_.name), std::filesystem::absolute(path));
     opened_ = true;
 }
 
@@ -124,6 +128,10 @@ auto Project::FindScene_(std::string const& name) const -> std::vector<SceneDesc
         throw std::runtime_error(std::format("Scene {} not found", name));
     }
     return it;
+}
+
+auto Project::GetEngineConfig() -> Config& {
+    return config_;
 }
 
 auto Project::ProjectConfig::from_json(rj::Value& obj) -> ProjectConfig {

@@ -13,7 +13,9 @@ public:
     ProjectUI(Project& project)
         : project_{ project } {
         fileBrowser_.SetTitle("Open project");
+        fileBrowser_.SetPwd(project_.GetEngineConfig().GetConfig().lastFolder);
         fileBrowserCreate_.SetTitle("Create project");
+        fileBrowserCreate_.SetPwd(project_.GetEngineConfig().GetConfig().lastFolder);
     }
     ProjectUI(ProjectUI const&) = delete;
     ProjectUI(ProjectUI&&) = default;
@@ -33,11 +35,23 @@ public:
         if (ImGui::Button("Create")) {
             fileBrowserCreate_.Open();
         }
+        ImGui::Separator();
+        ImGui::Text("Last projects:");
+        for (auto& i : project_.GetEngineConfig().GetConfig().lastProjects) {
+            if (ImGui::Button((char const*)std::get<std::u8string>(i).c_str())) {
+                project_.OpenProject(std::get<std::filesystem::path>(i));
+                *p_open = false;
+            }
+            ImGui::SameLine();
+            ImGui::Text((char const*)std::get<std::filesystem::path>(i).generic_u8string().c_str());
+        }
 
         fileBrowser_.Display();
         fileBrowserCreate_.Display();
 
         if (fileBrowser_.HasSelected()) {
+            project_.GetEngineConfig().SetLastFolder(fileBrowser_.GetPwd());
+            fileBrowserCreate_.SetPwd(fileBrowser_.GetPwd());
             auto projPath = fileBrowser_.GetSelected();
             fileBrowser_.ClearSelected();
 
@@ -47,6 +61,8 @@ public:
             *p_open = false;
         }
         if (fileBrowserCreate_.HasSelected()) {
+            project_.GetEngineConfig().SetLastFolder(fileBrowserCreate_.GetPwd());
+            fileBrowser_.SetPwd(fileBrowserCreate_.GetPwd());
             auto projPath = fileBrowserCreate_.GetSelected();
             fileBrowserCreate_.ClearSelected();
 

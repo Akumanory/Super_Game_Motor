@@ -64,25 +64,29 @@ void Graphics::RenderFrame() {
     //    deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
     //    deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
     //
-    //    deviceContext->RSSetState(rasterizer_state.Get());
-    //    deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
-    //
+    if (loadedScene_) {
+        deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
+        deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
+
+        deviceContext->RSSetState(rasterizer_state.Get());
+        deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+        //
         deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
         deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
         deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
 
-    // ------------------------------------------------------------------
-    //    UINT offset = 0;
+        // ------------------------------------------------------------------
+        UINT offset = 0;
 
-    //    cb_ps_light.data.dynamicLightColor = light.lightColor;
-    //    cb_ps_light.data.dynamicLightStrength = light.lightStrength;
-    //    cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
-    //    cb_ps_light.data.dynamicLightAttenuation_A = light.attennuation_A;
-    //    cb_ps_light.data.dynamicLightAttenuation_B = light.attennuation_B;
-    //    cb_ps_light.data.dynamicLightAttenuation_C = light.attennuation_C;
-    //    cb_ps_light.ApplyChanges();
-    //    deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
-
+        cb_ps_light.data.dynamicLightColor = light.lightColor;
+        cb_ps_light.data.dynamicLightStrength = light.lightStrength;
+        cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
+        cb_ps_light.data.dynamicLightAttenuation_A = light.attennuation_A;
+        cb_ps_light.data.dynamicLightAttenuation_B = light.attennuation_B;
+        cb_ps_light.data.dynamicLightAttenuation_C = light.attennuation_C;
+        cb_ps_light.ApplyChanges();
+        deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
+    }
     /*model1.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	model2.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	model3.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());*/
@@ -96,6 +100,7 @@ void Graphics::RenderFrame() {
     /// -------------------------------------------------------------------
 
     if (loadedScene_) {
+
         DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
     }
     /*
@@ -141,9 +146,10 @@ void Graphics::RenderFrame() {
 
     //solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), cam_container.GetCameraById(0).GetLocalBoundingFrustum());
 
-    //    deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
-    //    light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
-
+    if (loadedScene_) {
+        deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
+        light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+    }
     // Simple batch
     //    m_effect->SetVertexColorEnabled(true);
     //    m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
@@ -532,15 +538,15 @@ bool Graphics::InitializeShaders() {
         return false;
     }
 
-    deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
-    deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
-    
-    deviceContext->RSSetState(rasterizer_state.Get());
-    deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
-    
-    deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
-    deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
-    deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
+    //deviceContext->IASetInputLayout(vertex_shader.GetInputLayout());
+    //deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST); // TrianleList
+    //
+    //deviceContext->RSSetState(rasterizer_state.Get());
+    //deviceContext->OMSetDepthStencilState(depth_stencil_state.Get(), 0);
+    //
+    //deviceContext->PSSetSamplers(0, 1, sampler_state.GetAddressOf());
+    //deviceContext->VSSetShader(vertex_shader.GetShader(), nullptr, 0);
+    //deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
 
     return true;
 }
@@ -706,7 +712,7 @@ bool Graphics::InitializeScene() {
         entity3 = test_entt_scene.CreateEntity("Third Entity");
         ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
         ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-        //entity3.AddComponent<MeshComponent>();
+        entity3.AddComponent<MeshComponent>();
         //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
 
 
@@ -811,7 +817,7 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
                 UINT offset = 0;
 
-                auto& textures = meshes[i].GetTextures();
+                auto textures = meshes[i].GetTextures();
 
 
                 if (textures.size() != 0) 
@@ -828,8 +834,8 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
                 }
                 
 
-                auto& vertexbuffer = meshes[i].GetVertexBuffer();
-                auto& indexbuffer = meshes[i].GetIndexBuffer();
+                auto vertexbuffer = meshes[i].GetVertexBuffer();
+                auto indexbuffer = meshes[i].GetIndexBuffer();
 
                 this->deviceContext->IASetVertexBuffers(0, 1, vertexbuffer.GetAddressOf(), vertexbuffer.StridePtr(), &offset);
                 this->deviceContext->IASetIndexBuffer(indexbuffer.Get(), DXGI_FORMAT::DXGI_FORMAT_R32_UINT, 0);

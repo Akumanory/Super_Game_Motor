@@ -21,7 +21,7 @@ concept Serializable = requires(T const& t, rapidjson::Value& obj, rapidjson::Do
 };
 
 template <Serializable T>
-auto readFile(std::filesystem::path path) -> T {
+[[nodiscard]] auto readFile(std::filesystem::path path) -> T {
     std::ifstream file_in(path);
     std::stringstream json_input;
     json_input << file_in.rdbuf();

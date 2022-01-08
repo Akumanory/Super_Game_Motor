@@ -13,7 +13,7 @@ void ConsoleUI::Draw(const char* title, bool* p_open) {
         ImGui::End();
         return;
     }
-    if (core_system::LuaConsole::getInstance() == nullptr) {
+    if (LuaConsole::getInstance() == nullptr) {
         auto color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
         ImGui::PushStyleColor(ImGuiCol_Text, color);
         ImGui::TextWrapped("Console is not created");
@@ -22,7 +22,7 @@ void ConsoleUI::Draw(const char* title, bool* p_open) {
         return;
     }
 
-    auto&& log = core_system::LuaConsole::getInstance()->getLog();
+    auto&& log = LuaConsole::getInstance()->getLog();
 
     // Options menu
     if (ImGui::BeginPopup("Options")) {
@@ -176,7 +176,7 @@ int ConsoleUI::TextEditCallback(ImGuiInputTextCallbackData* data) {
 }
 
 void ConsoleUI::ExecCommand(const char* command_line) {
-    continuation_ = core_system::LuaConsole::getInstance()->input(command_line);
+    continuation_ = LuaConsole::getInstance()->input(command_line);
 
     // On command input, we scroll to bottom even if AutoScroll==false
     scroll_to_bottom_ = true;

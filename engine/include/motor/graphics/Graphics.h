@@ -13,11 +13,9 @@
 #include <motor/graphics/CameraContainer.h>
 #include <motor/graphics/scenes/SolarSystem.h>
 #include <motor/graphics/DebugDraw.h>
-#include <motor/ECS/Scene.h>
 #include <motor/ui_system/ui_console.hpp>
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
-#include <motor/ECS/Entity.h>
 #include <motor/ECS/SceneHierarchy.h>
 
 // ImGui
@@ -31,9 +29,17 @@
 #include <SpriteFont.h>
 #include <WICTextureLoader.h>
 
+
+
 class Graphics
 {
 public:
+    enum States {
+        Editor = 0,
+        Simulate = 1,
+        Pause = 2
+    };
+
 	bool Initialize(HWND hwnd, int width, int height);
 	void RenderFrame();
 	void DrawObjects(bool f_culling_enabled);
@@ -47,14 +53,19 @@ public:
     void DrawModel();
     void DrawMesh();
 
+	
+
+	States state = States::Editor;
+
     CameraContainer cam_container;
+    ModelLoader model_loader;
 
 	Scene test_entt_scene;
     SceneHierarchy scene_hierachy;
 
 	Entity entity1;
     Entity entity2;
-
+	Entity entity3;
 
     DirectX::XMMATRIX viewMatrix;
 
@@ -64,18 +75,11 @@ public:
     std::unique_ptr<DirectX::BasicEffect> m_effect;
     std::unique_ptr<DirectX::PrimitiveBatch<VertexType>> m_batch;
     Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
-	
-	//RenderableGameObject gameObject;
-	//RenderableGameObject gameObject1;
-	//RenderableGameObject gameObject2;
-	//RenderableGameObject gameObject3;
-	//RenderableGameObject gameObject4;
 
 	std::vector<RenderableGameObject> renderable_objects;
-
+    std::mutex renderable_objects_mtx;
 
 	Light light;
-	//Model test_mesh_model;
 	SolarSystem solar_system_scene;
 
 private:

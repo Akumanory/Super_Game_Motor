@@ -1,4 +1,5 @@
 #include <motor/ECS/Factory.h>
+#include <motor/ECS/Components.h>
 
 //entt::entity SimpleGameObject(entt::registry& reg) 
 //{

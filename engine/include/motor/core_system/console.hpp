@@ -6,7 +6,6 @@
 #include <string>
 
 namespace motor {
-namespace core_system {
 
 class LuaConsole {
 public:
@@ -34,5 +33,4 @@ private:
     std::string input_cache_;
 };
 
-} // namespace core_system
 } // namespace motor

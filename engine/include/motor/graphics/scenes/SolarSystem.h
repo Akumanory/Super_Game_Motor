@@ -16,6 +16,7 @@ public:
 			}
 			models[i].SetPosition(0.0f, 0.0f, 0.0f);
 		}
+        return true;
 	}
 
 	void AddCube(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11ShaderResourceView* texture, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos) {

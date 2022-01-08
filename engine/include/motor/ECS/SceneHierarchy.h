@@ -1,7 +1,7 @@
 #pragma once 
 
 #include <motor/ECS/Entity.h>
-#include <motor/ECS/Scene.h>
+#include <motor/other/ModelLoader.h>
 
 class SceneHierarchy 
 {
@@ -17,6 +17,7 @@ public:
 
 private:
     void DrawEntityNode(Entity entity);
+    void DrawEntitySubNode(Entity entity, Entity& deliting_entity, bool& deleting_flag);
     void DrawSelectedEntityComponents(Entity entity);
 
 private:

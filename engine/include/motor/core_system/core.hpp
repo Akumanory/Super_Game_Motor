@@ -4,35 +4,50 @@
 #include <motor/state_system/state.hpp>
 #include <motor/ui_system/ui.hpp>
 #include <motor/ui_system/ui_console.hpp>
-#include <motor/core_system/console.hpp>
-#include <motor/core_system/lua.hpp>
+#include <motor/core_system/logic.hpp>
+#include <motor/ECS/Scene.h>
+#include <motor/core_system/display.hpp>
+#include <motor/core_system/input_device.hpp>
+#include <motor/other/Timer.h>
+#include <motor/graphics/Graphics.h>
 
-#define SOL_ALL_SAFETIES_ON 1
-#include <sol/sol.hpp>
+#include <concepts>
 
 namespace motor {
-namespace core_system {
 
 class core {
 public:
-    core();
+    core(std::string_view title, HINSTANCE hInstance);
+    core(core const&) = delete;
+    core(core&&) = delete;
+    core& operator=(core const&) = delete;
+    core& operator=(core&&) = delete;
+    ~core() = default;
 
 public:
-    void run();
+    auto run() -> void;
+
+    template <std::derived_from<ui_system::UI> UI>
+    auto setUI() {
+        currentUI_ = std::make_unique<UI>();
+    }
 
 private:
-    void load_();
-    void run_loop_();
+    auto drawUI_() -> void;
+    auto drawScene_() -> void;
 
 private:
-    sol::state lua_;
     motor::task_system::thread_pool thread_pool_;
-    motor::ui_system::CoreUI currentUI_;
-    motor::ui_system::ConsoleUI consoleUI_;
-    motor::core_system::LuaConsole lua_console_{ lua_ };
-    bool showConsole_{ false };
+    Logic logic_;
+    Timer timer_;
+    InputDevice inputDevice_;
+    Display display_;
+    Graphics gfx_;
+    std::unique_ptr<ui_system::UI> currentUI_;
+    std::unique_ptr<Scene> currentScene_;
+    //motor::ui_system::ConsoleUI consoleUI_;
+    //bool showConsole_{ false };
     bool showUI_{ true };
 };
 
-} // namespace core_system
 } // namespace motor

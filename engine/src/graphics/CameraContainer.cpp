@@ -41,3 +41,8 @@ void CameraContainer::AddCamera(Camera camera)
 {
     cameras.push_back(std::move(camera));
 }
+
+size_t CameraContainer::CountCameras() 
+{
+    return cameras.size();
+}

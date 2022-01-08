@@ -6,6 +6,7 @@ set (CMAKE_CXX_STANDARD 23)
 
 ADD_DEFINITIONS(-DUNICODE)
 ADD_DEFINITIONS(-D_UNICODE)
+ADD_DEFINITIONS(-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 
 set(ASYNC_HEADERS
     include/motor/async/resource.hpp
@@ -14,10 +15,14 @@ set(ASYNC_HEADERS
 set(CORE_SYSTEM_HEADERS
     include/motor/core_system/console.hpp
     include/motor/core_system/core.hpp
+    include/motor/core_system/display.hpp
+    include/motor/core_system/input_device.hpp
+    include/motor/core_system/logic.hpp
     include/motor/core_system/lua.hpp
 )
 
 set(ECS_HEADERS
+    include/motor/ECS/Archive.hpp
     include/motor/ECS/Components.h
     include/motor/ECS/Scene.h
     include/motor/ECS/Factory.h
@@ -83,6 +88,7 @@ set(GRAPHICS_HEADERS
     include/motor/graphics/CameraContainer.h
     include/motor/graphics/DebugDraw.h
     include/motor/graphics/MeshForComponents.h
+    include/motor/graphics/SceneCamera.h
 )
 
 set(SCENES_HEADERS
@@ -138,9 +144,13 @@ set(HEADERS
 set(CORE_SYSTEM_SOURCES
     src/core_system/console.cpp
     src/core_system/core.cpp
+    src/core_system/display.cpp
+    src/core_system/input_device.cpp
+    src/core_system/logic.cpp
 )
 
 set(ECS_SOURCES
+    src/ECS/Components.cpp
     src/ECS/Scene.cpp
     src/ECS/Factory.cpp
     src/ECS/ComponentSystems.cpp
@@ -196,6 +206,7 @@ set(GRAPHICS_SOURCES
     src/graphics/CameraContainer.cpp
     src/graphics/DebugDraw.cpp
     src/graphics/MeshForComponents.cpp
+    src/graphics/SceneCamera.cpp
 )
 
 set(KEYBOARD_SOURCES

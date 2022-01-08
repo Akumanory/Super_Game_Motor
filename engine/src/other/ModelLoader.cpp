@@ -2,6 +2,8 @@
 
 using namespace DirectX;
 
+thread_local std::string _directory = "";
+
 // public
 bool ModelLoader::Initialize(ID3D11Device* device) 
 {
@@ -9,9 +11,12 @@ bool ModelLoader::Initialize(ID3D11Device* device)
     return true;
 }
 
-bool ModelLoader::LoadModel(const std::string& filePath) 
+bool ModelLoader::LoadModel(const std::string& filePath, std::string name) 
 {
     ModelStruct temp_model;
+
+    temp_model.model_name = name;
+    temp_model.file_path = filePath;
 
     _directory = StringHelper::GetDirectoryFromPath(filePath);
 
@@ -36,19 +41,35 @@ bool ModelLoader::LoadModel(const std::string& filePath)
     XMStoreFloat3(&temp_model.bounding_box.Extents, 0.5f * (vMax - vMin));
 
     // Add struct to struct array (mesh and bounding box)
-    _models.push_back(temp_model);
+    _models_mtx.lock();
+    _models.push_back(std::make_unique<ModelStruct>(std::move(temp_model)));
+    _filePathMap[filePath] = _models.back().get();
+    _models_mtx.unlock();
 
     return true;
 }
 
 ModelStruct& ModelLoader::GetModelById(int id) 
 {
-    return _models[id];
+    return *_models[id];
 }
 
-int ModelLoader::CountOfModelsLoaded()
-{
-    return _models.size();
+ModelStruct* ModelLoader::GetModelByFilePath(std::string filePath) {
+    std::lock_guard lock{ _models_mtx };
+    auto it = _filePathMap.find(filePath);
+    if (it != _filePathMap.end()) {
+        return it->second;
+    } else {
+        return nullptr;
+    }
+}
+
+ModelStruct* ModelLoader::LastLoadedModel() {
+    std::lock_guard lock{ _models_mtx };
+    if (_models.empty()) {
+        return nullptr;
+    }
+    return _models.back().get();
 }
 
 

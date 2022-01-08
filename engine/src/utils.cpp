@@ -23,5 +23,11 @@ void enable_console() {
     freopen_s(&fDummy, "CONOUT$", "w", stdout);
 }
 
+auto last_error(const std::string& message) -> std::system_error {
+    return std::system_error(
+      std::error_code(::GetLastError(), std::system_category()),
+      message);
+}
+
 } // namespace utils
 } // namespace motor

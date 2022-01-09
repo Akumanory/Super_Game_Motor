@@ -255,13 +255,13 @@ void Graphics::RenderFrame() {
 	ImGui::End;*/
 
     if (showConsole_ != nullptr and consoleUI_ != nullptr) {
-        if (*showConsole_) {
+        if (*showConsole_ and loadedProject_) {
             consoleUI_->Draw("Lua Console", showConsole_);
         }
     }
 
     if (showAssetViewer_ != nullptr and assetViewerUI_ != nullptr) {
-        if (*showAssetViewer_) {
+        if (*showAssetViewer_ and loadedProject_) {
             assetViewerUI_->Draw("Asset Viewer", showAssetViewer_);
         }
     }

@@ -27,6 +27,8 @@ public:
     void DestroyEntity(Entity entity);
     std::vector<Entity> GetRenderableEntities();
     std::vector<Entity> GetCamerasEntities();
+    std::vector<Entity> GetPointLights();
+    std::vector<Entity> GetTransformEntities();
     Entity GetPrimaryCamera();
     
 

@@ -90,3 +90,13 @@ struct CameraComponent
     SceneCamera camera;
     bool primary = false;
 };
+
+struct PointLightComponent 
+{
+    DirectX::XMFLOAT3 lightColor = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+    float lightStrength = 10.0f;
+
+    float attennuation_A = 1.0f;
+    float attennuation_B = 0.1f;
+    float attennuation_C = 0.1f;
+};

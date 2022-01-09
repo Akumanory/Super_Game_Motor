@@ -79,7 +79,7 @@ public:
 	std::vector<RenderableGameObject> renderable_objects;
     std::mutex renderable_objects_mtx;
 
-	Light light;
+	//Light light;
 	SolarSystem solar_system_scene;
 
 private:

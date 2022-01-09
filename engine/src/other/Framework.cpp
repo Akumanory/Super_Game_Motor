@@ -168,12 +168,12 @@ void Framework::Update()
                 camera_speed = 0.03f;
             }
 
-            if (display.keyboard.KeyIsPressed('C')) {
+            /*if (display.keyboard.KeyIsPressed('C')) {
                 XMVECTOR lightPosition = gfx.cam_container.GetCurrentCamera().GetPositionVector();
                 lightPosition += gfx.cam_container.GetCurrentCamera().GetForwardVector();
                 gfx.light.SetPosition(lightPosition);
                 gfx.light.SetRotation(gfx.cam_container.GetCurrentCamera().GetRotationFloat3());
-            }
+            }*/
 
             if (display.keyboard.KeyIsPressed('W')) {
                 gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetForwardVector() * camera_speed * delta);

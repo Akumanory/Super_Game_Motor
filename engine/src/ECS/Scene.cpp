@@ -57,6 +57,32 @@ std::vector<Entity> Scene::GetCamerasEntities()
     return cameras_e;
 }
 
+std::vector<Entity> Scene::GetPointLights() 
+{
+    std::vector<Entity> point_light_e;
+
+    auto view = m_registry.view<TransformComponent, PointLightComponent>();
+
+    for (entt::entity entity : view) {
+        Entity tmp = { entity, this };
+        point_light_e.emplace_back(tmp);
+    }
+    return point_light_e;
+}
+
+std::vector<Entity> Scene::GetTransformEntities() 
+{
+    std::vector<Entity> transform_e;
+
+    auto view = m_registry.view<TransformComponent>();
+
+    for (entt::entity entity : view) {
+        Entity tmp = { entity, this };
+        transform_e.emplace_back(tmp);
+    }
+    return transform_e;
+}
+
 Entity Scene::GetPrimaryCamera() 
 {
     auto view = m_registry.view<CameraComponent>();
@@ -137,6 +163,10 @@ void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& componen
 
 template <>
 void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {
+}
+
+template <>
+void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component) {
 }
 
 template <>

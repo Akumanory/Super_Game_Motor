@@ -71,16 +71,10 @@ void Graphics::RenderFrame() {
     deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
 
     // ------------------------------------------------------------------
-    UINT offset = 0;
 
-    cb_ps_light.data.dynamicLightColor = light.lightColor;
-    cb_ps_light.data.dynamicLightStrength = light.lightStrength;
-    cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
-    cb_ps_light.data.dynamicLightAttenuation_A = light.attennuation_A;
-    cb_ps_light.data.dynamicLightAttenuation_B = light.attennuation_B;
-    cb_ps_light.data.dynamicLightAttenuation_C = light.attennuation_C;
-    cb_ps_light.ApplyChanges();
-    deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
+    // For ambient light
+    //deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
+
 
     /*model1.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	model2.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
@@ -97,7 +91,7 @@ void Graphics::RenderFrame() {
     
     DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
   
-    deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
+    //deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
     //light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
 
     /*Entity primary_camera = test_entt_scene.GetPrimaryCamera();
@@ -241,14 +235,9 @@ void Graphics::RenderFrame() {
     if (state == States::Editor) 
     {
         // Creater ImGui test window
-        ImGui::Begin("Light Controls");
+        ImGui::Begin("Ambietnt Light Controls");
 
-        ImGui::DragFloat3(
-          "Ambient Light Color",
-          &cb_ps_light.data.ambientLightColor.x,
-          0.01f,
-          0.0f,
-          1.0f);
+        ImGui::ColorEdit3("Ambient Light Color", (float*)&cb_ps_light.data.ambientLightColor);
 
         ImGui::DragFloat(
           "Ambient Light strength",
@@ -256,13 +245,6 @@ void Graphics::RenderFrame() {
           0.01f,
           0.0f,
           1.0f);
-        ImGui::NewLine();
-        ImGui::DragFloat3("Dynamic Light Color", &this->light.lightColor.x, 0.01f, 0.0f, 10.0f);
-        ImGui::DragFloat("Dynamic Light Strength", &this->light.lightStrength, 0.01f, 0.0f, 10.0f);
-        ImGui::DragFloat("Dynamic Light Attenuation A", &this->light.attennuation_A, 0.01f, 0.1f, 10.0f);
-        ImGui::DragFloat("Dynamic Light Attenuation B", &this->light.attennuation_B, 0.01f, 0.0f, 10.0f);
-        ImGui::DragFloat("Dynamic Light Attenuation C", &this->light.attennuation_C, 0.01f, 0.0f, 10.0f);
-
         ImGui::End();
 
         cam_container.ImGUIWindow();
@@ -482,7 +464,7 @@ bool Graphics::InitializeScene() {
         COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
 
         cb_ps_light.data.ambientLightColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
-        cb_ps_light.data.ambientLightStrength = 0.5f;
+        cb_ps_light.data.ambientLightStrength = 0.2f;
 
         // LoadModels test
         // ---------------
@@ -541,9 +523,9 @@ bool Graphics::InitializeScene() {
 
         renderable_objects.push_back(gameObject4);
 
-        if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+        /*if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
             return false;
-        }
+        }*/
 
         if (!solar_system_scene.Initialize(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader)) {
             return false;
@@ -613,14 +595,15 @@ bool Graphics::InitializeScene() {
         entity2.AddComponent<MeshComponent>();
         //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
 
-        entity3 = test_entt_scene.CreateEntity("Third Entity");
-        ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
+        entity3 = test_entt_scene.CreateEntity("Point Light Entity");
+        ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, 15.0f, 0.0f));
         ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+        entity3.AddComponent<PointLightComponent>();
         //entity3.AddComponent<MeshComponent>();
         //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
 
 
-        entity3.AddComponent<ParentComponent>(entity1);
+        //entity3.AddComponent<ParentComponent>(entity1);
 
         //ComponentSystems::SetChildEntity(entity1, entity2);
         //ComponentSystems::SetChildEntity(entity1, entity3);
@@ -691,15 +674,35 @@ void Graphics::addLightCube(float x, float y, float z) {
 
 void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
-    deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertex_shader.GetAddressOf());
-
     Entity primary_camera = scene.GetPrimaryCamera();
 
     XMMATRIX vpm = XMMatrixIdentity();
 
+    auto point_lights = scene.GetPointLights();
+    for (auto&& i : point_lights) {
+        auto& point_light_comp = i.GetComponent<PointLightComponent>();
+
+        auto& local_pos = i.GetComponent<TransformComponent>().local_position;
+        auto& world_pos = i.GetComponent<TransformComponent>().world_position;
+
+        XMFLOAT3 pos = XMFLOAT3(local_pos.x + world_pos.x, local_pos.y + world_pos.y, local_pos.z + world_pos.z);
+
+
+        cb_ps_light.data.dynamicLightColor = point_light_comp.lightColor;
+        cb_ps_light.data.dynamicLightStrength = point_light_comp.lightStrength;
+        cb_ps_light.data.dynamicLightPosition = pos;
+        cb_ps_light.data.dynamicLightAttenuation_A = point_light_comp.attennuation_A;
+        cb_ps_light.data.dynamicLightAttenuation_B = point_light_comp.attennuation_B;
+        cb_ps_light.data.dynamicLightAttenuation_C = point_light_comp.attennuation_C;
+        cb_ps_light.ApplyChanges();
+        deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
+    }
+
     auto renderableEntities = scene.GetRenderableEntities();
     for (auto&& i : renderableEntities)
     {
+        deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertex_shader.GetAddressOf());
+
         auto&& meshes = i.GetComponent<MeshComponent>().model.meshes;
 
         auto worldMatrix = ComponentSystems::GetTransformMatrix(i);
@@ -762,6 +765,8 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
             }
         }
     }
+
+    
 }
 
 void Graphics::DrawDebugScene(Scene& scene) 
@@ -774,11 +779,17 @@ void Graphics::DrawDebugScene(Scene& scene)
             Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);
         }
 
-        /*auto primary_camera = scene.GetPrimaryCamera();
-        if (primary_camera) 
-        {
-        Draw(m_batch.get(), primary_camera.GetComponent<CameraComponent>().camera.GetFrustum(), DirectX::Colors::Orange);
-        }*/
+        auto transformEntites = scene.GetTransformEntities();
+        for (auto&& i : transformEntites) {
+
+            auto& transform_comp = i.GetComponent<TransformComponent>();
+
+            XMVECTOR position = XMVectorSet(transform_comp.world_position.x, transform_comp.world_position.y, transform_comp.world_position.z, 0.0f);
+
+            DrawRay(m_batch.get(), position, transform_comp.GetForwardVector(), true, DirectX::Colors::LightBlue);
+            DrawRay(m_batch.get(), position, transform_comp.GetRightVector(), true, DirectX::Colors::Red);
+            DrawRay(m_batch.get(), position, transform_comp.GetUpVector(), true, DirectX::Colors::LightGreen);
+        }
 
         auto camerasEntities = scene.GetCamerasEntities();
         for (auto&& i : camerasEntities) {

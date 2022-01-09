@@ -37,6 +37,15 @@ void SceneHierarchy::OnImguiRender()
         {
             m_context->CreateEntity("Empty Entity");
         }
+        if (ImGui::MenuItem("Create Camera Entity")) 
+        {
+            Entity temp_entt = m_context->CreateEntity("Camera Entity");
+            temp_entt.AddComponent<CameraComponent>();
+        }
+        if (ImGui::MenuItem("Create Entity With Model 3D")) {
+            Entity temp_entt = m_context->CreateEntity("Model Entity");
+            temp_entt.AddComponent<MeshComponent>();
+        }
         ImGui::EndPopup();
     }
 
@@ -72,7 +81,15 @@ void SceneHierarchy::OnImguiRender()
                     ImGui::CloseCurrentPopup();
                 }
             }
-            
+
+            if (!m_selection_context.HasComponent<PointLightComponent>()) {
+                if (ImGui::MenuItem("PointLight")) {
+                    m_selection_context.AddComponent<PointLightComponent>();
+
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+
             ImGui::EndPopup();
         }
 
@@ -394,6 +411,24 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             {
                 comp.camera.SetFarZ(farZ);
             }
+
+            ImGui::NewLine();
+
+            ImGui::TreePop();
+        }
+    }
+
+    if (entity.HasComponent<PointLightComponent>()) 
+    {
+        if (ImGui::TreeNodeEx((void*)typeid(PointLightComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "PointLight")) 
+        {
+            auto& point_light_comp = entity.GetComponent<PointLightComponent>();
+            //ImGui::DragFloat3("Dynamic Light Color", &point_light_comp.lightColor.x, 0.01f, 0.0f, 10.0f);
+            ImGui::ColorEdit3("Dynamic Light Color", (float*)&point_light_comp.lightColor);
+            ImGui::DragFloat("Dynamic Light Strength", &point_light_comp.lightStrength, 0.01f, 0.0f, 10.0f);
+            ImGui::DragFloat("Dynamic Light Attenuation A", &point_light_comp.attennuation_A, 0.01f, 0.1f, 10.0f);
+            ImGui::DragFloat("Dynamic Light Attenuation B", &point_light_comp.attennuation_B, 0.01f, 0.0f, 10.0f);
+            ImGui::DragFloat("Dynamic Light Attenuation C", &point_light_comp.attennuation_C, 0.01f, 0.0f, 10.0f);
 
             ImGui::NewLine();
 

@@ -153,7 +153,7 @@ void Scene::DestroyEntity(Entity entity)
     m_registry.destroy((entt::entity)entity);
 }
 
-
+#pragma region OnCompAdeded
 template <typename T>
 void Scene::OnComponentAdded(Entity entity, T& component) {
     static_assert(false);
@@ -172,15 +172,13 @@ void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightCompo
 }
 
 template <>
-void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) 
-{
+void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {
     if (m_window_width > 0 && m_window_height > 0)
         component.camera.SetViewPortSize(m_window_height, m_window_width);
 }
 
 template <>
-void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component) 
-{
+void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component) {
     ComponentSystems::SetModel(entity, m_model_manager->GetModelById(0));
 }
 
@@ -196,6 +194,8 @@ void Scene::OnComponentAdded<ParentComponent>(Entity entity, ParentComponent& co
 template <>
 void Scene::OnComponentAdded<ChildsComponent>(Entity entity, ChildsComponent& component) {
 }
+#pragma endregion
+
 
 const char* FileName = "scene.json";
 

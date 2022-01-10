@@ -685,8 +685,15 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
         auto& local_pos = i.GetComponent<TransformComponent>().local_position;
         auto& world_pos = i.GetComponent<TransformComponent>().world_position;
 
-        XMFLOAT3 pos = XMFLOAT3(local_pos.x + world_pos.x, local_pos.y + world_pos.y, local_pos.z + world_pos.z);
+        XMVECTOR scale_v;
+        XMVECTOR rot_v;
+        XMVECTOR pos_v;
 
+        XMMatrixDecompose(&scale_v, &rot_v, &pos_v, ComponentSystems::GetTransformMatrix(i));
+
+        XMFLOAT3 pos;
+
+        XMStoreFloat3(&pos, pos_v);
 
         cb_ps_light.data.dynamicLightColor = point_light_comp.lightColor;
         cb_ps_light.data.dynamicLightStrength = point_light_comp.lightStrength;
@@ -784,11 +791,15 @@ void Graphics::DrawDebugScene(Scene& scene)
 
             auto& transform_comp = i.GetComponent<TransformComponent>();
 
-            XMVECTOR position = XMVectorSet(transform_comp.world_position.x, transform_comp.world_position.y, transform_comp.world_position.z, 0.0f);
+            XMVECTOR scale;
+            XMVECTOR rot;
+            XMVECTOR pos;
 
-            DrawRay(m_batch.get(), position, transform_comp.GetForwardVector(), true, DirectX::Colors::LightBlue);
-            DrawRay(m_batch.get(), position, transform_comp.GetRightVector(), true, DirectX::Colors::Red);
-            DrawRay(m_batch.get(), position, transform_comp.GetUpVector(), true, DirectX::Colors::LightGreen);
+            XMMatrixDecompose(&scale, &rot, &pos, ComponentSystems::GetTransformMatrix(i));
+
+            DrawRay(m_batch.get(), pos, transform_comp.GetForwardVector(), true, DirectX::Colors::LightBlue);
+            DrawRay(m_batch.get(), pos, transform_comp.GetRightVector(), true, DirectX::Colors::Red);
+            DrawRay(m_batch.get(), pos, transform_comp.GetUpVector(), true, DirectX::Colors::LightGreen);
         }
 
         auto camerasEntities = scene.GetEntitysByComponent<CameraComponent>();

@@ -244,7 +244,9 @@ void Graphics::RenderFrame() {
 
     //    cam_container.ImGUIWindow();
     //
-    //    scene_hierachy.OnImguiRender();
+    if (loadedScene_) {
+        scene_hierachy.OnImguiRender();
+    }
 
     /*std::vector<std::string> test = { "A", "B" };
 
@@ -278,7 +280,6 @@ void Graphics::RenderFrame() {
                 LoadProject_();
             }
             if (ImGui::Button("Close project")) {
-                project_->CloseProject();
                 UnloadProject_();
             }
         }
@@ -863,6 +864,7 @@ void Graphics::DrawDebugScene(Scene& scene)
 void Graphics::UnloadProject_() {
     motor::utils::debug_write::info("Unloading project...\n");
     UnloadScene_();
+    project_->CloseProject();
     showScenes_ = false;
     loadedProject_ = false;
 }

@@ -124,6 +124,7 @@ private:
 
 	bool loadedProject_{ false };
     bool loadedScene_{ false };
+    std::filesystem::path scenePath_{};
 
 	bool* showConsole_{ nullptr };
     motor::ui_system::ConsoleUI* consoleUI_{ nullptr };

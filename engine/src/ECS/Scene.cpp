@@ -116,9 +116,7 @@ template <>
 void Scene::OnComponentAdded<ChildsComponent>(Entity entity, ChildsComponent& component) {
 }
 
-const char* FileName = "scene.json";
-
-void Scene::Save() {
+void Scene::Save(std::filesystem::path fileName) {
     RapidJsonOutputArchive json_archive;
     entt::basic_snapshot snapshot(m_registry);
     snapshot.entities(json_archive)
@@ -130,17 +128,17 @@ void Scene::Save() {
         ParentComponent>(json_archive);
     json_archive.Close();
     std::string json_output = json_archive.AsString();
-    std::ofstream file_out(FileName);
+    std::ofstream file_out(fileName);
     file_out << json_output;
 }
 
 extern Scene* CurrentScene;
 extern ModelLoader* CurrentModelLoader;
 
-void Scene::Load() {
+void Scene::Load(std::filesystem::path fileName) {
     CurrentScene = this;
     CurrentModelLoader = m_model_manager;
-    std::ifstream file_in(FileName);
+    std::ifstream file_in(fileName);
     //RapidJsonInputArchive json_in(file_in);
 
     std::stringstream json_input;

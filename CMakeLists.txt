@@ -22,6 +22,8 @@ endforeach()
 STRING (REGEX REPLACE "/RTC[^ ]*" "" CMAKE_CXX_FLAGS_DEBUG  "${CMAKE_CXX_FLAGS_DEBUG}")
 STRING (REGEX REPLACE "/RTC[^ ]*" "" CMAKE_C_FLAGS_DEBUG  "${CMAKE_C_FLAGS_DEBUG}")
 
+list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}/lib/cmrc/")
+
 add_subdirectory ("engine")
 add_subdirectory ("editor")
 add_subdirectory ("launcher")

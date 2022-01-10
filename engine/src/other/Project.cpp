@@ -3,6 +3,9 @@
 #include <motor/other/Config.hpp>
 #include <motor/converters.hpp>
 
+#include <cmrc/cmrc.hpp>
+CMRC_DECLARE(base);
+
 using namespace motor;
 namespace fs = std::filesystem;
 
@@ -48,6 +51,28 @@ auto Project::CreateProject(std::string name, fs::path path) -> void {
     json::writeFile(path / "config.json", projectConfig_);
     fs::create_directories(path / "scenes");
     fs::create_directories(path / "assets");
+    fs::create_directories(path / "base_assets");
+
+    auto cfs = cmrc::base::get_filesystem();
+    const auto iter = [&cfs](auto it, auto& curdir) {
+        auto iter_impl = [&cfs](auto it, auto& curdir, auto& iter_ref) mutable -> void {
+            for (auto entry : it) {
+                if (entry.is_file()) {
+                    auto file = cfs.open((curdir / entry.filename()).generic_string());
+                    fs::create_directories("base_assets" / curdir);
+                    std::ofstream fout{ "base_assets" / curdir / entry.filename(), std::ios_base::binary };
+                    fout.write(file.cbegin(), file.size());
+                } else if (entry.is_directory()) {
+                    auto dir = curdir / entry.filename();
+                    iter_ref(cfs.iterate_directory(dir.generic_string()), dir, iter_ref);
+                }
+            }
+        };
+        return iter_impl(it, curdir, iter_impl);
+    };
+    fs::path p{};
+    iter(cfs.iterate_directory(""), p);
+
     config_.AddLastProject(motor::converters::mb_to_u8(projectConfig_.name), std::filesystem::absolute(path));
     opened_ = true;
 }

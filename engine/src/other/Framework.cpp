@@ -208,38 +208,34 @@ void Framework::Update()
 	//	}*/
 	//}
 
-	if (display.keyboard.KeyIsPressed('C'))
-	{
-		XMVECTOR lightPosition = gfx.cam_container.GetCurrentCamera().GetPositionVector();
-		lightPosition += gfx.cam_container.GetCurrentCamera().GetForwardVector();
-		gfx.light.SetPosition(lightPosition);
-		gfx.light.SetRotation(gfx.cam_container.GetCurrentCamera().GetRotationFloat3());
-	}
+	if (gfx.cam_container.CountCameras() != 0) {
 
-	if (display.keyboard.KeyIsPressed('W'))
-	{
-		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetForwardVector() * camera_speed * delta);
-	}
-	if (display.keyboard.KeyIsPressed('S'))
-	{
-		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetBackwardVector() * camera_speed * delta);
-	}
-	if (display.keyboard.KeyIsPressed('A'))
-	{
-		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetLeftVector() * camera_speed * delta);
-	}
-	if (display.keyboard.KeyIsPressed('D'))
-	{
-		gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetRightVector() * camera_speed * delta);
-	}
-	if (display.keyboard.KeyIsPressed(VK_SPACE))
-	{
-		gfx.cam_container.GetCurrentCamera().AdjustPosition(0.0f, camera_speed * delta, 0.0f );
-	}
-	if (display.keyboard.KeyIsPressed('Z'))
-	{
-		gfx.cam_container.GetCurrentCamera().AdjustPosition(0.0f, -camera_speed * delta, 0.0f);
-	}
+        if (display.keyboard.KeyIsPressed('C')) {
+            XMVECTOR lightPosition = gfx.cam_container.GetCurrentCamera().GetPositionVector();
+            lightPosition += gfx.cam_container.GetCurrentCamera().GetForwardVector();
+            gfx.light.SetPosition(lightPosition);
+            gfx.light.SetRotation(gfx.cam_container.GetCurrentCamera().GetRotationFloat3());
+        }
+
+        if (display.keyboard.KeyIsPressed('W')) {
+            gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetForwardVector() * camera_speed * delta);
+        }
+        if (display.keyboard.KeyIsPressed('S')) {
+            gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetBackwardVector() * camera_speed * delta);
+        }
+        if (display.keyboard.KeyIsPressed('A')) {
+            gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetLeftVector() * camera_speed * delta);
+        }
+        if (display.keyboard.KeyIsPressed('D')) {
+            gfx.cam_container.GetCurrentCamera().AdjustPosition(gfx.cam_container.GetCurrentCamera().GetRightVector() * camera_speed * delta);
+        }
+        if (display.keyboard.KeyIsPressed(VK_SPACE)) {
+            gfx.cam_container.GetCurrentCamera().AdjustPosition(0.0f, camera_speed * delta, 0.0f);
+        }
+        if (display.keyboard.KeyIsPressed('Z')) {
+            gfx.cam_container.GetCurrentCamera().AdjustPosition(0.0f, -camera_speed * delta, 0.0f);
+        }
+    }
 
 
     //=========================================

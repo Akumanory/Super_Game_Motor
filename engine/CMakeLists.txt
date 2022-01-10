@@ -255,6 +255,28 @@ target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC ../lib/sol)
 
+#list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}")
+include(CMakeRC)
+
+CMRC_ADD_RESOURCE_LIBRARY(base-assets ALIAS base::assets NAMESPACE base
+    WHENCE src/shaders
+    src/shaders/pixel_shaders/pixelshader.hlsl
+    src/shaders/pixel_shaders/pixelshader_nolight.hlsl
+    src/shaders/vertex_shaders/vertexshader.hlsl
+)
+CMRC_ADD_RESOURCES(base-assets
+    WHENCE src/data/Objects
+    src/data/Objects/light.fbx)
+CMRC_ADD_RESOURCES(base-assets
+    WHENCE src/data/Objects
+    src/data/Objects/Cube/Cube.mtl
+    src/data/Objects/Cube/Cube.obj
+    src/data/Objects/Cube/Texture_Col.png
+    src/data/Objects/Cube/Texture_Metal.png
+    src/data/Objects/Cube/Texture_Norm.png
+    src/data/Objects/Cube/Texture_Rough.png
+)
+target_link_libraries(${PROJECT_NAME} base::assets)
 
 add_executable (old_main src/old_main.cpp src/DeclareDPIAware.manifest)
 target_link_libraries(old_main ${PROJECT_NAME})

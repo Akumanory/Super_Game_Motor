@@ -1,4 +1,4 @@
-﻿[submodule "lib/googletest"]
+[submodule "lib/googletest"]
 	path = lib/googletest
 	url = https://github.com/google/googletest.git
 	branch = master
@@ -25,4 +25,8 @@
 [submodule "lib/luasocket"]
 	path = lib/luasocket
 	url = https://github.com/diegonehab/luasocket.git
+	branch = master
+[submodule "lib/cmrc"]
+	path = lib/cmrc
+	url = https://github.com/vector-of-bool/cmrc.git
 	branch = master

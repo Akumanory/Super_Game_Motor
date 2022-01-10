@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Bump I:\\MEGA\\Blender\\Sci-Fi_Cube\\Texture_Norm.png
-map_Kd I:\\MEGA\\Blender\\Sci-Fi_Cube\\Texture_Col.png
-map_Ns I:\\MEGA\\Blender\\Sci-Fi_Cube\\Texture_Rough.png
-refl I:\\MEGA\\Blender\\Sci-Fi_Cube\\Texture_Metal.png
+map_Bump Texture_Norm.png
+map_Kd Texture_Col.png
+map_Ns Texture_Rough.png
+refl Texture_Metal.png

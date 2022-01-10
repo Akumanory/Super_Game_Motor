@@ -3,6 +3,8 @@
 #include <motor/other/ModelLoader.h>
 #include <entt/entt.hpp>
 
+#include <filesystem>
+
 
 //struct RenderableEntities
 //{
@@ -34,8 +36,8 @@ public:
     void DrawSceneEntt(const DirectX::XMMATRIX& viewProjectionMatrix, DirectX::BoundingFrustum& f_culling);
     void AddSimpleCube(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos);*/
 
-    void Save();
-    void Load();
+    void Save(std::filesystem::path);
+    void Load(std::filesystem::path);
 
 private:
     template <typename T>

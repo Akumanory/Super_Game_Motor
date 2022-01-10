@@ -309,6 +309,7 @@ void Graphics::RenderFrame() {
                 if (ImGui::IsItemClicked(ImGuiMouseButton_Left) and ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                     motor::utils::debug_write::info("Opening scene {} ...\n", scene.name);
                     UnloadScene_();
+                    scenePath_ = "scenes" / scene.path / "config.json";
                     InitializeScene();
                     loadedScene_ = true;
                 }
@@ -356,6 +357,17 @@ void Graphics::RenderFrame() {
     }
 
     loadingUI_.Draw("Loading", nullptr);
+
+    if (loadedScene_) {
+        ImGui::Begin("Serialization");
+        if (ImGui::Button("Save")) {
+            test_entt_scene.Save(scenePath_);
+        }
+        if (ImGui::Button("Load")) {
+            test_entt_scene.Load(scenePath_);
+        }
+        ImGui::End();
+    }
 
     // Assemble together Draw Data
     ImGui::Render();
@@ -524,17 +536,17 @@ bool Graphics::InitializeShaders() {
 
     UINT numElements = ARRAYSIZE(layoutDesc);
 
-    if (!vertex_shader.Initialize(device, L"assets/shaders/vertex_shaders/vertexshader.hlsl", layoutDesc, numElements)) {
+    if (!vertex_shader.Initialize(device, L"base_assets/vertex_shaders/vertexshader.hlsl", layoutDesc, numElements)) {
         Logs::Error("		Vertex shader not initialized");
         return false;
     }
 
-    if (!pixel_shader.Initialize(device, L"assets/shaders/pixel_shaders/pixelshader.hlsl")) {
+    if (!pixel_shader.Initialize(device, L"base_assets/pixel_shaders/pixelshader.hlsl")) {
         Logs::Error("		Pixel shader not initialized");
         return false;
     }
 
-    if (!pixel_shader_no_light.Initialize(device, L"assets/shaders/pixel_shaders/pixelshader_nolight.hlsl")) {
+    if (!pixel_shader_no_light.Initialize(device, L"base_assets/pixel_shaders/pixelshader_nolight.hlsl")) {
         Logs::Error("		Pixel shader not initialized");
         return false;
     }
@@ -585,7 +597,7 @@ bool Graphics::InitializeScene() {
         // ---------------
         model_loader.Initialize(device.Get());
 
-        model_loader.LoadModel("assets\\Cube\\Cube.obj", "GrayCube");
+        model_loader.LoadModel("base_assets/Cube/Cube.obj", "Cube");
        // model_loader.LoadModel("Data\\Objects\\Wayne_pog_v2\\wayne_pog_v2.obj", "WayneCube");
        // model_loader.LoadModel("Data\\Objects\\BOTTLE_V1.fbx", "Bottle");
        // model_loader.LoadModel("Data\\Objects\\RubikCube.fbx", "RubikCube");
@@ -698,31 +710,33 @@ bool Graphics::InitializeScene() {
         test_entt_scene.SetModelLoader(&model_loader);
         test_entt_scene.SetAspectRatioParams(windowHeight, windowWidth);
 
-        entity1 = test_entt_scene.CreateEntity("First Entity");
-        ComponentSystems::SetPosition(entity1, DirectX::XMFLOAT3(0.0f, 4.0f, 0.0f));
-        ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-        entity1.AddComponent<MeshComponent>();
-        //ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
-
-        entity2 = test_entt_scene.CreateEntity("Second Entity");
-        ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
-        ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-        entity2.AddComponent<MeshComponent>();
-        //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
-
-        entity3 = test_entt_scene.CreateEntity("Third Entity");
-        ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
-        ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-        entity3.AddComponent<MeshComponent>();
-        //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
-
-
-        entity3.AddComponent<ParentComponent>(entity1);
+       // entity1 = test_entt_scene.CreateEntity("First Entity");
+       // ComponentSystems::SetPosition(entity1, DirectX::XMFLOAT3(0.0f, 4.0f, 0.0f));
+       // ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+       // entity1.AddComponent<MeshComponent>();
+       // //ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
+       //
+       // entity2 = test_entt_scene.CreateEntity("Second Entity");
+       // ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
+       // ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+       // entity2.AddComponent<MeshComponent>();
+       // //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
+       //
+       // entity3 = test_entt_scene.CreateEntity("Third Entity");
+       // ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
+       // ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+       // entity3.AddComponent<MeshComponent>();
+       // //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
+       //
+       //
+       // entity3.AddComponent<ParentComponent>(entity1);
 
         //ComponentSystems::SetChildEntity(entity1, entity2);
         //ComponentSystems::SetChildEntity(entity1, entity3);
 
         scene_hierachy.SetContext(&test_entt_scene);
+
+        test_entt_scene.Load(scenePath_);
 
 
     //} catch (COMException& ex) {

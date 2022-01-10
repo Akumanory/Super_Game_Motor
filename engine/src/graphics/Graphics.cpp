@@ -678,7 +678,7 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
     XMMATRIX vpm = XMMatrixIdentity();
 
-    auto point_lights = scene.GetPointLights();
+    auto point_lights = scene.GetEntitysByComponent<PointLightComponent>();
     for (auto&& i : point_lights) {
         auto& point_light_comp = i.GetComponent<PointLightComponent>();
 
@@ -698,7 +698,7 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
         deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
     }
 
-    auto renderableEntities = scene.GetRenderableEntities();
+    auto renderableEntities = scene.GetEntitysByComponent<MeshComponent>();
     for (auto&& i : renderableEntities)
     {
         deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertex_shader.GetAddressOf());
@@ -774,12 +774,12 @@ void Graphics::DrawDebugScene(Scene& scene)
     if (state == States::Editor) 
     {
         m_batch->Begin();
-        auto renderableEntities = scene.GetRenderableEntities();
+        auto renderableEntities = scene.GetEntitysByComponent<MeshComponent>();
         for (auto&& i : renderableEntities) {
             Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);
         }
 
-        auto transformEntites = scene.GetTransformEntities();
+        auto transformEntites = scene.GetEntitysByComponent<TransformComponent>();
         for (auto&& i : transformEntites) {
 
             auto& transform_comp = i.GetComponent<TransformComponent>();
@@ -791,7 +791,7 @@ void Graphics::DrawDebugScene(Scene& scene)
             DrawRay(m_batch.get(), position, transform_comp.GetUpVector(), true, DirectX::Colors::LightGreen);
         }
 
-        auto camerasEntities = scene.GetCamerasEntities();
+        auto camerasEntities = scene.GetEntitysByComponent<CameraComponent>();
         for (auto&& i : camerasEntities) {
             Draw(m_batch.get(), i.GetComponent<CameraComponent>().camera.GetFrustum(), DirectX::Colors::Orange);
         }

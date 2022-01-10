@@ -425,7 +425,7 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             auto& point_light_comp = entity.GetComponent<PointLightComponent>();
             //ImGui::DragFloat3("Dynamic Light Color", &point_light_comp.lightColor.x, 0.01f, 0.0f, 10.0f);
             ImGui::ColorEdit3("Dynamic Light Color", (float*)&point_light_comp.lightColor);
-            ImGui::DragFloat("Dynamic Light Strength", &point_light_comp.lightStrength, 0.01f, 0.0f, 10.0f);
+            ImGui::DragFloat("Dynamic Light Strength", &point_light_comp.lightStrength, 0.01f, 0.0f, 100.0f);
             ImGui::DragFloat("Dynamic Light Attenuation A", &point_light_comp.attennuation_A, 0.01f, 0.1f, 10.0f);
             ImGui::DragFloat("Dynamic Light Attenuation B", &point_light_comp.attennuation_B, 0.01f, 0.0f, 10.0f);
             ImGui::DragFloat("Dynamic Light Attenuation C", &point_light_comp.attennuation_C, 0.01f, 0.0f, 10.0f);

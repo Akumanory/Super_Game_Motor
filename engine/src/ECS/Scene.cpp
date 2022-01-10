@@ -31,57 +31,59 @@ void Scene::SetAspectRatioParams(int height, int width)
     m_window_width = width;
 }
 
-std::vector<Entity> Scene::GetRenderableEntities() {
-    std::vector<Entity> renderable_e;
-
-    auto view = m_registry.view<TransformComponent, MeshComponent>();
-
-    for (entt::entity entity : view) 
-    {
-        Entity tmp = { entity, this };
-        renderable_e.emplace_back(tmp);
-    }
-    return renderable_e;
-}
-
-std::vector<Entity> Scene::GetCamerasEntities() 
-{
-    std::vector<Entity> cameras_e;
-
-    auto view = m_registry.view<TransformComponent, CameraComponent>();
-
-    for (entt::entity entity : view) {
-        Entity tmp = { entity, this };
-        cameras_e.emplace_back(tmp);
-    }
-    return cameras_e;
-}
-
-std::vector<Entity> Scene::GetPointLights() 
-{
-    std::vector<Entity> point_light_e;
-
-    auto view = m_registry.view<TransformComponent, PointLightComponent>();
-
-    for (entt::entity entity : view) {
-        Entity tmp = { entity, this };
-        point_light_e.emplace_back(tmp);
-    }
-    return point_light_e;
-}
-
-std::vector<Entity> Scene::GetTransformEntities() 
-{
-    std::vector<Entity> transform_e;
-
-    auto view = m_registry.view<TransformComponent>();
-
-    for (entt::entity entity : view) {
-        Entity tmp = { entity, this };
-        transform_e.emplace_back(tmp);
-    }
-    return transform_e;
-}
+#pragma region OldRealization
+//std::vector<Entity> Scene::GetRenderableEntities() {
+//    std::vector<Entity> renderable_e;
+//
+//    auto view = m_registry.view<TransformComponent, MeshComponent>();
+//
+//    for (entt::entity entity : view) 
+//    {
+//        Entity tmp = { entity, this };
+//        renderable_e.emplace_back(tmp);
+//    }
+//    return renderable_e;
+//}
+//
+//std::vector<Entity> Scene::GetCamerasEntities() 
+//{
+//    std::vector<Entity> cameras_e;
+//
+//    auto view = m_registry.view<TransformComponent, CameraComponent>();
+//
+//    for (entt::entity entity : view) {
+//        Entity tmp = { entity, this };
+//        cameras_e.emplace_back(tmp);
+//    }
+//    return cameras_e;
+//}
+//
+//std::vector<Entity> Scene::GetPointLights() 
+//{
+//    std::vector<Entity> point_light_e;
+//
+//    auto view = m_registry.view<TransformComponent, PointLightComponent>();
+//
+//    for (entt::entity entity : view) {
+//        Entity tmp = { entity, this };
+//        point_light_e.emplace_back(tmp);
+//    }
+//    return point_light_e;
+//}
+//
+//std::vector<Entity> Scene::GetTransformEntities() 
+//{
+//    std::vector<Entity> transform_e;
+//
+//    auto view = m_registry.view<TransformComponent>();
+//
+//    for (entt::entity entity : view) {
+//        Entity tmp = { entity, this };
+//        transform_e.emplace_back(tmp);
+//    }
+//    return transform_e;
+//}
+#pragma endregion
 
 Entity Scene::GetPrimaryCamera() 
 {

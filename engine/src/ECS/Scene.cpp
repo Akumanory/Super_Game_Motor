@@ -35,6 +35,18 @@ std::vector<Entity> Scene::GetRenderableEntities() {
     return renderable_e;
 }
 
+std::vector<Entity> Scene::GetPhysicsEntities() {
+    std::vector<Entity> physics_e;
+
+    auto view = m_registry.view<PhysicsComponent>();
+
+    for (entt::entity entity : view) {
+        Entity tmp = { entity, this };
+        physics_e.emplace_back(tmp);
+    }
+    return physics_e;
+}
+
 
 Entity Scene::CreateEntity(const std::string name) 
 {
@@ -116,6 +128,10 @@ template <>
 void Scene::OnComponentAdded<ChildsComponent>(Entity entity, ChildsComponent& component) {
 }
 
+template <>
+void Scene::OnComponentAdded<PhysicsComponent>(Entity entity, PhysicsComponent& component) {
+}
+
 void Scene::Save(std::filesystem::path fileName) {
     RapidJsonOutputArchive json_archive;
     entt::basic_snapshot snapshot(m_registry);
@@ -136,6 +152,9 @@ extern Scene* CurrentScene;
 extern ModelLoader* CurrentModelLoader;
 
 void Scene::Load(std::filesystem::path fileName) {
+    if (not std::filesystem::exists(fileName)) {
+        Save(fileName);
+    }
     CurrentScene = this;
     CurrentModelLoader = m_model_manager;
     std::ifstream file_in(fileName);

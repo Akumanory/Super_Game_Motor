@@ -100,6 +100,10 @@ void Graphics::RenderFrame() {
     /// -------------------------------------------------------------------
 
     if (loadedScene_) {
+        UpdatePhysics_();
+    }
+
+    if (loadedScene_) {
 
         DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
     }
@@ -367,6 +371,52 @@ void Graphics::RenderFrame() {
             test_entt_scene.Load(scenePath_);
         }
         ImGui::End();
+    }
+
+    if (loadedScene_) {
+        if (ImGui::Button("Start/stop")) {
+            simulate_ = not simulate_;
+            if (simulate_) {
+                prevTime_ = std::chrono::steady_clock::now();
+            }
+        }
+        if (ImGui::Button("Setup")) {
+            auto entityGround = test_entt_scene.CreateEntity("Ground");
+            ComponentSystems::SetPosition(entityGround, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+            ComponentSystems::SetRotation(entityGround, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+            auto& t = entityGround.GetComponent<TransformComponent>();
+            t.local_scale = XMFLOAT3{ 10.f, 1.f, 10.f };
+            entityGround.AddComponent<MeshComponent>();
+            entityGround.AddComponent<PhysicsComponent>();
+            auto& p = entityGround.GetComponent<PhysicsComponent>();
+            p.extent = XMFLOAT3{ 10.f, 1.f, 10.f };
+            p.mass = 0.;
+            p.id = physics_.AddCube(
+              btVector3{t.world_position.x, t.world_position.y, t.world_position.z},
+              btVector3{t.world_rotation.x, t.world_rotation.y, t.world_rotation.z},
+              btVector3{p.extent.x, p.extent.y, p.extent.z},
+              p.mass);
+            int count = 1;
+            for (int i = -3; i < 4; ++i) {
+                for (int j = -4; j < 4; ++j) {
+                    auto e = test_entt_scene.CreateEntity("Cube" + std::to_string(count));
+                    ComponentSystems::SetPosition(e, DirectX::XMFLOAT3(i, (i * j + 14) * 3, j));
+                    ComponentSystems::SetRotation(e, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+                    auto& t = e.GetComponent<TransformComponent>();
+                    t.local_scale = XMFLOAT3{ 1.f, 1.f, 1.f };
+                    e.AddComponent<MeshComponent>();
+                    e.AddComponent<PhysicsComponent>();
+                    auto& p = e.GetComponent<PhysicsComponent>();
+                    p.extent = XMFLOAT3{ 1.f, 1.f, 1.f };
+                    p.mass = 1.;
+                    p.id = physics_.AddCube(
+                      btVector3{ t.world_position.x, t.world_position.y, t.world_position.z },
+                      btVector3{ t.world_rotation.x, t.world_rotation.y, t.world_rotation.z },
+                      btVector3{ p.extent.x, p.extent.y, p.extent.z },
+                      p.mass);
+                }
+            }
+        }
     }
 
     // Assemble together Draw Data
@@ -734,7 +784,10 @@ bool Graphics::InitializeScene() {
         //ComponentSystems::SetChildEntity(entity1, entity2);
         //ComponentSystems::SetChildEntity(entity1, entity3);
 
+        physics_.Init();
+
         scene_hierachy.SetContext(&test_entt_scene);
+        scene_hierachy.SetPhysics(&physics_);
 
         test_entt_scene.Load(scenePath_);
 
@@ -892,8 +945,40 @@ void Graphics::LoadProject_() {
 }
 
 void Graphics::UnloadScene_() {
+    physics_.Clean();
     test_entt_scene.Reset();
     model_loader.Reset();
     cam_container.Reset();
     loadedScene_ = false;
+}
+
+void Graphics::UpdatePhysics_() {
+    if (simulate_) {
+        auto tnow = std::chrono::steady_clock::now();
+        auto us = std::chrono::duration_cast<std::chrono::microseconds>(tnow - prevTime_).count();
+        float delta = double(us) * 0.000001;
+        physics_.Update(delta);
+        auto es = test_entt_scene.GetPhysicsEntities();
+        for (auto& e : es) {
+            auto& p = e.GetComponent<PhysicsComponent>();
+            auto& t = e.GetComponent<TransformComponent>();
+            btVector3 location, rotation;
+            if (p.id != -1) {
+                physics_.Get(p.id, location, rotation);
+                t.world_position = XMFLOAT3{ location.x(), location.y(), location.z() };
+                t.world_rotation = XMFLOAT3{ rotation.x(), rotation.y(), rotation.z() };
+            }
+        }
+    } else {
+        auto es = test_entt_scene.GetPhysicsEntities();
+        for (auto& e : es) {
+            auto& p = e.GetComponent<PhysicsComponent>();
+            auto& t = e.GetComponent<TransformComponent>();
+            if (p.id != -1) {
+                physics_.SetLocRot(p.id,
+                  btVector3{ t.world_position.x, t.world_position.y, t.world_position.z },
+                  btVector3{ t.world_rotation.x, t.world_rotation.y, t.world_rotation.z });
+            }
+        }
+    }
 }

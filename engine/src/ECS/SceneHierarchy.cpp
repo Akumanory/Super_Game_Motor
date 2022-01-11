@@ -16,6 +16,10 @@ void SceneHierarchy::SetContext(Scene* scene)
     m_selection_context = {};
 }
 
+void SceneHierarchy::SetPhysics(motor::Physics* ph) {
+    physics_ = ph;
+}
+
 void SceneHierarchy::OnImguiRender() 
 {
     ImGui::Begin("Scene Hierarchy");
@@ -56,13 +60,17 @@ void SceneHierarchy::OnImguiRender()
 
         if (ImGui::BeginPopup("AddComponent")) 
         {
-            if (!m_selection_context.HasComponent<MeshComponent>()) 
-            {
+            if (!m_selection_context.HasComponent<MeshComponent>()) {
                 if (ImGui::MenuItem("Model")) {
                     m_selection_context.AddComponent<MeshComponent>();
                     ComponentSystems::SetModel(m_selection_context, m_context->m_model_manager->GetModelById(0));
 
                     ImGui::CloseCurrentPopup();
+                }
+            }
+            if (not m_selection_context.HasComponent<PhysicsComponent>()) {
+                if (ImGui::MenuItem("Physics")) {
+                    m_selection_context.AddComponent<PhysicsComponent>();
                 }
             }
             
@@ -349,6 +357,33 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             for (auto& i : childs) 
             {
                 ImGui::Text(i.GetComponent<TagComponent>().tag.c_str());
+            }
+
+            ImGui::NewLine();
+
+            ImGui::TreePop();
+        }
+    }
+
+    if (entity.HasComponent<PhysicsComponent>()) {
+        if (ImGui::TreeNodeEx((void*)typeid(ChildsComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Physics")) {
+            auto& physics_comp = entity.GetComponent<PhysicsComponent>();
+
+            ImGui::Text("ID: %d", physics_comp.id);
+
+            ImGui::DragFloat("Mass", &physics_comp.mass);
+
+            DrawVec3Control("Extent", physics_comp.extent, 1.0);
+
+            if (physics_comp.id == -1) {
+                if (ImGui::Button("Ok")) {
+                    auto& tr_comp = entity.GetComponent<TransformComponent>();
+                    physics_comp.id = physics_->AddCube(
+                      btVector3{ tr_comp.world_position.x, tr_comp.world_position.y, tr_comp.world_position.z },
+                      btVector3{ tr_comp.world_rotation.x, tr_comp.world_rotation.y, tr_comp.world_rotation.z },
+                      btVector3{ physics_comp.extent.x, physics_comp.extent.y, physics_comp.extent.z },
+                      physics_comp.mass); //ph_comp.mass);
+                }
             }
 
             ImGui::NewLine();

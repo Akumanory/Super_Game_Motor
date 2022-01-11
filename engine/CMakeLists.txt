@@ -80,6 +80,7 @@ set(OTHER_HEADERS
     include/motor/other/Timer.h
     include/motor/other/MathHelper.h
     include/motor/other/ModelLoader.h
+    include/motor/other/Physics.hpp
     include/motor/other/Project.hpp
     include/motor/other/Json.hpp
 )
@@ -171,6 +172,7 @@ set(OTHER_SOURCES
     src/other/Timer.cpp
     src/other/MathHelper.cpp
     src/other/ModelLoader.cpp
+    src/other/Physics.cpp
     src/other/Project.cpp
 )
 
@@ -202,6 +204,9 @@ set(LIBRARIES
     assimp
     DirectXTK
     liblua-static
+    BulletDynamics
+    BulletCollision
+    LinearMath
 )
 
 add_library (${PROJECT_NAME}
@@ -254,6 +259,7 @@ source_group ("src"                                     FILES ${SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC ../lib/sol)
+target_include_directories(${PROJECT_NAME} PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
 
 #list(INSERT CMAKE_MODULE_PATH 0 "${PROJECT_SOURCE_DIR}")
 include(CMakeRC)

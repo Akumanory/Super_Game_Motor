@@ -30,3 +30,7 @@
 	path = lib/cmrc
 	url = https://github.com/vector-of-bool/cmrc.git
 	branch = master
+[submodule "lib/bullet3"]
+	path = lib/bullet3
+	url = https://github.com/bulletphysics/bullet3.git
+	branch = master

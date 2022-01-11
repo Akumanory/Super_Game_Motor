@@ -20,6 +20,7 @@
 #include <motor/other/ModelLoader.h>
 #include <motor/ECS/ComponentSystems.h>
 #include <motor/ECS/SceneHierarchy.h>
+#include <motor/other/Physics.hpp>
 
 // ImGui
 #include <imgui.h>
@@ -91,6 +92,7 @@ private:
     void LoadProject_();
     void UnloadProject_();
     void UnloadScene_();
+    void UpdatePhysics_();
 
 	Microsoft::WRL::ComPtr<ID3D11Device> device;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> deviceContext;
@@ -117,7 +119,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> sampler_state;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> texture;
 
-
+	motor::Physics physics_;
+    bool simulate_{ false };
+    std::chrono::steady_clock::time_point prevTime_;
 
 	int windowWidth = 0;
 	int windowHeight = 0;

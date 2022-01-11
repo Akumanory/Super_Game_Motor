@@ -28,6 +28,7 @@ public:
     Entity CreateEntity(const std::string name);
     void DestroyEntity(Entity entity);
     std::vector<Entity> GetRenderableEntities();
+    std::vector<Entity> GetPhysicsEntities();
     void Reset();
     //Entity GetPrimaryCamera();
 

@@ -39,6 +39,12 @@ add_subdirectory ("lib/DirectXTK")
 add_subdirectory ("lib/freetype")
 add_subdirectory ("lib/LuaJIT-cmake")
 add_subdirectory ("lib/luasocket-cmake")
+#set(BUILD_ENET OFF CACHE BOOL "")
+#set(BUILD_CLSOCKET OFF CACHE BOOL "")
+#set(BUILD_CPU_DEMOS OFF CACHE BOOL "")
+#set(USE_GRAPHICAL_BENCHMARK OFF CACHE BOOL "")
+set(BUILD_UNIT_TESTS OFF CACHE BOOL "")
+add_subdirectory ("lib/bullet3")
 
 
 foreach(target_var
@@ -58,3 +64,6 @@ foreach(target_var
   target_compile_options(${target_var} PRIVATE $<$<CONFIG:Debug>: /RTC1>)
 endforeach()
 target_compile_options(assimp PRIVATE "$<$<CONFIG:Debug>:/O2 /Ob2>")
+target_compile_options(BulletDynamics PRIVATE "$<$<CONFIG:Debug>:/O2 /Ob2>")
+target_compile_options(BulletCollision PRIVATE "$<$<CONFIG:Debug>:/O2 /Ob2>")
+target_compile_options(LinearMath PRIVATE "$<$<CONFIG:Debug>:/O2 /Ob2>")

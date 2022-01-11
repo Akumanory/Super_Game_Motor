@@ -73,6 +73,12 @@ struct ParentComponent {
     auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };
 
+struct PhysicsComponent {
+    int id{ -1 };
+    float mass{ 1.0 };
+    XMFLOAT3 extent{ 1.0, 1.0, 1.0 };
+};
+
 //struct CameraComponent
 //{
 //    SceneCamera camera;

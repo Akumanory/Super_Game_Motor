@@ -52,6 +52,7 @@ set(GRAPHICS_HEADERS
     include/motor/graphics/DebugDraw.h
     include/motor/graphics/MeshForComponents.h
     include/motor/graphics/SceneCamera.h
+    include/motor/graphics/PointLightStruct.h
 )
 
 set(SCENES_HEADERS

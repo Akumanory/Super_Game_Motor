@@ -20,6 +20,26 @@ void ComponentSystems::AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, floa
     transform_comp.world_rotation.z += rot.z * delta;
 }
 
+
+void ComponentSystems::AjustPosition(Entity& entity, DirectX::XMFLOAT3 pos, float delta) 
+{
+    auto& transform_comp = entity.GetComponent<TransformComponent>();
+    transform_comp.world_position.x += pos.x * delta;
+    transform_comp.world_position.y += pos.y * delta;
+    transform_comp.world_position.z += pos.z * delta;
+}
+
+void ComponentSystems::AjustPosition(Entity& entity, DirectX::XMVECTOR pos, float delta) {
+    auto& transform_comp = entity.GetComponent<TransformComponent>();
+
+    XMFLOAT3 temp_float = XMFLOAT3();
+    XMStoreFloat3(&temp_float, pos);
+
+    transform_comp.world_position.x += temp_float.x * delta;
+    transform_comp.world_position.y += temp_float.y * delta;
+    transform_comp.world_position.z += temp_float.z * delta;
+}
+
 void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
     auto& mesh_comp = entity.GetComponent<MeshComponent>();
     mesh_comp.model.meshes = model.meshes;
@@ -30,19 +50,28 @@ void ComponentSystems::SetModel(Entity& entity, ModelStruct& model) {
 
 void ComponentSystems::UpdateBoundingBox(Entity& entity) 
 {
-    auto& mesh_comp = entity.GetComponent<MeshComponent>();
-    //const auto& transform_comp = entity.GetComponent<TransformComponent>();
-    mesh_comp.model.bounding_box.Transform(mesh_comp.transformed_bounding_box, GetTransformMatrix(entity));
-    if (entity.HasComponent<ChildsComponent>()) 
+    if (entity.HasComponent<TransformComponent>() && entity.HasComponent<MeshComponent>()) 
     {
-        auto childs = entity.GetComponent<ChildsComponent>().child_entities;
-        for (auto&& i : childs) 
-        {
-            if (i.HasComponent<MeshComponent>()) 
-            {
+        auto& mesh_comp = entity.GetComponent<MeshComponent>();
+        //const auto& transform_comp = entity.GetComponent<TransformComponent>();
+        mesh_comp.model.bounding_box.Transform(mesh_comp.transformed_bounding_box, GetTransformMatrix(entity));
+        if (entity.HasComponent<ChildsComponent>()) {
+            auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+            for (auto&& i : childs) {
                 UpdateBoundingBox(i);
             }
         }
+    }
+}
+
+void ComponentSystems::UpdateBoundingFrustum(Entity& entity) 
+{
+    if (entity.HasComponent<TransformComponent>() && entity.HasComponent<CameraComponent>()) 
+    {
+        auto& camera_comp = entity.GetComponent<CameraComponent>();
+        camera_comp.camera.UpdateProjection();
+        auto& frustum = camera_comp.camera.GetFrustum();
+        frustum.Transform(frustum, GetTransformMatrix(entity));
     }
 }
 

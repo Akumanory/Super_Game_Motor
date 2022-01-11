@@ -22,16 +22,45 @@ public:
     ~Scene();
 
     void SetModelLoader(ModelLoader* model_manager);
-    void SetAspectRatioParams(int& height, int& width);
+    void SetAspectRatioParams(int height, int width);
     Entity CreateEntity(const std::string name);
     void DestroyEntity(Entity entity);
-    std::vector<Entity> GetRenderableEntities();
-    //Entity GetPrimaryCamera();
+    Entity GetPrimaryCamera();
 
-    /*void Initialize(ModelLoader& model_loader);
-    void InitializeSceneEntt(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader);
-    void DrawSceneEntt(const DirectX::XMMATRIX& viewProjectionMatrix, DirectX::BoundingFrustum& f_culling);
-    void AddSimpleCube(const std::string& filePath, ID3D11Device* device, ID3D11DeviceContext* deviceContext, ConstantBuffer<CB_VS_vertex_shader>& cb_vs_vertexshader, DirectX::XMFLOAT3 pos);*/
+    template<typename T>
+    std::vector<Entity> GetEntitysByComponent() 
+    {
+        std::vector<Entity> entities;
+
+        auto view = m_registry.view<T>();
+
+        for (entt::entity entity : view) {
+            Entity tmp = { entity, this };
+            entities.emplace_back(tmp);
+        }
+        return entities;
+    }
+
+    template <typename T, typename T2>
+    std::vector<Entity> GetEntitysByTwoComponents() 
+    {
+        std::vector<Entity> entities;
+
+        auto view = m_registry.view<T,T2>();
+
+        for (entt::entity entity : view) {
+            Entity tmp = { entity, this };
+            entities.emplace_back(tmp);
+        }
+        return entities;
+    }
+
+    //std::vector<Entity> GetRenderableEntities();
+    //std::vector<Entity> GetCamerasEntities();
+    //std::vector<Entity> GetPointLights();
+    //std::vector<Entity> GetTransformEntities();
+
+    void OnRednerUpdate();
 
     void Save();
     void Load();

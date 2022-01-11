@@ -25,25 +25,86 @@ void Scene::SetModelLoader(ModelLoader* model_manager)
     m_model_manager = model_manager;
 }
 
-void Scene::SetAspectRatioParams(int& height, int& width) 
+void Scene::SetAspectRatioParams(int height, int width) 
 {
     m_window_height = height;
     m_window_width = width;
 }
 
-std::vector<Entity> Scene::GetRenderableEntities() {
-    std::vector<Entity> renderable_e;
+#pragma region OldRealization
+//std::vector<Entity> Scene::GetRenderableEntities() {
+//    std::vector<Entity> renderable_e;
+//
+//    auto view = m_registry.view<TransformComponent, MeshComponent>();
+//
+//    for (entt::entity entity : view) 
+//    {
+//        Entity tmp = { entity, this };
+//        renderable_e.emplace_back(tmp);
+//    }
+//    return renderable_e;
+//}
+//
+//std::vector<Entity> Scene::GetCamerasEntities() 
+//{
+//    std::vector<Entity> cameras_e;
+//
+//    auto view = m_registry.view<TransformComponent, CameraComponent>();
+//
+//    for (entt::entity entity : view) {
+//        Entity tmp = { entity, this };
+//        cameras_e.emplace_back(tmp);
+//    }
+//    return cameras_e;
+//}
+//
+//std::vector<Entity> Scene::GetPointLights() 
+//{
+//    std::vector<Entity> point_light_e;
+//
+//    auto view = m_registry.view<TransformComponent, PointLightComponent>();
+//
+//    for (entt::entity entity : view) {
+//        Entity tmp = { entity, this };
+//        point_light_e.emplace_back(tmp);
+//    }
+//    return point_light_e;
+//}
+//
+//std::vector<Entity> Scene::GetTransformEntities() 
+//{
+//    std::vector<Entity> transform_e;
+//
+//    auto view = m_registry.view<TransformComponent>();
+//
+//    for (entt::entity entity : view) {
+//        Entity tmp = { entity, this };
+//        transform_e.emplace_back(tmp);
+//    }
+//    return transform_e;
+//}
+#pragma endregion
 
-    auto view = m_registry.view<TransformComponent, MeshComponent>();
-
-    for (entt::entity entity : view) 
-    {
-        Entity tmp = { entity, this };
-        renderable_e.emplace_back(tmp);
+Entity Scene::GetPrimaryCamera() 
+{
+    auto view = m_registry.view<CameraComponent>();
+    for (auto entity : view) {
+        const auto& camera = view.get<CameraComponent>(entity);
+        if (camera.primary)
+            return Entity{ entity, this };
     }
-    return renderable_e;
+    return {};
 }
 
+void Scene::OnRednerUpdate() 
+{
+    auto view = m_registry.view<TransformComponent>();
+    for (auto entity : view) {
+        Entity temp = Entity{ entity, this };
+        ComponentSystems::UpdateBoundingBox(temp);
+        ComponentSystems::UpdateBoundingFrustum(temp);
+    }
+}
 
 Entity Scene::CreateEntity(const std::string name) 
 {
@@ -59,8 +120,8 @@ void Scene::DestroyEntity(Entity entity)
     // избавится от зависимостей перед удалением
     if (entity.HasComponent<ChildsComponent>()) 
     {
-        auto childs = entity.GetComponent<ChildsComponent>().child_entities;
-        for (auto&& i : childs) 
+        auto& childs = entity.GetComponent<ChildsComponent>().child_entities;
+        for (auto& i : childs) 
         {
             i.RemoveComponent<ParentComponent>();
         }
@@ -68,7 +129,7 @@ void Scene::DestroyEntity(Entity entity)
     if (entity.HasComponent<ParentComponent>()) 
     {
         // TODO: Что то потом с этим придумать а то выглядит ужасно
-        auto childs = entity.GetComponent<ParentComponent>().parent.GetComponent<ChildsComponent>().child_entities;
+        auto& childs = entity.GetComponent<ParentComponent>().parent.GetComponent<ChildsComponent>().child_entities;
         for (size_t i = 0; i < childs.size(); i++) 
         {
             if (childs[i] == entity) 
@@ -92,7 +153,7 @@ void Scene::DestroyEntity(Entity entity)
     m_registry.destroy((entt::entity)entity);
 }
 
-
+#pragma region OnCompAdeded
 template <typename T>
 void Scene::OnComponentAdded(Entity entity, T& component) {
     static_assert(false);
@@ -107,8 +168,17 @@ void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformCompone
 }
 
 template <>
-void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component) 
-{
+void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component) {
+}
+
+template <>
+void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component) {
+    if (m_window_width > 0 && m_window_height > 0)
+        component.camera.SetViewPortSize(m_window_height, m_window_width);
+}
+
+template <>
+void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& component) {
     ComponentSystems::SetModel(entity, m_model_manager->GetModelById(0));
 }
 
@@ -124,6 +194,8 @@ void Scene::OnComponentAdded<ParentComponent>(Entity entity, ParentComponent& co
 template <>
 void Scene::OnComponentAdded<ChildsComponent>(Entity entity, ChildsComponent& component) {
 }
+#pragma endregion
+
 
 const char* FileName = "scene.json";
 

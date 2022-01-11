@@ -3,9 +3,8 @@
 #include <vector>
 #include <string>
 
-
-#include "Field.h"
-#include "../StringOp.h"
+#include <motor/RBS/Structure/Field.h>
+#include <motor/RBS/StringOp.h>
 
 class Triples
 {

@@ -51,6 +51,8 @@ set(GRAPHICS_HEADERS
     include/motor/graphics/CameraContainer.h
     include/motor/graphics/DebugDraw.h
     include/motor/graphics/MeshForComponents.h
+    include/motor/graphics/SceneCamera.h
+    include/motor/graphics/PointLightStruct.h
 )
 
 set(SCENES_HEADERS
@@ -150,6 +152,7 @@ set(GRAPHICS_SOURCES
     src/graphics/CameraContainer.cpp
     src/graphics/DebugDraw.cpp
     src/graphics/MeshForComponents.cpp
+    src/graphics/SceneCamera.cpp
 )
 
 set(KEYBOARD_SOURCES
@@ -201,6 +204,7 @@ set(LIBRARIES
     d3dcompiler
     dxguid
     imgui-cmake
+    ImGuizmo-cmake
     assimp
     DirectXTK
     liblua-static

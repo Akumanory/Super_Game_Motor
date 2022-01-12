@@ -2,6 +2,8 @@
 #include <motor/task_system.hpp>
 #include <imfilebrowser/imfilebrowser.hpp>
 
+#include "ImGuizmo.h"
+
 using namespace DirectX;
 
 bool Graphics::Initialize(HWND hWnd, int width, int height) {
@@ -41,6 +43,7 @@ bool Graphics::Initialize(HWND hWnd, int width, int height) {
     return true;
 }
 
+
 void Graphics::RenderFrame() {
     std::lock_guard guard{ renderable_objects_mtx };
     // При Flip_Discard нужно при отображение кадра каждый раз устанавливать Render Targets
@@ -76,23 +79,23 @@ void Graphics::RenderFrame() {
         deviceContext->PSSetShader(pixel_shader.GetShader(), nullptr, 0);
 
         // ------------------------------------------------------------------
-        UINT offset = 0;
-
-        cb_ps_light.data.dynamicLightColor = light.lightColor;
-        cb_ps_light.data.dynamicLightStrength = light.lightStrength;
-        cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
-        cb_ps_light.data.dynamicLightAttenuation_A = light.attennuation_A;
-        cb_ps_light.data.dynamicLightAttenuation_B = light.attennuation_B;
-        cb_ps_light.data.dynamicLightAttenuation_C = light.attennuation_C;
-        cb_ps_light.ApplyChanges();
-        deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
+      //  UINT offset = 0;
+//
+      //  cb_ps_light.data.dynamicLightColor = light.lightColor;
+      //  cb_ps_light.data.dynamicLightStrength = light.lightStrength;
+      //  cb_ps_light.data.dynamicLightPosition = light.GetPositionFloat3();
+      //  cb_ps_light.data.dynamicLightAttenuation_A = light.attennuation_A;
+      //  cb_ps_light.data.dynamicLightAttenuation_B = light.attennuation_B;
+      //  cb_ps_light.data.dynamicLightAttenuation_C = light.attennuation_C;
+      //  cb_ps_light.ApplyChanges();
+      //  deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
     }
     /*model1.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	model2.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 	model3.Draw(camera.GetViewMatrix() * camera.GetProjectionMatrix());*/
     //test_mesh_model.DrawMeshes(camera.GetViewMatrix() * camera.GetProjectionMatrix());
 
-    //    DrawObjects(true);
+    //DrawObjects(true);
 
     /// -------------------------------------------------------------------
 
@@ -104,7 +107,7 @@ void Graphics::RenderFrame() {
     }
 
     if (loadedScene_) {
-
+        test_entt_scene.OnRednerUpdate();
         DrawScene(test_entt_scene, cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
     }
     /*
@@ -148,50 +151,58 @@ void Graphics::RenderFrame() {
 
 	*/
 
-    //solar_system_scene.DrawScene(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix(), cam_container.GetCameraById(0).GetLocalBoundingFrustum());
+    /*Entity primary_camera = test_entt_scene.GetPrimaryCamera();
 
+    if (primary_camera && state == States::Simulate) 
+    {
+        auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix();
+        XMVECTOR Det = XMMatrixDeterminant(transform);
+        XMMATRIX view = XMMatrixInverse(&Det, transform);
+        XMMATRIX t_viewProjectionMatrix = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
+        m_effect->SetVertexColorEnabled(true);
+        m_effect->SetView(view);
+        m_effect->SetProjection(primary_camera.GetComponent<CameraComponent>().camera.GetProjection());
+    } else {
+        m_effect->SetVertexColorEnabled(true);
+        m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
+        m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
+    }*/
     if (loadedScene_) {
-        deviceContext->PSSetShader(pixel_shader_no_light.GetShader(), NULL, 0);
-        light.Draw(cam_container.GetCurrentCamera().GetViewMatrix() * cam_container.GetCurrentCamera().GetProjectionMatrix());
+        {
+            void const* shaderByteCode;
+            size_t byteCodeLength;
+    
+            m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
+    
+            device->CreateInputLayout(
+              VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
+              shaderByteCode, byteCodeLength,
+              m_inputLayout.ReleaseAndGetAddressOf());
+        }
+    
+        deviceContext->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
+        deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
+        deviceContext->RSSetState(m_states->CullNone());
+    
+        m_effect->Apply(deviceContext.Get());
+    
+        deviceContext->IASetInputLayout(m_inputLayout.Get());
+    
+        DrawDebugScene(test_entt_scene);
     }
-    // Simple batch
-    //    m_effect->SetVertexColorEnabled(true);
-    //    m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
-    //    m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
-    //
-    //    {
-    //        void const* shaderByteCode;
-    //        size_t byteCodeLength;
-    //
-    //        m_effect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
-    //
-    //        device->CreateInputLayout(
-    //          VertexPositionColor::InputElements, VertexPositionColor::InputElementCount,
-    //          shaderByteCode, byteCodeLength,
-    //          m_inputLayout.ReleaseAndGetAddressOf());
-    //    }
-    //
-    //    deviceContext->OMSetBlendState(m_states->Opaque(), nullptr, 0xFFFFFFFF);
-    //    deviceContext->OMSetDepthStencilState(m_states->DepthNone(), 0);
-    //    deviceContext->RSSetState(m_states->CullNone());
-    //
-    //    m_effect->Apply(deviceContext.Get());
-    //
-    //    deviceContext->IASetInputLayout(m_inputLayout.Get());
-    //
-    //    m_batch->Begin();
-    //
-    //    DrawDebugScene(test_entt_scene);
-    //    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetForwardVector(), true, DirectX::Colors::LightGreen);
-    //    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetRightVector(), true, DirectX::Colors::Red);
-    //    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetUpVector(), true, DirectX::Colors::LightBlue);
-    //    Draw(m_batch.get(), renderable_objects[0].GetBoundingBox(), DirectX::Colors::Green);
-    //    Draw(m_batch.get(), renderable_objects[1].GetBoundingBox(), DirectX::Colors::Blue);
-    //    Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Olive);
-    //    Draw(m_batch.get(), renderable_objects[3].GetBoundingBox(), DirectX::Colors::DarkSeaGreen);
-    //    Draw(m_batch.get(), renderable_objects[4].GetBoundingBox(), DirectX::Colors::Yellow);
-    //
-    //    m_batch->End();
+    /*m_batch->Begin();
+
+    DrawDebugScene(test_entt_scene);
+    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetForwardVector(), true, DirectX::Colors::LightGreen);
+    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetRightVector(), true, DirectX::Colors::Red);
+    DrawRay(m_batch.get(), renderable_objects[1].GetPositionVector(), renderable_objects[1].GetUpVector(), true, DirectX::Colors::LightBlue);
+    Draw(m_batch.get(), renderable_objects[0].GetBoundingBox(), DirectX::Colors::Green);
+    Draw(m_batch.get(), renderable_objects[1].GetBoundingBox(), DirectX::Colors::Blue);
+    Draw(m_batch.get(), renderable_objects[2].GetBoundingBox(), DirectX::Colors::Olive);
+    Draw(m_batch.get(), renderable_objects[3].GetBoundingBox(), DirectX::Colors::DarkSeaGreen);
+    Draw(m_batch.get(), renderable_objects[4].GetBoundingBox(), DirectX::Colors::Yellow);
+
+    m_batch->End();*/
 
     // Draw Text and fps
     static int fps_counter = 0;
@@ -221,50 +232,92 @@ void Graphics::RenderFrame() {
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
-    // Creater ImGui test window
-    //    ImGui::Begin("Light Controls");
-    //
-    //    ImGui::DragFloat3(
-    //      "Ambient Light Color",
-    //      &cb_ps_light.data.ambientLightColor.x,
-    //      0.01f,
-    //      0.0f,
-    //      1.0f);
-    //
-    //    ImGui::DragFloat(
-    //      "Ambient Light strength",
-    //      &cb_ps_light.data.ambientLightStrength,
-    //      0.01f,
-    //      0.0f,
-    //      1.0f);
-    //    ImGui::NewLine();
-    //    ImGui::DragFloat3("Dynamic Light Color", &this->light.lightColor.x, 0.01f, 0.0f, 10.0f);
-    //    ImGui::DragFloat("Dynamic Light Strength", &this->light.lightStrength, 0.01f, 0.0f, 10.0f);
-    //    ImGui::DragFloat("Dynamic Light Attenuation A", &this->light.attennuation_A, 0.01f, 0.1f, 10.0f);
-    //    ImGui::DragFloat("Dynamic Light Attenuation B", &this->light.attennuation_B, 0.01f, 0.0f, 10.0f);
-    //    ImGui::DragFloat("Dynamic Light Attenuation C", &this->light.attennuation_C, 0.01f, 0.0f, 10.0f);
-    //
-    //    ImGui::End();
 
-    //    cam_container.ImGUIWindow();
-    //
+#pragma region Imgui(Simulate, Stop, Pause, Continue)
     if (loadedScene_) {
-        scene_hierachy.OnImguiRender();
+        // Simulate, Stop, Pause, Imgui
+        ImGui::Begin("Simulate");
+    
+        if (state == States::Editor) {
+            if (ImGui::Button("Simulate")) {
+                state = States::Simulate;
+                // TODO: Сменить на CurrentScene воследствии
+                test_entt_scene.Save();
+            }
+        }
+    
+        if (state == Pause) {
+            if (ImGui::Button("Continue")) {
+                state = States::Simulate;
+            }
+        }
+    
+        if (state == States::Simulate) {
+            if (ImGui::Button("Pause")) {
+                if (state == States::Simulate) {
+                    state = States::Pause;
+                }
+            }
+        }
+    
+        if (state == States::Simulate || state == States::Pause) {
+            ImGui::SameLine();
+            if (ImGui::Button("Stop")) {
+                state = States::Editor;
+                // TODO: Сменить на CurrentScene воследствии
+                test_entt_scene.Load();
+            }
+        }
+        //ImGui::NewLine();
+        switch (state) {
+        case Editor:
+            ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
+            ImGui::Text("Editor_State");
+            ImGui::PopStyleColor();
+            break;
+        case Simulate:
+            ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
+            ImGui::Text("Simulation_State");
+            ImGui::PopStyleColor();
+            break;
+        case Pause:
+            ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
+            ImGui::Text("Pause_State");
+            ImGui::PopStyleColor();
+            break;
+        }
+        ImGui::End();
     }
+#pragma endregion
 
-    /*std::vector<std::string> test = { "A", "B" };
+#pragma region ImguiRender
+    // Imgui render
+    if (state == States::Editor) 
+    {
+        // Creater ImGui test window
+        ImGui::Begin("Ambietnt Light Controls");
 
-	ImGui::Begin;
+        ImGui::ColorEdit3("Ambient Light Color", (float*)&cb_ps_light.data.ambientLightColor);
 
-	ImGui::BeginCombo("Active Camera", test[0].c_str());
+        ImGui::DragFloat(
+          "Ambient Light strength",
+          &cb_ps_light.data.ambientLightStrength,
+          0.01f,
+          0.0f,
+          1.0f);
+        ImGui::End();
 
-	ImGui::End;*/
+        cam_container.ImGUIWindow();
+        scene_hierachy.OnImguiRender();
 
-    if (showConsole_ != nullptr and consoleUI_ != nullptr) {
-        if (*showConsole_ and loadedProject_) {
-            consoleUI_->Draw("Lua Console", showConsole_);
+        if (showConsole_ != nullptr && consoleUI_ != nullptr) {
+            if (*showConsole_ and loadedProject_) {
+                consoleUI_->Draw("Lua Console", showConsole_);
+            }
         }
     }
+#pragma endregion
+
 
     if (showAssetViewer_ != nullptr and assetViewerUI_ != nullptr) {
         if (*showAssetViewer_ and loadedProject_) {
@@ -641,7 +694,7 @@ bool Graphics::InitializeScene() {
         COM_ERROR_IF_FAILED(hr, "Failed to initialize constant buffer.");
 
         cb_ps_light.data.ambientLightColor = XMFLOAT3(1.0f, 1.0f, 1.0f);
-        cb_ps_light.data.ambientLightStrength = 0.5f;
+        cb_ps_light.data.ambientLightStrength = 0.2f;
 
         // LoadModels test
         // ---------------
@@ -700,9 +753,9 @@ bool Graphics::InitializeScene() {
       //
       //  renderable_objects.push_back(gameObject4);
 
-        if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
+        /*if (!light.Initialize(device.Get(), deviceContext.Get(), cb_vs_vertex_shader)) {
             return false;
-        }
+        }*/
 
       //  if (!solar_system_scene.Initialize(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader)) {
       //      return false;
@@ -760,26 +813,28 @@ bool Graphics::InitializeScene() {
         test_entt_scene.SetModelLoader(&model_loader);
         test_entt_scene.SetAspectRatioParams(windowHeight, windowWidth);
 
-       // entity1 = test_entt_scene.CreateEntity("First Entity");
-       // ComponentSystems::SetPosition(entity1, DirectX::XMFLOAT3(0.0f, 4.0f, 0.0f));
-       // ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-       // entity1.AddComponent<MeshComponent>();
-       // //ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
-       //
-       // entity2 = test_entt_scene.CreateEntity("Second Entity");
-       // ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
-       // ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-       // entity2.AddComponent<MeshComponent>();
-       // //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
-       //
-       // entity3 = test_entt_scene.CreateEntity("Third Entity");
-       // ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, -4.0f, 3.0f));
-       // ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
-       // entity3.AddComponent<MeshComponent>();
-       // //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
-       //
-       //
-       // entity3.AddComponent<ParentComponent>(entity1);
+      //  entity1 = test_entt_scene.CreateEntity("First Entity");
+      //  ComponentSystems::SetPosition(entity1, DirectX::XMFLOAT3(0.0f, 4.0f, 0.0f));
+      //  ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+      //  entity1.AddComponent<MeshComponent>();
+      //  //ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
+//
+      //  entity2 = test_entt_scene.CreateEntity("Second Entity");
+      //  ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
+      //  ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+      //  entity2.AddComponent<MeshComponent>();
+      //  //entity2.AddComponent<PointLightComponent>();
+      //  //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
+//
+      //  entity3 = test_entt_scene.CreateEntity("Point Light Entity");
+      //  ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, 15.0f, 0.0f));
+      //  ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+      //  entity3.AddComponent<PointLightComponent>();
+        //entity3.AddComponent<MeshComponent>();
+        //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
+
+
+        //entity3.AddComponent<ParentComponent>(entity1);
 
         //ComponentSystems::SetChildEntity(entity1, entity2);
         //ComponentSystems::SetChildEntity(entity1, entity3);
@@ -863,23 +918,84 @@ void Graphics::addLightCube(float x, float y, float z) {
     solar_system_scene.AddCube(device.Get(), deviceContext.Get(), texture.Get(), cb_vs_vertex_shader, DirectX::XMFLOAT3{ x, y, z });
 }
 
-// TODO: нужно не удалять
 void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
 
-    deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertex_shader.GetAddressOf());
+    Entity primary_camera = scene.GetPrimaryCamera();
 
-    auto renderableEntities = scene.GetRenderableEntities();
+    XMMATRIX vpm = XMMatrixIdentity();
+
+    auto point_lights = scene.GetEntitysByComponent<PointLightComponent>();
+    int j = 0;
+    for (auto&& i : point_lights) {
+        auto& point_light_comp = i.GetComponent<PointLightComponent>();
+
+        auto& local_pos = i.GetComponent<TransformComponent>().local_position;
+        auto& world_pos = i.GetComponent<TransformComponent>().world_position;
+
+        XMVECTOR scale_v;
+        XMVECTOR rot_v;
+        XMVECTOR pos_v;
+
+        XMMatrixDecompose(&scale_v, &rot_v, &pos_v, ComponentSystems::GetTransformMatrix(i));
+
+        XMFLOAT3 pos;
+
+        XMStoreFloat3(&pos, pos_v);
+
+        cb_ps_light.data.size = test_entt_scene.GetEntitysByComponent<PointLightComponent>().size();
+        cb_ps_light.data.lights[j].dynamicLightColor = point_light_comp.lightColor;
+        cb_ps_light.data.lights[j].dynamicLightStrength = point_light_comp.lightStrength;
+        cb_ps_light.data.lights[j].dynamicLightPosition = pos;
+        cb_ps_light.data.lights[j].dynamicLightAttenuation_A = point_light_comp.attennuation_A;
+        cb_ps_light.data.lights[j].dynamicLightAttenuation_B = point_light_comp.attennuation_B;
+        cb_ps_light.data.lights[j].dynamicLightAttenuation_C = point_light_comp.attennuation_C;
+        /*cb_ps_light.data.dynamicLightColor = point_light_comp.lightColor;
+        cb_ps_light.data.dynamicLightStrength = point_light_comp.lightStrength;
+        cb_ps_light.data.dynamicLightPosition = pos;
+        cb_ps_light.data.dynamicLightAttenuation_A = point_light_comp.attennuation_A;
+        cb_ps_light.data.dynamicLightAttenuation_B = point_light_comp.attennuation_B;
+        cb_ps_light.data.dynamicLightAttenuation_C = point_light_comp.attennuation_C;*/
+        j++;
+    }
+    cb_ps_light.ApplyChanges();
+    deviceContext->PSSetConstantBuffers(0, 1, cb_ps_light.GetAddressOf());
+
+    auto renderableEntities = scene.GetEntitysByComponent<MeshComponent>();
     for (auto&& i : renderableEntities)
     {
+        deviceContext->VSSetConstantBuffers(0, 1, cb_vs_vertex_shader.GetAddressOf());
+
         auto&& meshes = i.GetComponent<MeshComponent>().model.meshes;
 
         auto worldMatrix = ComponentSystems::GetTransformMatrix(i);
 
-        DirectX::BoundingFrustum local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
+        DirectX::BoundingFrustum local_frustum;
+
+        if (state == Simulate && primary_camera) 
+        {
+            auto transform = primary_camera.GetComponent<TransformComponent>().GetLocalTransformMatrix();
+            XMVECTOR Det = XMMatrixDeterminant(transform);
+            XMMATRIX view = XMMatrixInverse(&Det,transform);
+            vpm = view * primary_camera.GetComponent<CameraComponent>().camera.GetProjection();
+            local_frustum = primary_camera.GetComponent<CameraComponent>().camera.GetFrustum();
+            m_effect->SetVertexColorEnabled(true);
+            m_effect->SetView(view);
+            m_effect->SetProjection(primary_camera.GetComponent<CameraComponent>().camera.GetProjection());
+        } 
+        else 
+        {
+            vpm = viewProjectionMatrix;
+            local_frustum = cam_container.GetCameraById(0).GetLocalBoundingFrustum();
+            m_effect->SetVertexColorEnabled(true);
+            m_effect->SetView(cam_container.GetCurrentCamera().GetViewMatrix());
+            m_effect->SetProjection(cam_container.GetCurrentCamera().GetProjectionMatrix());
+        }
+
+        
         if (local_frustum.Contains(i.GetComponent<MeshComponent>().transformed_bounding_box) != DirectX::DISJOINT) 
         {
             for (int i = 0; i < meshes.size(); i++) {
-                cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * viewProjectionMatrix; //Calculate World-View-Projection Matrix
+                cb_vs_vertex_shader.data.wvpMatrix = meshes[i].GetMeshTransform() * worldMatrix * vpm; 
                 cb_vs_vertex_shader.data.worldMatrix = meshes[i].GetMeshTransform() * worldMatrix; //Calculate World
                 cb_vs_vertex_shader.ApplyChanges();
 
@@ -910,19 +1026,44 @@ void Graphics::DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix) {
                 this->deviceContext->DrawIndexed(indexbuffer.IndexCount(), 0, 0);
             }
         }
-
-        ComponentSystems::UpdateBoundingBox(i);
     }
+
+    
 }
 
 void Graphics::DrawDebugScene(Scene& scene) 
 {
-    auto renderableEntities = scene.GetRenderableEntities();
-    for (auto&& i : renderableEntities) {
-        Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);
+    if (state == States::Editor) 
+    {
+        m_batch->Begin();
+        auto renderableEntities = scene.GetEntitysByComponent<MeshComponent>();
+        for (auto&& i : renderableEntities) {
+            Draw(m_batch.get(), i.GetComponent<MeshComponent>().transformed_bounding_box, DirectX::Colors::Pink);
+        }
+
+        auto transformEntites = scene.GetEntitysByComponent<TransformComponent>();
+        for (auto&& i : transformEntites) {
+            auto& transform_comp = i.GetComponent<TransformComponent>();
+
+            XMVECTOR scale;
+            XMVECTOR rot;
+            XMVECTOR pos;
+
+            XMMatrixDecompose(&scale, &rot, &pos, ComponentSystems::GetTransformMatrix(i));
+
+            DrawRay(m_batch.get(), pos, transform_comp.GetForwardVector(), true, DirectX::Colors::LightBlue);
+            DrawRay(m_batch.get(), pos, transform_comp.GetRightVector(), true, DirectX::Colors::Red);
+            DrawRay(m_batch.get(), pos, transform_comp.GetUpVector(), true, DirectX::Colors::LightGreen);
+        }
+
+        auto camerasEntities = scene.GetEntitysByComponent<CameraComponent>();
+        for (auto&& i : camerasEntities) {
+            Draw(m_batch.get(), i.GetComponent<CameraComponent>().camera.GetFrustum(), DirectX::Colors::Orange);
+        }
+
+        m_batch->End();
     }
 }
-
 //void Graphics::DrawModel(RenderableEntities renderable_entity)
 //{
 //

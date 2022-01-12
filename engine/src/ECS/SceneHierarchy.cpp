@@ -41,6 +41,15 @@ void SceneHierarchy::OnImguiRender()
         {
             m_context->CreateEntity("Empty Entity");
         }
+        if (ImGui::MenuItem("Create Camera Entity")) 
+        {
+            Entity temp_entt = m_context->CreateEntity("Camera Entity");
+            temp_entt.AddComponent<CameraComponent>();
+        }
+        if (ImGui::MenuItem("Create Entity With Model 3D")) {
+            Entity temp_entt = m_context->CreateEntity("Model Entity");
+            temp_entt.AddComponent<MeshComponent>();
+        }
         ImGui::EndPopup();
     }
 
@@ -103,8 +112,6 @@ void SceneHierarchy::DrawEntityNode(Entity entity) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Entity")) {
             IM_ASSERT(payload->DataSize == sizeof(entity));
             Entity payload_entity = *(const Entity*)payload->Data;
-
-            //entity.GetComponent<TagComponent>().tag = payload_entity.GetComponent<TagComponent>().tag;
 
             payload_entity.AddComponent<ParentComponent>(entity);
         }
@@ -235,6 +242,48 @@ static void DrawVec3Control(const std::string& label, DirectX::XMFLOAT3& values,
     ImGui::PopID();
 }
 
+
+template <typename T, typename LambdaFunction>
+static void DrawComponent(const std::string& name, Entity entity, LambdaFunction lambda_function) 
+{
+    const ImGuiTreeNodeFlags tree_node_flags = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+    if (entity.HasComponent<T>()) {
+        auto& component = entity.GetComponent<T>();
+        ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+        float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+        ImGui::Separator();
+        bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), tree_node_flags, name.c_str());
+        ImGui::PopStyleVar();
+        
+        
+        bool removeComponent = false;
+        if (open) {
+            ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+            if (ImGui::Button("*", ImVec2{ lineHeight, lineHeight })) {
+                ImGui::OpenPopup(name.c_str());
+            }
+
+            if (ImGui::BeginPopup(name.c_str())) {
+                if (ImGui::MenuItem("Remove component"))
+                    removeComponent = true;
+
+                ImGui::EndPopup();
+            }
+
+            lambda_function(component);
+            ImGui::TreePop();
+        }
+
+        if (removeComponent)
+            entity.RemoveComponent<T>();
+    }
+
+}
+
+
+
 void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
     if (entity.HasComponent<TagComponent>()) 
     {
@@ -252,12 +301,9 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
     if (entity.HasComponent<TransformComponent>()) 
     {
-        if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Transform")) 
+        if (ImGui::TreeNodeEx((void*)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding, "Transform")) 
         {
             auto& transform_comp = entity.GetComponent<TransformComponent>();
-
-            /*ImGuiIO& io = ImGui::GetIO();
-            auto boldFont = io.Fonts->Fonts[1];*/
 
             ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
             ImGui::Text("World_Transform");
@@ -304,58 +350,143 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
         }
     }
 
-    if (entity.HasComponent<MeshComponent>()) 
-    {
-        if (ImGui::TreeNodeEx((void*)typeid(MeshComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Model")) {
-            auto& mesh_comp = entity.GetComponent<MeshComponent>();
+    DrawComponent<MeshComponent>("Model", entity, [&](auto& component) {
+        static int item_current_idx = 0; // Here we store our selection data as an index.
+        const char* combo_preview_value = component.model.model_name.c_str(); // Pass in the preview value visible before opening the combo (it could be anything)
+        if (ImGui::BeginCombo("Models", combo_preview_value, 0)) {
+            for (int n = 0; n < m_context->m_model_manager->_models.size(); n++) {
+                const bool is_selected = (item_current_idx == n);
+                if (ImGui::Selectable(m_context->m_model_manager->_models[n]->model_name.c_str(), is_selected))
+                    item_current_idx = n;
 
-            static int item_current_idx = 0; // Here we store our selection data as an index.
-            const char* combo_preview_value = mesh_comp.model.model_name.c_str(); // Pass in the preview value visible before opening the combo (it could be anything)
-            if (ImGui::BeginCombo("Models", combo_preview_value, 0)) {
-                for (int n = 0; n < m_context->m_model_manager->_models.size(); n++) {
-                    const bool is_selected = (item_current_idx == n);
-                    if (ImGui::Selectable(m_context->m_model_manager->_models[n]->model_name.c_str(), is_selected))
-                        item_current_idx = n;
-
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected) {
-                        ImGui::SetItemDefaultFocus();
-                    }
+                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                if (is_selected) {
+                    ImGui::SetItemDefaultFocus();
                 }
-                ImGui::EndCombo();
-
-                ComponentSystems::SetModel(entity, *(m_context->m_model_manager->_models[item_current_idx]));
             }
+            ImGui::EndCombo();
+
+            ComponentSystems::SetModel(entity, *(m_context->m_model_manager->_models[item_current_idx]));
+        }
+        ImGui::NewLine();
+    });
+    
+    DrawComponent<PointLightComponent>("PointLight", entity, [](auto& component) {
+        ImGui::ColorEdit3("Dynamic Light Color", (float*)&component.lightColor);
+        ImGui::DragFloat("Dynamic Light Strength", &component.lightStrength, 0.01f, 0.0f, 100.0f);
+        ImGui::DragFloat("Dynamic Light Attenuation A", &component.attennuation_A, 0.01f, 0.1f, 10.0f);
+        ImGui::DragFloat("Dynamic Light Attenuation B", &component.attennuation_B, 0.01f, 0.0f, 10.0f);
+        ImGui::DragFloat("Dynamic Light Attenuation C", &component.attennuation_C, 0.01f, 0.0f, 10.0f);
+
+        ImGui::NewLine();
+    });
+
+    DrawComponent<CameraComponent>("Camera", entity, [](auto& component) 
+    {
+        ImGui::Checkbox("Primary", &component.primary);
+
+        float fov = component.camera.GetVerticalFOV();
+        if (ImGui::DragFloat("FOV", &fov, 1.0f, 1.0f, 179.0f)) {
+            component.camera.SetVerticalFOV(fov);
+        }
+
+        float nearZ = component.camera.GetNearZ();
+        float farZ = component.camera.GetFarZ();
+        if (ImGui::DragFloat("NearZ", &nearZ, 1.0f, 0.1f, farZ - 1.0f)) {
+            component.camera.SetNearZ(nearZ);
+        }
+        if (ImGui::DragFloat("FarZ", &farZ, 1.0f, nearZ + 1.0f, 1000.0f)) {
+            component.camera.SetFarZ(farZ);
+        }
+        ImGui::NewLine();
+    });
+    
+    // Child and Parent �� DrawComponet ������ ��� ������ ��������
+    if (entity.HasComponent<ParentComponent>()) 
+    {
+        auto& component = entity.GetComponent<ParentComponent>();
+        ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+        float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+        ImGui::Separator();
+        bool open = ImGui::TreeNodeEx((void*)typeid(ParentComponent).hash_code(), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding, "Parent");
+        ImGui::PopStyleVar();
+        
+        
+        bool removeComponent = false;
+        if (open) {
+            ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+            if (ImGui::Button("*", ImVec2{ lineHeight, lineHeight })) {
+                ImGui::OpenPopup("Parent");
+            }
+
+            if (ImGui::BeginPopup("Parent")) {
+                if (ImGui::MenuItem("Remove component"))
+                    removeComponent = true;
+
+                ImGui::EndPopup();
+            }
+
+            ImGui::Text("Parent:");
+            ImGui::SameLine();
+            ImGui::Text(entity.GetComponent<ParentComponent>().parent.GetComponent<TagComponent>().tag.c_str());
 
             ImGui::NewLine();
 
             ImGui::TreePop();
         }
-    }
 
-    if (entity.HasComponent<ParentComponent>()) 
-    {
-        if (ImGui::TreeNodeEx((void*)typeid(ParentComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Parent")) 
+        if (removeComponent) 
         {
-            ImGui::Text("Parent:");
-            ImGui::SameLine();
-            ImGui::Text(entity.GetComponent<ParentComponent>().parent.GetComponent<TagComponent>().tag.c_str());
-        
-            ImGui::NewLine();
+            auto& childs = component.parent.GetComponent<ChildsComponent>().child_entities;
 
-            ImGui::TreePop();
+            for (size_t i = 0; i < childs.size(); i++) 
+            {
+                if (childs[i] = entity) 
+                {
+                    childs.erase(childs.begin() + i);
+                    break;
+                }
+            }
+
+            if (childs.size() == 0) 
+            {
+                component.parent.RemoveComponent<ChildsComponent>();
+            }
+
+            entity.RemoveComponent<ParentComponent>();
         }
     }
 
     if (entity.HasComponent<ChildsComponent>()) {
-        if (ImGui::TreeNodeEx((void*)typeid(ChildsComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Childs")) {
-            
-            auto childs = entity.GetComponent<ChildsComponent>().child_entities;
+
+        auto& component = entity.GetComponent<ChildsComponent>();
+        ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
+        float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+        ImGui::Separator();
+        bool open = ImGui::TreeNodeEx((void*)typeid(ChildsComponent).hash_code(), ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding, "Childs"); 
+        ImGui::PopStyleVar();
+
+        bool removeComponent = false;
+        if (open) {
+            ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+            if (ImGui::Button("*", ImVec2{ lineHeight, lineHeight })) {
+                ImGui::OpenPopup("Childs");
+            }
+
+            if (ImGui::BeginPopup("Childs")) {
+                if (ImGui::MenuItem("Remove component"))
+                    removeComponent = true;
+
+                ImGui::EndPopup();
+            }
 
             ImGui::Text("Childs:");
 
-            for (auto& i : childs) 
-            {
+            for (auto& i : component.child_entities) {
                 ImGui::Text(i.GetComponent<TagComponent>().tag.c_str());
             }
 
@@ -363,6 +494,52 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
             ImGui::TreePop();
         }
+
+        if (removeComponent) {
+            
+            auto& childs = component.child_entities;
+
+            for (auto& i : childs) 
+            {
+                i.RemoveComponent<ParentComponent>();
+            }
+
+            entity.RemoveComponent<ChildsComponent>();
+        }
+    }
+
+    ImGui::NewLine();
+
+    if (ImGui::Button("Add Component")) {
+        ImGui::OpenPopup("AddComponent");
+    }
+
+    if (ImGui::BeginPopup("AddComponent")) {
+        if (!m_selection_context.HasComponent<MeshComponent>()) {
+            if (ImGui::MenuItem("Model")) {
+                m_selection_context.AddComponent<MeshComponent>();
+
+                ImGui::CloseCurrentPopup();
+            }
+        }
+
+        if (!m_selection_context.HasComponent<CameraComponent>()) {
+            if (ImGui::MenuItem("Camera")) {
+                m_selection_context.AddComponent<CameraComponent>();
+
+                ImGui::CloseCurrentPopup();
+            }
+        }
+
+        if (!m_selection_context.HasComponent<PointLightComponent>()) {
+            if (ImGui::MenuItem("PointLight")) {
+                m_selection_context.AddComponent<PointLightComponent>();
+
+                ImGui::CloseCurrentPopup();
+            }
+        }
+
+        ImGui::EndPopup();
     }
 
     if (entity.HasComponent<PhysicsComponent>()) {

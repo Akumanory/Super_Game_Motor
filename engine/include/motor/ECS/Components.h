@@ -4,6 +4,7 @@
 #include <motor/graphics/UpdatedModel.h>
 #include <motor/graphics/MeshForComponents.h>
 #include <motor/other/ModelLoader.h>
+#include <motor/graphics/SceneCamera.h>
 #undef max
 #include <rapidjson/document.h>
 
@@ -26,7 +27,29 @@ struct TransformComponent {
 
     XMFLOAT3 local_position = { 0.0, 0.0, 0.0 };
     XMFLOAT3 local_rotation = { 0.0, 0.0, 0.0 };
-    XMFLOAT3 local_scale = { 1.0, 1.0, 1.0 };
+    XMFLOAT3 local_scale    = { 1.0, 1.0, 1.0 };
+
+
+    XMVECTOR GetUpVector() 
+    {
+        return XMVector3TransformCoord(
+          DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f),
+          XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+    }
+
+    XMVECTOR GetForwardVector() 
+    {
+        return XMVector3TransformCoord(
+            DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), 
+            XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+    }
+
+    XMVECTOR GetRightVector() 
+    {
+        return XMVector3TransformCoord(
+          DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f),
+          XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+    }
 
     // translation * rotation * scale
     XMMATRIX GetWorldTransformMatrix() const {
@@ -41,17 +64,6 @@ struct TransformComponent {
     auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };
 
-// Undone
-//struct DirectionalVectorsComponent 
-//{
-//    const XMVECTOR DEFAULT_FORWARD_VECTOR = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-//    const XMVECTOR DEFAULT_UP_VECTOR      = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-//    const XMVECTOR DEFAULT_RIGHT_VECTOR   = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-//
-//    // Todo: UpdateDirectionalVectors
-//};
-
-// TODO: Undone
 struct MeshComponent {
     BoundingOrientedBox transformed_bounding_box;
     ModelStruct model;
@@ -79,8 +91,21 @@ struct PhysicsComponent {
     XMFLOAT3 extent{ 1.0, 1.0, 1.0 };
 };
 
-//struct CameraComponent
-//{
-//    SceneCamera camera;
-//    bool primary;
-//};
+struct CameraComponent
+{
+    SceneCamera camera;
+    bool primary = false;
+};
+
+struct PointLightComponent 
+{
+    DirectX::XMFLOAT3 lightColor = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+    float lightStrength = 10.0f;
+
+    float attennuation_A = 1.0f;
+    float attennuation_B = 0.1f;
+    float attennuation_C = 0.1f;
+
+    static auto from_json(rj::Value& obj) -> PointLightComponent;
+    auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
+};

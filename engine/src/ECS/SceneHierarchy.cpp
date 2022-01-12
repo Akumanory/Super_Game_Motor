@@ -46,6 +46,10 @@ void SceneHierarchy::OnImguiRender()
             Entity temp_entt = m_context->CreateEntity("Model Entity");
             temp_entt.AddComponent<MeshComponent>();
         }
+        if (ImGui::MenuItem("Create Entity With Point Light")) {
+            Entity temp_entt = m_context->CreateEntity("Point Light");
+            temp_entt.AddComponent<PointLightComponent>();
+        }
         ImGui::EndPopup();
     }
 

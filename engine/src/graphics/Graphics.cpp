@@ -178,6 +178,15 @@ void Graphics::RenderFrame() {
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    if (state == States::Editor) 
+    {
+        ImGui::Begin("Gizmos");
+        RederImGuizmo();
+        ImGui::End();
+    }
+    
+
+
 #pragma region Imgui(Simulate, Stop, Pause, Continue)
     // Simulate, Stop, Pause, Imgui
     ImGui::Begin("Simulate");
@@ -372,7 +381,7 @@ bool Graphics::InitializeDirectX(HWND hWnd) {
         // Rasterizer
         CD3D11_RASTERIZER_DESC rasterizer_desc(D3D11_DEFAULT);
         rasterizer_desc.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID; // Wireframe(D3D11_FILL_WIREFRAME) is a possible considiration
-        rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_BACK; // Для того что бы не рендерилась задняя часть при риосвании против часовой трелки(короче если нормаль смотрит от нас)
+        rasterizer_desc.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE; // Для того что бы не рендерилась задняя часть при риосвании против часовой трелки(короче если нормаль смотрит от нас)
         //rasterizer_desc.FrontCounterClockwise = TRUE // Для того что бы рисовать треугольники против часовой стрелки
 
         hr = device->CreateRasterizerState(
@@ -589,20 +598,20 @@ bool Graphics::InitializeScene() {
 
         entity1 = test_entt_scene.CreateEntity("First Entity");
         ComponentSystems::SetPosition(entity1, DirectX::XMFLOAT3(0.0f, 4.0f, 0.0f));
-        ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+        //ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(30.0f, 0.0f, 0.0f));
         entity1.AddComponent<MeshComponent>();
         //ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
 
         entity2 = test_entt_scene.CreateEntity("Second Entity");
         ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
-        ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+        //ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity2.AddComponent<MeshComponent>();
         //entity2.AddComponent<PointLightComponent>();
         //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
 
         entity3 = test_entt_scene.CreateEntity("Point Light Entity");
         ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, 15.0f, 0.0f));
-        ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
+        //ComponentSystems::SetRotation(entity3, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity3.AddComponent<PointLightComponent>();
         //entity3.AddComponent<MeshComponent>();
         //ComponentSystems::SetModel(entity3, model_loader.GetModelById(0));
@@ -823,4 +832,113 @@ void Graphics::DrawDebugScene(Scene& scene)
 
         m_batch->End();
     }
+}
+
+void ToImGuizmo(float* dest, const float* src) {
+    for (auto row = 0; row < 4; row++) {
+        for (auto col = 0; col < 4; col++)
+            dest[row * 4 + col] = src[col * 4 + row];
+    }
+}
+
+void Graphics::RederImGuizmo() 
+{
+    Entity selected_entity = scene_hierachy.GetSelectedEntity();
+    ImGuizmo::BeginFrame();
+
+    XMMATRIX ident_m = XMMatrixIdentity();
+
+    auto& viewMatrix = cam_container.GetCurrentCamera().GetViewMatrix();
+    auto& projMatrix = cam_container.GetCurrentCamera().GetProjectionMatrix();
+
+    ImGuizmo::SetOrthographic(false);
+    ImGuizmo::SetRect(0, 0, windowWidth, windowHeight);
+
+    static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::MODE::WORLD);
+    static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
+    
+    if (selected_entity) 
+    {
+        if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+            mCurrentGizmoMode = ImGuizmo::LOCAL;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+            mCurrentGizmoMode = ImGuizmo::WORLD;
+
+        if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+            mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+            mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        ImGui::SameLine();
+        if (mCurrentGizmoMode == ImGuizmo::LOCAL) 
+        {
+            if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+                mCurrentGizmoOperation = ImGuizmo::SCALE;
+        }
+
+        auto& transform_comp = selected_entity.GetComponent<TransformComponent>();
+        
+        auto transform = XMMatrixIdentity();
+
+        if (mCurrentGizmoMode == ImGuizmo::WORLD)
+            transform = transform_comp.GetWorldTransformMatrix();
+        if (mCurrentGizmoMode == ImGuizmo::LOCAL)
+            transform = ComponentSystems::GetTransformMatrix(selected_entity);
+        
+        ImGuizmo::Manipulate(
+            (float*)viewMatrix.r,
+            (float*)projMatrix.r,
+            mCurrentGizmoOperation,
+            ImGuizmo::WORLD,
+            (float*)transform.r
+            );
+
+        if (ImGuizmo::IsUsing) 
+        {
+            float t[3], r[3], s[3];
+            ImGuizmo::DecomposeMatrixToComponents((float*)transform.r, t, r, s);
+
+            if (mCurrentGizmoMode == ImGuizmo::WORLD) 
+            {
+                transform_comp.world_position = XMFLOAT3(t);
+                transform_comp.world_rotation = XMFLOAT3(
+                  XMConvertToRadians(r[0]),
+                  XMConvertToRadians(r[1]),
+                  XMConvertToRadians(r[2]));
+            }
+            
+            if (mCurrentGizmoMode == ImGuizmo::LOCAL) 
+            {
+                transform_comp.local_position = XMFLOAT3(
+                    t[0] - transform_comp.world_position.x,
+                    t[1] - transform_comp.world_position.y,
+                    t[2] - transform_comp.world_position.z
+
+                );
+                transform_comp.local_rotation = XMFLOAT3(
+                  XMConvertToRadians(r[0]) - transform_comp.world_rotation.x,
+                  XMConvertToRadians(r[1]) - transform_comp.world_rotation.y,
+                  XMConvertToRadians(r[2]) - transform_comp.world_rotation.z);
+                transform_comp.local_scale = XMFLOAT3(s);
+            }
+
+            // TODO: обязательно переписать под Quaternion
+            /*XMVECTOR traslation, rot, scale;
+            XMMatrixDecompose(&scale, &rot, &traslation, transform);
+
+
+            XMStoreFloat3(&transform_comp.world_position, traslation);
+            transform_comp.world_rotation = rot;*/
+        }
+
+        
+    }
+
+    ImGuizmo::DrawGrid(
+      (float*)viewMatrix.r,
+      (float*)projMatrix.r,
+      (float*)ident_m.r,
+      10.0f);
+
 }

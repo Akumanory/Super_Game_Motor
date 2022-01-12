@@ -24,6 +24,7 @@ struct TagComponent {
 struct TransformComponent {
     XMFLOAT3 world_position = { 0.0, 0.0, 0.0 };
     XMFLOAT3 world_rotation = { 0.0, 0.0, 0.0 };
+    //XMVECTOR world_rotation = XMQuaternionIdentity();
 
     XMFLOAT3 local_position = { 0.0, 0.0, 0.0 };
     XMFLOAT3 local_rotation = { 0.0, 0.0, 0.0 };
@@ -34,21 +35,24 @@ struct TransformComponent {
     {
         return XMVector3TransformCoord(
           DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f),
-          XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+          XMMatrixRotationRollPitchYaw(local_rotation.x, local_rotation.y, local_rotation.z));
+        /*return XMVector3TransformCoord(
+          DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f),
+          XMMatrixRotationQuaternion(world_rotation));*/
     }
 
     XMVECTOR GetForwardVector() 
     {
         return XMVector3TransformCoord(
             DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), 
-            XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+            XMMatrixRotationRollPitchYaw(local_rotation.x, local_rotation.y, local_rotation.z));
     }
 
     XMVECTOR GetRightVector() 
     {
         return XMVector3TransformCoord(
           DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f),
-          XMMatrixRotationRollPitchYaw(world_rotation.x, world_rotation.y, world_rotation.z));
+          XMMatrixRotationRollPitchYaw(local_rotation.x, local_rotation.y, local_rotation.z));
     }
 
     // translation * rotation * scale

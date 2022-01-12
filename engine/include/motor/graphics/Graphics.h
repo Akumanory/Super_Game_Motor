@@ -47,6 +47,8 @@ public:
     void addCube(float, float, float);
     void addLightCube(float, float, float);
 
+	void RederImGuizmo();
+
 	// TODO: перенести в renderer
     void DrawScene(Scene& scene, const XMMATRIX& viewProjectionMatrix);
     void DrawDebugScene(Scene& scene);

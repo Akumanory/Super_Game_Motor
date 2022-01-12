@@ -10,6 +10,7 @@ void ComponentSystems::SetRotation(Entity& entity, DirectX::XMFLOAT3 rot)
 {
     auto& transform_comp = entity.GetComponent<TransformComponent>();
     transform_comp.world_rotation = rot;
+    //transform_comp.world_rotation = XMQuaternionRotationRollPitchYaw(rot.x, rot.y, rot.z);
 }
 
 void ComponentSystems::AjustRotation(Entity& entity, DirectX::XMFLOAT3 rot, float delta) 

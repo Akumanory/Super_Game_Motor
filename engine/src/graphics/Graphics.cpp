@@ -242,7 +242,7 @@ void Graphics::RenderFrame() {
             if (ImGui::Button("Simulate")) {
                 state = States::Simulate;
                 // TODO: Сменить на CurrentScene воследствии
-                test_entt_scene.Save();
+                test_entt_scene.Save(scenePath_);
             }
         }
     
@@ -265,7 +265,7 @@ void Graphics::RenderFrame() {
             if (ImGui::Button("Stop")) {
                 state = States::Editor;
                 // TODO: Сменить на CurrentScene воследствии
-                test_entt_scene.Load();
+                test_entt_scene.Load(scenePath_);
             }
         }
         //ImGui::NewLine();
@@ -291,28 +291,29 @@ void Graphics::RenderFrame() {
 #pragma endregion
 
 #pragma region ImguiRender
-    // Imgui render
-    if (state == States::Editor) 
-    {
-        // Creater ImGui test window
-        ImGui::Begin("Ambietnt Light Controls");
+    if (loadedScene_) {
+        // Imgui render
+        if (state == States::Editor) {
+            // Creater ImGui test window
+            ImGui::Begin("Ambietnt Light Controls");
 
-        ImGui::ColorEdit3("Ambient Light Color", (float*)&cb_ps_light.data.ambientLightColor);
+            ImGui::ColorEdit3("Ambient Light Color", (float*)&cb_ps_light.data.ambientLightColor);
 
-        ImGui::DragFloat(
-          "Ambient Light strength",
-          &cb_ps_light.data.ambientLightStrength,
-          0.01f,
-          0.0f,
-          1.0f);
-        ImGui::End();
+            ImGui::DragFloat(
+              "Ambient Light strength",
+              &cb_ps_light.data.ambientLightStrength,
+              0.01f,
+              0.0f,
+              1.0f);
+            ImGui::End();
 
-        cam_container.ImGUIWindow();
-        scene_hierachy.OnImguiRender();
+            cam_container.ImGUIWindow();
+            scene_hierachy.OnImguiRender();
 
-        if (showConsole_ != nullptr && consoleUI_ != nullptr) {
-            if (*showConsole_ and loadedProject_) {
-                consoleUI_->Draw("Lua Console", showConsole_);
+            if (showConsole_ != nullptr && consoleUI_ != nullptr) {
+                if (*showConsole_ and loadedProject_) {
+                    consoleUI_->Draw("Lua Console", showConsole_);
+                }
             }
         }
     }

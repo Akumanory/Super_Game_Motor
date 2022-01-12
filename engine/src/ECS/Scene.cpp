@@ -169,6 +169,7 @@ void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformCompone
 
 template <>
 void Scene::OnComponentAdded<PointLightComponent>(Entity entity, PointLightComponent& component) {
+
 }
 
 template <>
@@ -208,6 +209,7 @@ void Scene::Save() {
         TransformComponent,
         MeshComponent,
         ChildsComponent,
+        PointLightComponent,
         ParentComponent>(json_archive);
     json_archive.Close();
     std::string json_output = json_archive.AsString();
@@ -247,6 +249,7 @@ void Scene::Load() {
         TransformComponent,
         MeshComponent,
         ChildsComponent,
+        PointLightComponent,
         ParentComponent>(json_in)
       .orphans();
     //auto m_view = m_registry.view<MeshComponent>();

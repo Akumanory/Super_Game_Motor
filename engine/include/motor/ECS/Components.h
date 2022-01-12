@@ -99,4 +99,7 @@ struct PointLightComponent
     float attennuation_A = 1.0f;
     float attennuation_B = 0.1f;
     float attennuation_C = 0.1f;
+
+    static auto from_json(rj::Value& obj) -> PointLightComponent;
+    auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };

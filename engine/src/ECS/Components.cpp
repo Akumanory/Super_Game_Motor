@@ -127,3 +127,44 @@ auto ParentComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAll
     }
     obj.AddMember("parent", parent_j, rjAllocator);
 }
+
+auto PointLightComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void {
+    rj::Value light_color_j(rj::kArrayType);
+    rj::Value light_strength_j;
+    rj::Value attennuation_a_j;
+    rj::Value attennuation_b_j;
+    rj::Value attennuation_c_j;
+
+
+    light_color_j.PushBack(rj::Value{ lightColor.x }, rjAllocator);
+    light_color_j.PushBack(rj::Value{ lightColor.y }, rjAllocator);
+    light_color_j.PushBack(rj::Value{ lightColor.z }, rjAllocator);
+    light_strength_j.SetFloat(lightStrength);
+    attennuation_a_j.SetFloat(attennuation_A);
+    attennuation_b_j.SetFloat(attennuation_B);
+    attennuation_c_j.SetFloat(attennuation_C);
+
+    obj.AddMember("light_color", light_color_j, rjAllocator);
+    obj.AddMember("light_strength", light_strength_j, rjAllocator);
+    obj.AddMember("attennuation_a", attennuation_a_j, rjAllocator);
+    obj.AddMember("attennuation_b", attennuation_b_j, rjAllocator);
+    obj.AddMember("attennuation_c", attennuation_c_j, rjAllocator);
+}
+
+auto PointLightComponent::from_json(rj::Value& obj) -> PointLightComponent {
+    auto& light_color_j = obj["light_color"];
+    auto& light_strength_j = obj["light_strength"];
+    auto& attennuation_a_j = obj["attennuation_a"];
+    auto& attennuation_b_j = obj["attennuation_b"];
+    auto& attennuation_c_j = obj["attennuation_c"];
+
+    return PointLightComponent {
+        .lightColor = { light_color_j[0].GetFloat(),
+            light_color_j[1].GetFloat(),
+            light_color_j[2].GetFloat() },
+        .lightStrength = light_strength_j.GetFloat(),
+        .attennuation_A = attennuation_a_j.GetFloat(),
+        .attennuation_B = attennuation_b_j.GetFloat(),
+        .attennuation_C = attennuation_c_j.GetFloat(),
+    };
+}

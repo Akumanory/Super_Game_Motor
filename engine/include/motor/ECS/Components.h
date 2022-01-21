@@ -128,3 +128,9 @@ struct CameraComponent
     SceneCamera camera;
     bool primary = false;
 };
+
+struct DialogComponent
+{
+    std::vector<std::string> dialogs = { "Test" };
+    std::vector<std::string> answers = { "Test" };
+};

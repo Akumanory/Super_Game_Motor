@@ -2,6 +2,8 @@
 #include <motor/ECS/Archive.hpp>
 #include <motor/graphics/CameraContainer.h>
 #include <motor/ECS/ComponentSystems.h>
+#include "imgui.h"
+#include "imgui_internal.h"
 
 #include <fstream>
 
@@ -75,6 +77,48 @@ void Scene::OnRednerUpdate()
         Entity temp = Entity{ entity, this };
         ComponentSystems::UpdateBoundingBox(temp);
         ComponentSystems::UpdateBoundingFrustum(temp);
+    }
+}
+
+void Scene::RenderDialogs()
+{
+    auto view = m_registry.view<DialogComponent>();
+    for (auto entity : view) 
+    {
+        Entity temp = Entity{ entity, this };
+
+        auto& dialog_comp = temp.GetComponent<DialogComponent>();
+
+        ImGui::Begin(temp.GetComponent<TagComponent>().tag.c_str());
+
+        if (dialog_comp.dialogs.size() == 0) 
+        {
+            ImGui::TextWrapped(
+              "No dialogs");
+            ImGui::Spacing();
+        } 
+        else 
+        {
+            ImGui::TextWrapped(
+              dialog_comp.dialogs[0].c_str());
+            ImGui::Spacing();
+        }
+
+
+         
+
+        ImGui::NewLine();
+
+        for (auto &i : dialog_comp.answers) 
+        {
+            if (ImGui::Button(i.c_str())) 
+            {
+            }
+            ImGui::SameLine();
+        }
+
+        ImGui::End();
+
     }
 }
 
@@ -167,6 +211,10 @@ void Scene::OnComponentAdded<ParentComponent>(Entity entity, ParentComponent& co
 
 template <>
 void Scene::OnComponentAdded<ChildsComponent>(Entity entity, ChildsComponent& component) {
+}
+
+template <>
+void Scene::OnComponentAdded<DialogComponent>(Entity entity, DialogComponent& component) {
 }
 
 const char* FileName = "scene.json";

@@ -167,8 +167,10 @@ void Net::AddWME(const WME & wme) {
     for (auto&& id : vt.at(0)) {
         for (auto&& attr : vt.at(1)) {
 
-            Condition me = FindProduction(id, attr);
-            auto&& it = conditionToAlphaMemory.find(me);
+            Condition condition = FindProduction(id, attr);
+            if (condition.get(Field::value) == "") return;
+
+            auto&& it = conditionToAlphaMemory.find(condition);
 
             for (auto&& value : vt.at(2)) {
 

@@ -128,7 +128,7 @@ void Scene::DestroyEntity(Entity entity)
 
 template <typename T>
 void Scene::OnComponentAdded(Entity entity, T& component) {
-    static_assert(false);
+    //static_assert(false);
 }
 
 template <>
@@ -137,6 +137,10 @@ void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& componen
 
 template <>
 void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component) {
+}
+
+template <>
+void Scene::OnComponentAdded<Net>(Entity entity, Net& component) {
 }
 
 template <>
@@ -174,6 +178,7 @@ void Scene::Save() {
       .component<
         TagComponent,
         TransformComponent,
+        Net,
         MeshComponent,
         ChildsComponent,
         ParentComponent>(json_archive);
@@ -213,6 +218,7 @@ void Scene::Load() {
       .component<
         TagComponent,
         TransformComponent,
+        Net,
         MeshComponent,
         ChildsComponent,
         ParentComponent>(json_in)

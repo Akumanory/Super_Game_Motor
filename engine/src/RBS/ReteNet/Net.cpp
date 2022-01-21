@@ -4,6 +4,8 @@
 #include <motor/RBS/Beta/DummyTopNode.h>
 #include <motor/RBS/Beta/TokenFilterNode.h>
 
+#include "motor/ECS/Components.h"
+
 ParamTestNodeVector Net::GetTestsFromCondition(Condition c, const ConditionVector & condsHigherUp) {
     ParamTestNodeVector ret;
     auto&& paramTests = ParamTestNode::Generate(c, condsHigherUp);
@@ -59,8 +61,81 @@ ReteNodePtr Net::BuildOrShareNetworkForConditions(ReteNodePtr parent,
     return parent;
 }
 
-Net::Net() : RootNode(ReteNodePtr((ReteNode*)(new DummyTopNode()))) {
+auto Net::from_json(rj::Value& obj) -> Net {
+    Net net;
+    auto& matches = obj["net"];
+
+    for (auto& match : matches.GetArray()) {
+        std::vector<Condition> productions;
+        std::vector<Condition> functions;
+        for (auto& cond : match[0].GetArray()) {
+            Condition prod{ cond[0].GetString(), cond[1].GetString(), cond[2].GetString() };
+            productions.push_back(prod);
+        }
+        for (auto& func : match[1].GetArray()) {
+            Condition cond{ func[0].GetString(), func[1].GetString(), func[2].GetString() };
+            functions.push_back(cond);
+        }
+    net.AddProduction({ productions }, { functions });
+    }
+
+    return net;
 }
+auto Net::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void {
+
+    rj::Value net_matches_j(rj::kArrayType);
+
+    for (auto& i : this->resultNodes) {
+        ConditionVector condProd = i.get()->getConds();
+        rj::Value net_productions_j(rj::kArrayType);
+        for (Condition con : condProd) {
+            string id = con.get(Field::id);
+            string attr = con.get(Field::attr);
+            string value = con.get(Field::value);
+            rj::Value id_j;
+            id_j.SetString(id.c_str(), id.length(), rjAllocator);
+            rj::Value attr_j;
+            attr_j.SetString(attr.c_str(), attr.length(), rjAllocator);
+            rj::Value value_j;
+            value_j.SetString(value.c_str(), value.length(), rjAllocator);
+
+            rj::Value prod_j(rj::kArrayType);
+            prod_j.PushBack(id_j, rjAllocator);
+            prod_j.PushBack(attr_j, rjAllocator);
+            prod_j.PushBack(value_j, rjAllocator);
+
+            net_productions_j.PushBack(prod_j, rjAllocator);
+        }
+        rj::Value net_functions_j(rj::kArrayType);
+        ConditionVector condGetter = i.get()->getInfo();
+        for (Condition con : condGetter) {
+            string id = con.get(Field::id);
+            string attr = con.get(Field::attr);
+            string value = con.get(Field::value);
+            rj::Value id_j;
+            id_j.SetString(id.c_str(), id.length(), rjAllocator);
+            rj::Value attr_j;
+            attr_j.SetString(attr.c_str(), attr.length(), rjAllocator);
+            rj::Value value_j;
+            value_j.SetString(value.c_str(), value.length(), rjAllocator);
+            rj::Value function_j(rj::kArrayType);
+            function_j.PushBack(id_j, rjAllocator);
+            function_j.PushBack(attr_j, rjAllocator);
+            function_j.PushBack(value_j, rjAllocator);
+
+            net_functions_j.PushBack(function_j, rjAllocator);
+        }
+        rj::Value net_match_j(rj::kArrayType);
+
+        net_match_j.PushBack(net_productions_j, rjAllocator);
+        net_match_j.PushBack(net_functions_j, rjAllocator);
+
+        net_matches_j.PushBack(net_match_j, rjAllocator);
+    }
+    obj.AddMember("net", net_matches_j, rjAllocator);
+}
+
+Net::Net() : RootNode(ReteNodePtr((ReteNode*)(new DummyTopNode()))) {}
 
 size_t i = 0;
 void Net::AddProduction(const ConditionVector & conditions, const std::vector<Condition>& getter) {

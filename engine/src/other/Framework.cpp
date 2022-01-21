@@ -24,7 +24,7 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
       sol::lib::jit);
     LoadImguiBindings();
 
-	lua_["addCube"] = [this](float x, float y, float z) {
+	/*lua_["addCube"] = [this](float x, float y, float z) {
         gfx.addCube(x, y, z);
     };
     lua_["addLightCube"] = [this](float x, float y, float z) {
@@ -40,7 +40,7 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
         }
     };
 
-	gfx.setConsole(&consoleUI_, &showConsole_);
+	gfx.setConsole(&consoleUI_, &showConsole_);*/
 
 	timer.Start();
 	if (!display.Initialize(hInstance, window_class, width, height))

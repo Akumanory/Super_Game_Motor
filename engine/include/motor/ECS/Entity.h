@@ -2,7 +2,7 @@
 
 #include <motor/ECS/Scene.h>
 #include <assert.h>
-
+#include <motor/RBS/ReteNet/Net.h>
 
 class Entity {
 public:

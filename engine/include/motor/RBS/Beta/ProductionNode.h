@@ -25,6 +25,8 @@ public:
 
     const ConditionVector& getConds();
 
+    const ConditionVector& getInfo();
+
     virtual TokenVector& GetOutput() override;
 
     virtual void ClearStatus() override;

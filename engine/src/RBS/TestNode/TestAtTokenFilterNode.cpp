@@ -13,9 +13,9 @@ bool TestAtTokenFilterNode::PerformTest(const Condition & c)
 
 bool TestAtTokenFilterNode::IsNeedFilterToken(const Condition & c)
 {
-    auto&& attr = c.get(Field::attr);
-    if (!attr.empty() && attr.at(0) != '.') {
-        myAssertPlus(dict.count(attr) > 0, attr);
+    auto&& value = c.get(Field::value);
+    if (value.empty()) {
+        myAssertPlus(dict.count(value) > 0, value);
         return true;
     }
     return false;

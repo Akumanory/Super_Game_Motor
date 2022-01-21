@@ -23,4 +23,13 @@ private:
 private:
     Scene* m_context;
     Entity m_selection_context;
+
+    std::vector<Condition> productions;
+    std::vector<Condition> functions;
+
+    string attribute = "Location";
+    std::vector<std::string> signs = { "!", ">", "<", "" };
+    std::string selectedSign = "";
+    string value = "0";
+    bool selfTag = false;
 };

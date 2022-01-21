@@ -64,6 +64,44 @@ struct TransformComponent {
     auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };
 
+struct Net {
+
+    ReteNodePtr RootNode;
+    TestAtTokenFilterNode testAtTokenFilterNode;
+    std::unordered_map<Condition, AlphaMemoryPtr> conditionToAlphaMemory;
+    std::unordered_map<StructForHash, ReteNodePtr> dict;
+    std::unordered_set<ProductionNodePtr> resultNodes;
+
+    ParamTestNodeVector GetTestsFromCondition(Condition c,
+      const ConditionVector& condsHigherUp);
+
+    ReteNodePtr BuildOrShareJoinNode(ReteNodePtr parent, AlphaMemoryPtr am,
+      const ParamTestNodeVector& tests, const Condition& c);
+
+    ReteNodePtr BuildOrShareTokenFilterNode(ReteNodePtr parent, AlphaMemoryPtr am,
+      const ParamTestNodeVector& tests, const Condition& c);
+
+    AlphaMemoryPtr BuildOrShareAlphaMemory(const Condition& c);
+
+    ReteNodePtr BuildOrShareNetworkForConditions(ReteNodePtr parent,
+      const ConditionVector& conds, ConditionVector condsHigherUp);
+
+    static auto from_json(rj::Value& obj) -> Net;
+    auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
+
+    Net();
+
+    void AddProduction(const ConditionVector& conditions, const std::vector<Condition>& getter);
+
+    std::vector<ConditionVector> invoke();
+
+    void ClearStatus();
+
+    void AddWME(const WME& wme);
+
+    void AddFunction(const std::string& key, TestAtTokenFilterNode::JudgeFunctionType judgeFunction);
+};
+
 struct MeshComponent {
     BoundingOrientedBox transformed_bounding_box;
     ModelStruct model;

@@ -56,6 +56,10 @@ const ConditionVector & ProductionNode::getConds() {
     return conds;
 }
 
+const ConditionVector& ProductionNode::getInfo() {
+    return infoGetter;
+}
+
 TokenVector & ProductionNode::GetOutput() {
     if (!isReadyForOutput) {
         output = leftParent->GetOutput();

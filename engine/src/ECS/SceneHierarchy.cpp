@@ -3,6 +3,7 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"
+#include "misc/cpp/imgui_stdlib.h"
 
 
 SceneHierarchy::SceneHierarchy(Scene* scene) 
@@ -68,6 +69,14 @@ void SceneHierarchy::OnImguiRender()
             if (!m_selection_context.HasComponent<CameraComponent>()) {
                 if (ImGui::MenuItem("Camera")) {
                     m_selection_context.AddComponent<CameraComponent>();
+
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+
+            if (!m_selection_context.HasComponent<Net>()) {
+                if (ImGui::MenuItem("Net")) {
+                    m_selection_context.AddComponent<Net>();
 
                     ImGui::CloseCurrentPopup();
                 }
@@ -336,6 +345,152 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             ImGui::NewLine();
 
             ImGui::TreePop();
+        }
+    }
+
+    if (entity.HasComponent<Net>()) {
+        if (ImGui::TreeNodeEx((void*)typeid(Net).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Net")) {
+            ImGui::TreePop();
+            ImGui::Begin("Existing matches");
+            auto& net_comp = entity.GetComponent<Net>();
+
+            std::unordered_set<ProductionNodePtr> res = net_comp.resultNodes;
+            for (ProductionNodePtr production : res) {
+                ConditionVector condProd = production.get()->getConds();
+
+                ImGui::Text("if");
+                ImGui::NewLine();
+
+                for (Condition con : condProd) {
+                    const char* char_id = con.get(Field::id).c_str();
+                    const char* char_attr = con.get(Field::attr).c_str();
+                    const char* char_value = con.get(Field::value).c_str();
+
+                    ImGui::Text(char_id);
+                    ImGui::SameLine();
+                    ImGui::Text(char_attr);
+                    ImGui::SameLine();
+                    ImGui::Text(char_value);
+                }
+
+                ImGui::NewLine();
+                ImGui::Text("then");
+                ImGui::NewLine();
+
+                ConditionVector condGetter = production.get()->getInfo();
+                for (Condition con : condGetter) {
+                    const char* char_id = con.get(Field::id).c_str();
+                    const char* char_attr = con.get(Field::attr).c_str();
+                    const char* char_value = con.get(Field::value).c_str();
+
+                    ImGui::Text(char_id);
+                    ImGui::SameLine();
+                    ImGui::Text(char_attr);
+                    ImGui::SameLine();
+                    ImGui::Text(char_value);
+
+                    ImGui::NewLine();
+                }
+            }
+            ImGui::End();
+            
+            ImGui::Begin("Adding matches");
+
+            if (!productions.empty()) {
+                ImGui::Text("if");
+                ImGui::NewLine();
+
+                for (Condition con : productions) {
+                    const char* char_id = con.get(Field::id).c_str();
+                    const char* char_attr = con.get(Field::attr).c_str();
+                    const char* char_value = con.get(Field::value).c_str();
+
+                    ImGui::Text(char_id);
+                    ImGui::SameLine();
+                    ImGui::Text(char_attr);
+                    ImGui::SameLine();
+                    ImGui::Text(char_value);
+                }
+            }
+
+            if (!functions.empty()) {
+                ImGui::NewLine();
+                ImGui::Text("then");
+                ImGui::NewLine();
+
+                for (Condition con : functions) {
+                    const char* char_id = con.get(Field::id).c_str();
+                    const char* char_attr = con.get(Field::attr).c_str();
+                    const char* char_value = con.get(Field::value).c_str();
+
+                    ImGui::Text(char_id);
+                    ImGui::SameLine();
+                    ImGui::Text(char_attr);
+                    ImGui::SameLine();
+                    ImGui::Text(char_value);
+                }
+            }
+
+            ImGui::Checkbox("Self condition", &selfTag);
+
+            char bufAttr[256];
+            memset(bufAttr, 0, sizeof(bufAttr));
+            strcpy_s(bufAttr, sizeof(bufAttr), attribute.c_str());
+            if (ImGui::InputText("Attribute", bufAttr, sizeof(bufAttr))) {
+                attribute = std::string(bufAttr);
+            };
+
+            if (ImGui::BeginCombo("", selectedSign.c_str(), 0)) {
+                for (int n = 0; n < signs.size(); n++) {
+                    if (ImGui::Selectable(signs[n].c_str(), false)) selectedSign = signs[n];
+                }
+                ImGui::EndCombo();
+            }
+
+            char buffer[256];
+            memset(buffer, 0, sizeof(buffer));
+            strcpy_s(buffer, sizeof(buffer), value.c_str());
+            if (ImGui::InputText("Value", buffer, sizeof(buffer))) {
+                value = std::string(buffer);
+            };
+
+            if (ImGui::Button("Add production")) {
+                string val = selectedSign + value;
+                string tag = "$x";
+                if (selfTag)
+                    tag = entity.GetComponent<TagComponent>().tag;
+                Condition cond{ tag, attribute, val };
+                productions.push_back(cond);
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Add function")) {
+                string val = selectedSign + value;
+                string tag = "$x";
+                if (selfTag)
+                    tag = entity.GetComponent<TagComponent>().tag;
+                Condition cond{ tag, attribute, val };
+                functions.push_back(cond);
+            }
+
+            if (ImGui::Button("Save match")) {
+                string tag = "$x";
+                if (selfTag) tag = entity.GetComponent<TagComponent>().tag;
+                if (!productions.empty() || !functions.empty()) {
+                    net_comp.AddProduction({ productions }, { functions });
+                    productions.clear();
+                    functions.clear();
+                }
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Clear")) {
+                productions.clear();
+                functions.clear();
+            }
+
+            ImGui::NewLine();
+            ImGui::End();
         }
     }
 

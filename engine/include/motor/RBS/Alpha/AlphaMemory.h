@@ -8,6 +8,7 @@ class AlphaMemory : public Node<WMEVector> {
 public:
 
     void addWME(const WME& wme);
+    void removeWME(string id, string attr);
 
     const WMEVector& GetOutput() override;
 

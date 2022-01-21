@@ -171,34 +171,41 @@ void Net::AddWME(const WME & wme) {
             auto&& it = conditionToAlphaMemory.find(me);
 
             for (auto&& value : vt.at(2)) {
-                if (value.at(0) == '>') {
-                    value.erase(value.find('>'), 1);
+
+                it->second->removeWME(id, attr);
+
+                string match_string = it->first.get(Field::value);
+                if (match_string.at(0) == '>') {
+                    match_string.erase(match_string.find('>'), 1);
                     float wme_value;
                     float match_value;
                     std::istringstream(value) >> wme_value;
-                    std::istringstream(it->first.get(Field::value)) >> match_value;
+                    std::istringstream(match_string) >> match_value;
                     if (wme_value > match_value)
                         it->second->addWME(wme);
                     return;
                 }
 
-                if (value.at(0) == '<') {
-                    value.erase(value.find('<'), 1);
+                if (match_string.at(0) == '<') {
+                    match_string.erase(match_string.find('<'), 1);
                     float wme_value;
                     float match_value;
                     std::istringstream(value) >> wme_value;
-                    std::istringstream(it->first.get(Field::value)) >> match_value;
+                    std::istringstream(match_string) >> match_value;
                     if (wme_value < match_value)
                         it->second->addWME(wme);
                     return;
                 }
 
-                if (value.at(0) == '!')
-                    value.erase(value.find('!'), 1);
+                if (match_string.at(0) == '!') {
+                    match_string.erase(match_string.find('!'), 1);
+                    if (value != match_string)
+                        it->second->addWME(wme);
+                    return;
+                }
 
-                if (value != it->first.get(Field::value))
+                if (value == match_string)
                     it->second->addWME(wme);
-                return;
             }
         }
     }

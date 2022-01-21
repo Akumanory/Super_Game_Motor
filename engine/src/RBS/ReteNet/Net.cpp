@@ -166,13 +166,53 @@ void Net::AddWME(const WME & wme) {
     };
     for (auto&& id : vt.at(0)) {
         for (auto&& attr : vt.at(1)) {
+
+            Condition me = FindProduction(id, attr);
+            auto&& it = conditionToAlphaMemory.find(me);
+
             for (auto&& value : vt.at(2)) {
-                auto&& it = conditionToAlphaMemory.find(Condition(id, attr, value));
-                if (it != conditionToAlphaMemory.end())
+                if (value.at(0) == '>') {
+                    value.erase(value.find('>'), 1);
+                    float wme_value;
+                    float match_value;
+                    std::istringstream(value) >> wme_value;
+                    std::istringstream(it->first.get(Field::value)) >> match_value;
+                    if (wme_value > match_value)
+                        it->second->addWME(wme);
+                    return;
+                }
+
+                if (value.at(0) == '<') {
+                    value.erase(value.find('<'), 1);
+                    float wme_value;
+                    float match_value;
+                    std::istringstream(value) >> wme_value;
+                    std::istringstream(it->first.get(Field::value)) >> match_value;
+                    if (wme_value < match_value)
+                        it->second->addWME(wme);
+                    return;
+                }
+
+                if (value.at(0) == '!')
+                    value.erase(value.find('!'), 1);
+
+                if (value != it->first.get(Field::value))
                     it->second->addWME(wme);
+                return;
             }
         }
     }
+}
+
+Condition Net::FindProduction(string id, string attr) {
+    std::vector<std::pair<const Condition, AlphaMemoryPtr>> v(conditionToAlphaMemory.begin(), conditionToAlphaMemory.end());
+    for (std::pair<Condition, AlphaMemoryPtr> cond : v) {
+        i = i + 1;
+        if ((cond.first.get(Field::id) == id) || (cond.first.get(Field::attr) == attr))
+            return cond.first;
+    }
+    Condition cond = { "", "", "" };
+    return cond;
 }
 
 void Net::AddFunction(const std::string & key, TestAtTokenFilterNode::JudgeFunctionType judgeFunction) {

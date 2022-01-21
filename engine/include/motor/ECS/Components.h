@@ -99,6 +99,8 @@ struct Net {
 
     void AddWME(const WME& wme);
 
+    Condition FindProduction(string id, string attr);
+
     void AddFunction(const std::string& key, TestAtTokenFilterNode::JudgeFunctionType judgeFunction);
 };
 

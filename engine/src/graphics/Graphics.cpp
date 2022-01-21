@@ -267,6 +267,7 @@ void Graphics::RenderFrame() {
 
         cam_container.ImGUIWindow();
         scene_hierachy.OnImguiRender();
+        test_entt_scene.RenderDialogs();
 
         if (showConsole_ != nullptr && consoleUI_ != nullptr) {
             if (*showConsole_) {
@@ -611,6 +612,18 @@ bool Graphics::InitializeScene() {
         ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
         ComponentSystems::SetRotation(entity2, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f));
         entity2.AddComponent<MeshComponent>();
+        entity2.AddComponent<DialogComponent>();
+
+        auto& dialog = entity2.GetComponent<DialogComponent>();
+        dialog.dialogs[0] = "First phrase";
+        dialog.dialogs.push_back("Second phrase");
+        dialog.dialogs.push_back("Third phrase");
+
+        dialog.answers[0] = "Yes";
+        dialog.answers.push_back("No");
+        dialog.answers.push_back("Hello");
+        dialog.answers.push_back("Goodbye");
+
         //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
 
         entity3 = test_entt_scene.CreateEntity("Third Entity");

@@ -81,6 +81,14 @@ void SceneHierarchy::OnImguiRender()
                     ImGui::CloseCurrentPopup();
                 }
             }
+
+            if (!m_selection_context.HasComponent<DialogComponent>()) {
+                if (ImGui::MenuItem("Dialog")) {
+                    m_selection_context.AddComponent<DialogComponent>();
+
+                    ImGui::CloseCurrentPopup();
+                }
+            }
             
             ImGui::EndPopup();
         }
@@ -551,6 +559,106 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             }
 
             ImGui::NewLine();
+
+            ImGui::TreePop();
+        }
+    }
+
+    if (entity.HasComponent<DialogComponent>()) 
+    {
+
+        int dialog_index_for_removal = 0;
+        int answer_index_for_removal = 0;
+        bool remove_dialog = false;
+        bool remove_answer = false;
+        if (ImGui::TreeNodeEx((void*)typeid(DialogComponent).hash_code(), ImGuiTreeNodeFlags_OpenOnArrow, "Dialog")) 
+        {
+            auto& comp = entity.GetComponent<DialogComponent>();
+
+            ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
+            ImGui::Text("Dialogs:");
+            ImGui::PopStyleColor();
+
+            char dialog_buffer[256];
+
+            int count = 0;
+            for (auto& i : comp.dialogs) {
+                memset(dialog_buffer, 0, sizeof(dialog_buffer));
+                strcpy_s(dialog_buffer, sizeof(dialog_buffer), i.c_str());
+
+                std::string dialog_label = "Dialog#";
+                dialog_label += std::to_string(count + 1);
+
+                if (ImGui::InputText(dialog_label.c_str(), dialog_buffer, sizeof(dialog_buffer))) 
+                {
+                    i = std::string(dialog_buffer);
+                }
+
+                std::string remove_lable = "Remove ";
+                remove_lable += dialog_label;
+
+                ImGui::SameLine();
+                if (ImGui::Button(remove_lable.c_str())) {
+                    dialog_index_for_removal = count;
+                    remove_dialog = true;
+                }
+                count++;
+            }
+
+            if (ImGui::Button("Add new Dialog")) 
+            {
+                comp.dialogs.push_back("Empty phrase");
+            }
+
+            ImGui::NewLine();
+
+            ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_Text, ImVec4{ 0.1f, 0.8f, 0.5f, 1.0f });
+            ImGui::Text("Answers:");
+            ImGui::PopStyleColor();
+
+            char answer_buffer[256];
+            count = 0;
+            for (auto& i : comp.answers) {
+                memset(answer_buffer, 0, sizeof(answer_buffer));
+                strcpy_s(answer_buffer, sizeof(answer_buffer), i.c_str());
+
+                std::string answer_label = "Answer#";
+                answer_label += std::to_string(count + 1);
+
+                if (ImGui::InputText(answer_label.c_str(), answer_buffer, sizeof(answer_buffer))) {
+                    i = std::string(answer_buffer);
+                }
+
+                std::string remove_lable = "Remove ";
+                remove_lable += answer_label;
+
+                ImGui::SameLine();
+                if (ImGui::Button(remove_lable.c_str())) 
+                {
+                    answer_index_for_removal = count;
+                    remove_answer = true;
+                }
+                count++;
+            }
+
+            if (ImGui::Button("Add new Answer")) {
+                comp.answers.push_back("Empty answer");
+            }
+
+            ImGui::NewLine();
+
+            if (remove_dialog) {
+                comp.dialogs.erase(comp.dialogs.begin() + dialog_index_for_removal);
+                remove_dialog = false;
+            }
+
+
+            if (remove_answer) 
+            {
+                comp.answers.erase(comp.answers.begin() + answer_index_for_removal);
+                remove_answer = false;
+            }
+
 
             ImGui::TreePop();
         }

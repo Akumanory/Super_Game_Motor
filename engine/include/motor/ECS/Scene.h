@@ -30,6 +30,8 @@ public:
     Entity GetPrimaryCamera();
     
     void OnRednerUpdate();
+    
+    void OnUpdate();
 
     void RenderDialogs();
 

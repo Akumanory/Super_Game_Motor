@@ -70,6 +70,7 @@ void Framework::Update()
 
     Entity primary_camera = gfx.test_entt_scene.GetPrimaryCamera();
 
+    gfx.test_entt_scene.OnUpdate();
 
 	while (!display.keyboard.CharBufferIsEmpty())
 	{

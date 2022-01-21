@@ -70,6 +70,15 @@ Entity Scene::GetPrimaryCamera()
     return {};
 }
 
+void Scene::OnUpdate() 
+{
+    auto view = m_registry.view<Net>();
+    for (auto entity : view) {
+        Entity temp = Entity{ entity, this };
+        //TODO: 
+    }
+}
+
 void Scene::OnRednerUpdate() 
 {
     auto view = m_registry.view<TransformComponent>();
@@ -105,15 +114,17 @@ void Scene::RenderDialogs()
         }
 
 
-         
 
         ImGui::NewLine();
 
-        for (auto &i : dialog_comp.answers) 
-        {
-            if (ImGui::Button(i.c_str())) 
-            {
+        int count = 0;
+        for (auto& i : dialog_comp.answers) {
+            if (ImGui::Button(i.c_str())) {
+                if (temp.HasComponent<Net>()) {
+                    temp.GetComponent<Net>().AddWME({ temp.GetComponent<TagComponent>().tag, "Press", count });
+                }
             }
+            count++;
             ImGui::SameLine();
         }
 

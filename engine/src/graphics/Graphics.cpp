@@ -844,6 +844,7 @@ void ToImGuizmo(float* dest, const float* src) {
 void Graphics::RederImGuizmo() 
 {
     Entity selected_entity = scene_hierachy.GetSelectedEntity();
+
     ImGuizmo::BeginFrame();
 
     XMMATRIX ident_m = XMMatrixIdentity();
@@ -856,9 +857,8 @@ void Graphics::RederImGuizmo()
 
     static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::MODE::WORLD);
     static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
-    
-    if (selected_entity) 
-    {
+
+    if (selected_entity && !selected_entity.HasComponent<ParentComponent>()) {
         if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
             mCurrentGizmoMode = ImGuizmo::LOCAL;
         ImGui::SameLine();
@@ -868,9 +868,9 @@ void Graphics::RederImGuizmo()
         if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
             mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
         ImGui::SameLine();
-        if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+        /*if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
             mCurrentGizmoOperation = ImGuizmo::ROTATE;
-        ImGui::SameLine();
+        ImGui::SameLine();*/
         if (mCurrentGizmoMode == ImGuizmo::LOCAL) 
         {
             if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
@@ -878,48 +878,44 @@ void Graphics::RederImGuizmo()
         }
 
         auto& transform_comp = selected_entity.GetComponent<TransformComponent>();
-        
+
         auto transform = XMMatrixIdentity();
 
         if (mCurrentGizmoMode == ImGuizmo::WORLD)
             transform = transform_comp.GetWorldTransformMatrix();
         if (mCurrentGizmoMode == ImGuizmo::LOCAL)
-            transform = ComponentSystems::GetTransformMatrix(selected_entity);
-        
-        ImGuizmo::Manipulate(
-            (float*)viewMatrix.r,
-            (float*)projMatrix.r,
-            mCurrentGizmoOperation,
-            ImGuizmo::WORLD,
-            (float*)transform.r
-            );
+            transform = transform_comp.GetLocalTransformMatrix();
 
-        if (ImGuizmo::IsUsing) 
-        {
+        ImGuizmo::Manipulate(
+          (float*)viewMatrix.r,
+          (float*)projMatrix.r,
+          mCurrentGizmoOperation,
+          ImGuizmo::LOCAL,
+          (float*)transform.r);
+
+        if (ImGuizmo::IsUsing) {
             float t[3], r[3], s[3];
             ImGuizmo::DecomposeMatrixToComponents((float*)transform.r, t, r, s);
 
-            if (mCurrentGizmoMode == ImGuizmo::WORLD) 
-            {
+            if (mCurrentGizmoMode == ImGuizmo::WORLD) {
                 transform_comp.world_position = XMFLOAT3(t);
-                transform_comp.world_rotation = XMFLOAT3(
+                /*transform_comp.world_rotation = XMFLOAT3(
                   XMConvertToRadians(r[0]),
                   XMConvertToRadians(r[1]),
-                  XMConvertToRadians(r[2]));
+                  XMConvertToRadians(r[2]));*/
             }
-            
-            if (mCurrentGizmoMode == ImGuizmo::LOCAL) 
-            {
+
+            if (mCurrentGizmoMode == ImGuizmo::LOCAL) {
                 transform_comp.local_position = XMFLOAT3(
-                    t[0] - transform_comp.world_position.x,
-                    t[1] - transform_comp.world_position.y,
-                    t[2] - transform_comp.world_position.z
+                  t[0] - transform_comp.world_position.x,
+                  t[1] - transform_comp.world_position.y,
+                  t[2] - transform_comp.world_position.z
 
                 );
-                transform_comp.local_rotation = XMFLOAT3(
+                /*transform_comp.local_rotation = XMFLOAT3(
                   XMConvertToRadians(r[0]) - transform_comp.world_rotation.x,
                   XMConvertToRadians(r[1]) - transform_comp.world_rotation.y,
-                  XMConvertToRadians(r[2]) - transform_comp.world_rotation.z);
+                  XMConvertToRadians(r[2]) - transform_comp.world_rotation.z);*/
                 transform_comp.local_scale = XMFLOAT3(s);
             }
 
@@ -931,8 +927,6 @@ void Graphics::RederImGuizmo()
             XMStoreFloat3(&transform_comp.world_position, traslation);
             transform_comp.world_rotation = rot;*/
         }
-
-        
     }
 
     ImGuizmo::DrawGrid(

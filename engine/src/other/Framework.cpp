@@ -70,7 +70,7 @@ void Framework::Update()
 
     Entity primary_camera = gfx.test_entt_scene.GetPrimaryCamera();
 
-    gfx.test_entt_scene.OnUpdate();
+    //gfx.test_entt_scene.OnUpdate();
 
 	while (!display.keyboard.CharBufferIsEmpty())
 	{
@@ -128,6 +128,11 @@ void Framework::Update()
     {
         auto& transform_comp = gfx.entity1.GetComponent<TransformComponent>();
         ComponentSystems::AjustPosition(gfx.entity1, XMFLOAT3(0.0f, 0.002f, 0.003f), delta);
+    }
+
+    if (display.keyboard.KeyIsPressed('B')) {
+        gfx.test_entt_scene.OnUpdate();
+        display.keyboard.OnKeyReleased('B');
     }
 	
 	if (primary_camera) 

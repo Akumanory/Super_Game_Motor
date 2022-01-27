@@ -32,6 +32,7 @@ public:
     void OnRednerUpdate();
     
     void OnUpdate();
+    void RefreshNet();
 
     void RenderDialogs();
 

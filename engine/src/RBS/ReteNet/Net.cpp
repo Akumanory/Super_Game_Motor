@@ -143,12 +143,26 @@ void Net::AddProduction(const ConditionVector & conditions, const std::vector<Co
     resultNodes.insert(ProductionNodePtr(new ProductionNode(curentNode, conditions, getter)));
 }
 
-std::vector<ConditionVector> Net::invoke() {
+vector<ConditionVector> Net::invoke() {
     std::vector<ConditionVector> ret;
     for (auto&& node : resultNodes) {
         auto&& infos = node->getOutputInfos();
         std::copy(infos.begin(), infos.end(), std::back_inserter(ret));
     }
+    ClearStatus();
+    //vector<ConditionVector> ret;
+    //int maxCount = 0;
+    //for (auto&& node : resultNodes) {
+    //    if (maxCount < node->getConds().size())
+    //    maxCount = node->getConds().size();
+    //}
+
+    //for (auto&& node : resultNodes) {
+    //    //if (maxCount == node->getConds().size()) {
+    //        auto&& infos = node->getOutputInfos();
+    //        std::copy(infos.begin(), infos.end(), std::back_inserter(ret));
+    //    //}
+    //}
     return ret;
 }
 
@@ -160,20 +174,20 @@ void Net::ClearStatus() {
 
 void Net::AddWME(const WME & wme) {
     std::vector<std::vector<std::string>> vt = {
-        { wme.get(Field::id), Condition::ArbitraryString },
-        { wme.get(Field::attr), Condition::ArbitraryString },
-        { wme.get(Field::value), Condition::ArbitraryString },
+        { wme.get(Field::id) },
+        { wme.get(Field::attr) },
+        { wme.get(Field::value) },
     };
     for (auto&& id : vt.at(0)) {
         for (auto&& attr : vt.at(1)) {
 
-            Condition condition = FindProduction(id, attr);
-            if (condition.get(Field::value) == "") return;
-
-            auto&& it = conditionToAlphaMemory.find(condition);
-
             for (auto&& value : vt.at(2)) {
 
+                Condition condition = FindProduction(id, attr, value);
+                if (condition.get(Field::id) == "")
+                    return;
+
+                auto&& it = conditionToAlphaMemory.find(condition);
                 it->second->removeWME(id, attr);
 
                 string match_string = it->first.get(Field::value);
@@ -183,8 +197,10 @@ void Net::AddWME(const WME & wme) {
                     float match_value;
                     std::istringstream(value) >> wme_value;
                     std::istringstream(match_string) >> match_value;
-                    if (wme_value > match_value)
-                        it->second->addWME(wme);
+                    if (wme_value > match_value) {
+                        WME fixedWme = { id, attr, match_string };
+                        it->second->addWME(fixedWme);
+                    }
                     return;
                 }
 
@@ -194,15 +210,19 @@ void Net::AddWME(const WME & wme) {
                     float match_value;
                     std::istringstream(value) >> wme_value;
                     std::istringstream(match_string) >> match_value;
-                    if (wme_value < match_value)
-                        it->second->addWME(wme);
+                    if (wme_value < match_value) {
+                        WME fixedWme = { id, attr, match_string };
+                        it->second->addWME(fixedWme);
+                    }
                     return;
                 }
 
                 if (match_string.at(0) == '!') {
                     match_string.erase(match_string.find('!'), 1);
-                    if (value != match_string)
-                        it->second->addWME(wme);
+                    if (value != match_string) {
+                        WME fixedWme = { id, attr, match_string };
+                        it->second->addWME(fixedWme);
+                    }
                     return;
                 }
 
@@ -213,11 +233,17 @@ void Net::AddWME(const WME & wme) {
     }
 }
 
-Condition Net::FindProduction(string id, string attr) {
+
+Condition Net::FindProduction(string id, string attr, string value) {
     std::vector<std::pair<const Condition, AlphaMemoryPtr>> v(conditionToAlphaMemory.begin(), conditionToAlphaMemory.end());
     for (std::pair<Condition, AlphaMemoryPtr> cond : v) {
         i = i + 1;
-        if ((cond.first.get(Field::id) == id) || (cond.first.get(Field::attr) == attr))
+        if ((cond.first.get(Field::attr) == attr) && (cond.first.get(Field::value) == value))
+            return cond.first;
+    }
+    for (std::pair<Condition, AlphaMemoryPtr> cond : v) {
+        i = i + 1;
+        if (cond.first.get(Field::attr) == attr)
             return cond.first;
     }
     Condition cond = { "", "", "" };

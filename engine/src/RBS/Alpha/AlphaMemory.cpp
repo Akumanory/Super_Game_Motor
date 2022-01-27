@@ -9,6 +9,7 @@ void AlphaMemory::removeWME(string id, string attr) {
     for (auto v : output) {
         iterator = iterator + 1;
         if ((v.get(Field::id) == id) || (v.get(Field::attr) == attr)) {
+            cout << attr;
             output.erase(output.begin() + iterator);
             return;
         }

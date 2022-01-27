@@ -75,7 +75,39 @@ void Scene::OnUpdate()
     auto view = m_registry.view<Net>();
     for (auto entity : view) {
         Entity temp = Entity{ entity, this };
-        //TODO: 
+        vector<ConditionVector> conduct = temp.GetComponent<Net>().invoke();
+
+        for (ConditionVector functions : conduct) {
+            for (Condition function : functions) {
+                if (temp.HasComponent<DialogComponent>() && function.get(Field::attr) == "OpenDialogue") {
+                    //temp.GetComponent<DialogComponent>().
+                    continue;
+                }
+                if (temp.HasComponent<DialogComponent>() && function.get(Field::attr) == "SetText") {
+                    int wme_value;
+                    std::istringstream(function.get(Field::value)) >> wme_value;
+                    temp.GetComponent<DialogComponent>().SetText(wme_value);
+                    continue;
+                }
+                if (temp.HasComponent<DialogComponent>() && function.get(Field::attr) == "AddButton") {
+                    int wme_value;
+                    std::istringstream(function.get(Field::value)) >> wme_value;
+                    temp.GetComponent<DialogComponent>().AddButton(wme_value);
+                    continue;
+                }
+                if (temp.HasComponent<DialogComponent>() && function.get(Field::attr) == "ClearButtons") {
+                    temp.GetComponent<DialogComponent>().ClearButtons();
+                }
+            }
+        }
+    }
+}
+
+void Scene::RefreshNet() {
+    auto view = m_registry.view<Net>();
+    for (auto entity : view) {
+        Entity temp = Entity{ entity, this };
+        temp.GetComponent<Net>().ClearStatus();
     }
 }
 
@@ -100,7 +132,7 @@ void Scene::RenderDialogs()
 
         ImGui::Begin(temp.GetComponent<TagComponent>().tag.c_str());
 
-        if (dialog_comp.dialogs.size() == 0) 
+        if (dialog_comp.currentDialog == "") 
         {
             ImGui::TextWrapped(
               "No dialogs");
@@ -109,7 +141,7 @@ void Scene::RenderDialogs()
         else 
         {
             ImGui::TextWrapped(
-              dialog_comp.dialogs[0].c_str());
+              dialog_comp.currentDialog.c_str());
             ImGui::Spacing();
         }
 
@@ -118,10 +150,10 @@ void Scene::RenderDialogs()
         ImGui::NewLine();
 
         int count = 0;
-        for (auto& i : dialog_comp.answers) {
-            if (ImGui::Button(i.c_str())) {
+        for (auto& i : dialog_comp.currentAnswers) {
+            if (ImGui::Button(dialog_comp.answers.at(i).c_str())) {
                 if (temp.HasComponent<Net>()) {
-                    temp.GetComponent<Net>().AddWME({ temp.GetComponent<TagComponent>().tag, "Press", count });
+                    temp.GetComponent<Net>().AddWME({ temp.GetComponent<TagComponent>().tag, "Press", i });
                 }
             }
             count++;

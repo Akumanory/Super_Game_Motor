@@ -127,3 +127,15 @@ auto ParentComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAll
     }
     obj.AddMember("parent", parent_j, rjAllocator);
 }
+
+void DialogComponent::SetText(int textNumber) {
+    currentDialog = dialogs.at(textNumber);
+}
+
+void DialogComponent::AddButton(int buttonNumber) {
+    currentAnswers.push_back(buttonNumber);
+}
+
+void DialogComponent::ClearButtons() {
+    currentAnswers.clear();
+}

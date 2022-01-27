@@ -441,14 +441,15 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
 
             ImGui::Checkbox("Self condition", &selfTag);
 
-            char bufAttr[256];
-            memset(bufAttr, 0, sizeof(bufAttr));
-            strcpy_s(bufAttr, sizeof(bufAttr), attribute.c_str());
-            if (ImGui::InputText("Attribute", bufAttr, sizeof(bufAttr))) {
-                attribute = std::string(bufAttr);
-            };
+            if (ImGui::BeginCombo("Attribute", attribute.c_str(), 0)) {
+                for (int n = 0; n < net_comp.functions.size(); n++) {
+                    if (ImGui::Selectable(net_comp.functions[n].c_str(), false))
+                        attribute = net_comp.functions[n];
+                }
+                ImGui::EndCombo();
+            }
 
-            if (ImGui::BeginCombo("", selectedSign.c_str(), 0)) {
+            if (ImGui::BeginCombo("Sign", selectedSign.c_str(), 0)) {
                 for (int n = 0; n < signs.size(); n++) {
                     if (ImGui::Selectable(signs[n].c_str(), false)) selectedSign = signs[n];
                 }

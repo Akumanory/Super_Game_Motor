@@ -92,9 +92,9 @@ TokenVector & ProductionNode::GetOutput() {
 void ProductionNode::ClearStatus() {
     if (isReadyForOutput) {
         isReadyForOutput = false;
-        output.clear();
-        outputInfos.clear();
-        leftParent->ClearStatus();
+        //output.clear();
+        //outputInfos.clear();
+        //leftParent->ClearStatus();
     }
 }
 

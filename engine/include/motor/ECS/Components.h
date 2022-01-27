@@ -72,6 +72,8 @@ struct Net {
     std::unordered_map<StructForHash, ReteNodePtr> dict;
     std::unordered_set<ProductionNodePtr> resultNodes;
 
+    vector<string> functions = { "SetLocation", "SetRotation", "OpenDialogue", "SetText", "AddButton", "ClearButtons", "Press" };
+
     ParamTestNodeVector GetTestsFromCondition(Condition c,
       const ConditionVector& condsHigherUp);
 
@@ -93,13 +95,13 @@ struct Net {
 
     void AddProduction(const ConditionVector& conditions, const std::vector<Condition>& getter);
 
-    std::vector<ConditionVector> invoke();
+    vector<ConditionVector> invoke();
 
     void ClearStatus();
 
     void AddWME(const WME& wme);
 
-    Condition FindProduction(string id, string attr);
+    Condition FindProduction(string id, string attr, string value);
 
     void AddFunction(const std::string& key, TestAtTokenFilterNode::JudgeFunctionType judgeFunction);
 };
@@ -133,6 +135,13 @@ struct CameraComponent
 
 struct DialogComponent
 {
+    string currentDialog = "";
+    std::vector<int> currentAnswers = { 0, 1 };
+
     std::vector<std::string> dialogs = { "Test" };
-    std::vector<std::string> answers = { "Test" };
+    std::vector<std::string> answers = { "hello", "bye" };
+
+    void SetText(int textNumber);
+    void AddButton(int buttonNumber);
+    void ClearButtons();
 };

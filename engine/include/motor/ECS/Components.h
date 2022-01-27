@@ -107,3 +107,19 @@ struct PointLightComponent
     static auto from_json(rj::Value& obj) -> PointLightComponent;
     auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
 };
+
+struct ScriptComponent 
+{
+    bool is_initialized = false;
+    std::string script = (R"(
+function on_start()
+
+end
+
+function on_update(time)
+
+end)");
+
+    static auto from_json(rj::Value& obj) -> ScriptComponent;
+    auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;
+};

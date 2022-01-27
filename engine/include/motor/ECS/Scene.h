@@ -2,6 +2,7 @@
 
 #include <motor/other/ModelLoader.h>
 #include <entt/entt.hpp>
+#include <motor/core_system/lua.hpp>
 
 
 //struct RenderableEntities
@@ -65,16 +66,21 @@ public:
     void Save();
     void Load();
 
+    sol::state lua_state;
+
 private:
     template <typename T>
     void OnComponentAdded(Entity entity, T& component);
 
 private:
+    ModelStruct& GetModel(int id);
+
     int m_window_height;
     int m_window_width;
-
+    
     entt::registry m_registry;
     ModelLoader* m_model_manager;
+    
 
     friend class Entity;
     friend class SceneHierarchy;

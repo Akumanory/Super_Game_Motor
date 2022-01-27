@@ -4,8 +4,8 @@
 
 using namespace DirectX;
 
-extern lua_State* lState;
-void LoadImguiBindings();
+//extern lua_State* lState;
+//void LoadImguiBindings();
 
 bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int width, int height)
 {
@@ -13,7 +13,7 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
 
 	tpool_ = std::make_unique<motor::task_system::thread_pool>();
 
-	lState = lua_.lua_state();
+	/*lState = lua_.lua_state();
     lua_.open_libraries(
       sol::lib::base,
       sol::lib::package,
@@ -41,6 +41,8 @@ bool Framework::Initialize(HINSTANCE hInstance, std::string window_class, int wi
     };
 
 	gfx.setConsole(&consoleUI_, &showConsole_);
+
+    gfx.lua_state = lState;*/
 
 	timer.Start();
 	if (!display.Initialize(hInstance, window_class, width, height))
@@ -125,8 +127,35 @@ void Framework::Update()
     // TODO: Тест для проверки симуляции потом убрать
     if (gfx.state == Graphics::States::Simulate) 
     {
-        auto& transform_comp = gfx.entity1.GetComponent<TransformComponent>();
-        ComponentSystems::AjustPosition(gfx.entity1, XMFLOAT3(0.0f, 0.002f, 0.003f), delta);
+
+        
+
+        //auto& transform_comp = gfx.entity1.GetComponent<TransformComponent>();
+        //ComponentSystems::AjustPosition(gfx.entity1, XMFLOAT3(0.0f, 0.002f, 0.003f), delta);
+        auto script_comps = gfx.test_entt_scene.GetEntitysByComponent<ScriptComponent>();
+
+        for (auto i : script_comps) 
+        {
+            auto& script_comp = i.GetComponent<ScriptComponent>();
+
+            gfx.test_entt_scene.lua_state["is_key_pressed"] = [&](const char key) {
+                if (display.keyboard.KeyIsPressed(key)) {
+                    return true;
+                }
+                return false;
+            };
+
+            gfx.test_entt_scene.lua_state.script(script_comp.script);
+            
+            if (!script_comp.is_initialized) 
+            {
+                gfx.test_entt_scene.lua_state["on_start"]();
+
+                script_comp.is_initialized = true;
+            }
+
+            gfx.test_entt_scene.lua_state["on_update"](delta);
+        }
     }
 	
 	if (primary_camera) 

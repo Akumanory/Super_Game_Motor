@@ -601,6 +601,8 @@ bool Graphics::InitializeScene() {
         //ComponentSystems::SetRotation(entity1, DirectX::XMFLOAT3(30.0f, 0.0f, 0.0f));
         entity1.AddComponent<MeshComponent>();
         //ComponentSystems::SetModel(entity1, model_loader.GetModelById(0));
+        entity1.AddComponent<ScriptComponent>();
+
 
         entity2 = test_entt_scene.CreateEntity("Second Entity");
         ComponentSystems::SetPosition(entity2, DirectX::XMFLOAT3(0.0f, 6.0f, 4.0f));
@@ -608,6 +610,16 @@ bool Graphics::InitializeScene() {
         entity2.AddComponent<MeshComponent>();
         //entity2.AddComponent<PointLightComponent>();
         //ComponentSystems::SetModel(entity2, model_loader.GetModelById(0));
+        entity2.AddComponent<ScriptComponent>();
+
+        /*entity2.GetComponent<ScriptComponent>().script = (R"(
+function on_update(time)
+    if is_key_pressed('F') then
+        ajust_position_self(0.001, 0.001, 0.001, time)            
+    end
+end)"
+        );*/
+
 
         entity3 = test_entt_scene.CreateEntity("Point Light Entity");
         ComponentSystems::SetPosition(entity3, DirectX::XMFLOAT3(0.0f, 15.0f, 0.0f));

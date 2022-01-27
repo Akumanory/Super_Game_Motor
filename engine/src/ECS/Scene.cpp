@@ -115,6 +115,11 @@ Entity Scene::CreateEntity(const std::string name)
     return entity;
 }
 
+ModelStruct& Scene::GetModel(int id) 
+{
+    return m_model_manager->GetModelById(id);
+}
+
 void Scene::DestroyEntity(Entity entity) 
 {
     // избавится от зависимостей перед удалением
@@ -184,6 +189,50 @@ void Scene::OnComponentAdded<MeshComponent>(Entity entity, MeshComponent& compon
 }
 
 template <>
+void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component) {
+    lua_state.open_libraries(
+      sol::lib::base,
+      sol::lib::package,
+      sol::lib::math,
+      sol::lib::string,
+      sol::lib::table,
+      sol::lib::debug,
+      sol::lib::jit);
+
+      auto& script_comp = entity.GetComponent<ScriptComponent>();
+      
+      lua_state["this_entity"] = [=]() mutable {
+          return entity;
+      };
+
+      lua_state["ajust_position_self"] = [=](float x, float y, float z, float time) mutable {
+            ComponentSystems::AjustPosition(entity, XMFLOAT3(x, y, z), time);
+      };
+
+
+      lua_state["ajust_position"] = [](Entity entity, float x, float y, float z, float time) {
+          ComponentSystems::AjustPosition(entity, XMFLOAT3(x, y, z), time);
+      };
+
+      lua_state["create_entity"] = [&](const std::string name) {
+          return CreateEntity(name);
+      };
+
+      lua_state["set_model_to_entity"] = [&](Entity entity, int model_number) {
+          
+          if (!entity.HasComponent<MeshComponent>()) {
+              entity.AddComponent<MeshComponent>();
+          }
+          
+          if (model_number >= 0) 
+          {
+              ComponentSystems::SetModel(entity, GetModel(model_number));
+          }
+      };
+
+}
+
+template <>
 void Scene::OnComponentAdded<ParentComponent>(Entity entity, ParentComponent& component) {
     if (!component.parent.HasComponent<ChildsComponent>()) {
         component.parent.AddComponent<ChildsComponent>();
@@ -206,6 +255,7 @@ void Scene::Save() {
     snapshot.entities(json_archive)
       .component<
         TagComponent,
+        ScriptComponent,
         TransformComponent,
         MeshComponent,
         ChildsComponent,
@@ -246,6 +296,7 @@ void Scene::Load() {
       .entities(json_in)
       .component<
         TagComponent,
+        ScriptComponent,
         TransformComponent,
         MeshComponent,
         ChildsComponent,

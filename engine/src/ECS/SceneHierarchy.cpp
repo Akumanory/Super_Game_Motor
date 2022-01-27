@@ -352,6 +352,24 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
         }
         ImGui::NewLine();
     });
+
+    DrawComponent<ScriptComponent>("Script", entity, [](auto& component) {
+        
+        auto& script = component.script;
+
+        static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
+
+        char buffer[1024 * 16];
+        memset(buffer, 0, sizeof(buffer));
+        strcpy_s(buffer, sizeof(buffer), script.c_str());
+
+        if (ImGui::InputTextMultiline("Script", buffer, IM_ARRAYSIZE(buffer), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags)) 
+        {
+            script = std::string(buffer);
+        }
+
+        ImGui::NewLine();
+    });
     
     DrawComponent<PointLightComponent>("PointLight", entity, [](auto& component) {
         ImGui::ColorEdit3("Dynamic Light Color", (float*)&component.lightColor);

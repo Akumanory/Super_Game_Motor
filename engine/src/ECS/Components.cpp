@@ -13,6 +13,15 @@ auto TagComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAlloca
     obj.AddMember("tag", tag_j, rjAllocator);
 }
 
+auto ScriptComponent::from_json(rj::Value& obj) -> ScriptComponent {
+    return ScriptComponent{ .script = obj["script"].GetString() };
+}
+auto ScriptComponent::to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void {
+    rj::Value tag_j;
+    tag_j.SetString(script.c_str(), script.length(), rjAllocator);
+    obj.AddMember("script", tag_j, rjAllocator);
+}
+
 auto TransformComponent::from_json(rj::Value& obj) -> TransformComponent {
     auto& world_position_j = obj["world_position"];
     auto& world_rotation_j = obj["world_rotation"];

@@ -1,6 +1,7 @@
 ﻿#include <motor/other/Framework.h>
 #include <motor/other/Logs.h>
 #include <motor/ECS/ComponentSystems.h>
+#include <DirectXCollision.h>
 
 using namespace DirectX;
 
@@ -104,13 +105,13 @@ void Framework::Update()
 			if (me.GetType() == MouseEvent::EventType::RAW_MOVE)
 			{
                 if (primary_camera) {
-                    ComponentSystems::AjustRotation(
+                    /*ComponentSystems::AjustRotation(
                         primary_camera,
                         XMFLOAT3(
                           (float)me.GetPosY() * 0.005f,
                           (float)me.GetPosX() * 0.005f,
                           0),
-                        1);
+                        1);*/
                 }
                 else 
                 {
@@ -126,43 +127,186 @@ void Framework::Update()
 
     // TODO: Тест для проверки симуляции потом убрать
     if (gfx.state == Graphics::States::Simulate) 
-    {
-
-        
-
+    {   
         //auto& transform_comp = gfx.entity1.GetComponent<TransformComponent>();
         //ComponentSystems::AjustPosition(gfx.entity1, XMFLOAT3(0.0f, 0.002f, 0.003f), delta);
         auto script_comps = gfx.test_entt_scene.GetEntitysByComponent<ScriptComponent>();
 
-        for (auto i : script_comps) 
+        for (auto& i : script_comps) 
         {
+
+            bool remove_entity = false;
+            Entity entity_to_remove;
+
             auto& script_comp = i.GetComponent<ScriptComponent>();
 
-            gfx.test_entt_scene.lua_state["is_key_pressed"] = [&](const char key) {
+            script_comp.lua_state.open_libraries(
+              sol::lib::base,
+              sol::lib::package,
+              sol::lib::math,
+              sol::lib::string,
+              sol::lib::table,
+              sol::lib::debug,
+              sol::lib::jit);
+
+            script_comp.lua_state["this_entity"] = [=]() mutable {
+                return i;
+            };
+
+            script_comp.lua_state["delete_entity"] = [&](Entity entity_t) {
+                remove_entity = true;
+                entity_to_remove = entity_t;
+            };
+
+            script_comp.lua_state["get_direction_xmvector"] = [&](Entity entity, const char dir) {
+                if (dir == 'U') {
+                    return entity.GetComponent<TransformComponent>().GetUpVector();
+                }
+                if (dir == 'F') {
+                    return entity.GetComponent<TransformComponent>().GetForwardVector();
+                }
+                if (dir == 'R') {
+                    return entity.GetComponent<TransformComponent>().GetRightVector();
+                }
+            };
+
+
+            script_comp.lua_state["set_global_pos_1"] = [&](XMFLOAT3 pos) {
+                _global_pos_1 = pos;
+            };
+
+            script_comp.lua_state["set_global_int_1"] = [&](int number) {
+                _global_int = number;
+            };
+
+
+            script_comp.lua_state["get_global_pos_1"] = [&]() {
+                return _global_pos_1;
+            };
+
+            script_comp.lua_state["get_global_int_1"] = [&]() {
+                return _global_int;
+            };
+
+            script_comp.lua_state["set_script"] = [](Entity entity, const std::string script) {
+                if (!entity.HasComponent<ScriptComponent>()) 
+                {
+                    entity.AddComponent<ScriptComponent>();
+                }
+                entity.GetComponent<ScriptComponent>().script = script;
+            };
+
+            script_comp.lua_state["get_world_pos"] = [&](Entity entity) {
+                return entity.GetComponent<TransformComponent>().world_position;
+            };
+
+            script_comp.lua_state["set_world_pos"] = [](Entity entity, float x, float y, float z) {
+                ComponentSystems::SetPosition(entity, XMFLOAT3(x, y, z));
+            };
+
+            script_comp.lua_state["set_world_pos_XMFLOAT"] = [](Entity entity, XMFLOAT3 pos, float x, float y, float z) {
+                ComponentSystems::SetPosition(entity, XMFLOAT3(pos.x + x, pos.y + y, pos.z + z));
+            };
+
+            script_comp.lua_state["ajust_position_self"] = [=](float x, float y, float z, float time) mutable {
+                ComponentSystems::AjustPosition(i, XMFLOAT3(x, y, z), time);
+            };
+
+            script_comp.lua_state["ajust_rotation_self"] = [=](float x, float y, float z, float time) mutable {
+                ComponentSystems::AjustRotation(i, XMFLOAT3(x, y, z), time);
+            };
+
+            script_comp.lua_state["set_rotation_self"] = [=](float x, float y, float z, float time) mutable {
+                ComponentSystems::SetRotation(i, XMFLOAT3(x, y, z));
+            };
+
+            script_comp.lua_state["ajust_position_XMVECTOR"] = [](Entity entity, XMVECTOR pos, float speed, float time) {
+                ComponentSystems::AjustPosition(entity, pos * speed, time);
+            };
+
+            script_comp.lua_state["ajust_position_XMFLOAT"] = [](Entity entity, XMFLOAT3 pos, float speed, float time) {
+                ComponentSystems::AjustPosition(entity, pos, time * speed);
+            };
+
+            script_comp.lua_state["ajust_position"] = [](Entity entity, float x, float y, float z, float time) {
+                ComponentSystems::AjustPosition(entity, XMFLOAT3(x, y, z), time);
+            };
+
+            script_comp.lua_state["create_entity"] = [&](const std::string name) {
+                return gfx.test_entt_scene.CreateEntity(name);
+            };
+
+            script_comp.lua_state["set_model_to_entity"] = [&](Entity entity, int model_number) {
+                if (!entity.HasComponent<MeshComponent>()) {
+                    entity.AddComponent<MeshComponent>();
+                }
+
+                if (model_number >= 0) {
+                    ComponentSystems::SetModel(entity, gfx.test_entt_scene.GetModel(model_number));
+                }
+            };
+
+            script_comp.lua_state["is_key_pressed"] = [&](const char key) {
                 if (display.keyboard.KeyIsPressed(key)) {
                     return true;
                 }
                 return false;
             };
 
-            gfx.test_entt_scene.lua_state.script(script_comp.script);
+
+            script_comp.lua_state.script(script_comp.script);
             
             if (!script_comp.is_initialized) 
             {
-                gfx.test_entt_scene.lua_state["on_start"]();
+                script_comp.lua_state["on_start"]();
 
                 script_comp.is_initialized = true;
             }
 
-            gfx.test_entt_scene.lua_state["on_update"](delta);
+            auto mesh_comps = gfx.test_entt_scene.GetEntitysByComponent<MeshComponent>();
+
+            //bool collided = false;
+
+            for (auto& j : mesh_comps) {
+                if (i != j) {
+                    if (i.GetComponent<MeshComponent>().transformed_bounding_box.Intersects(j.GetComponent<MeshComponent>().transformed_bounding_box)) {
+                        script_comp.lua_state["on_collide"]();
+                    }
+                }
+            } 
+
+            script_comp.lua_state["on_update"](delta);
+        
+            if (remove_entity) 
+            {
+                gfx.test_entt_scene.DestroyEntity(entity_to_remove);
+            }
         }
+
+        /*auto mesh_comps = gfx.test_entt_scene.GetEntitysByTwoComponents<MeshComponent, ScriptComponent>();
+
+        for (auto&  i : mesh_comps) 
+        {
+            for (auto& j : mesh_comps) {
+
+                if (i != j) {
+                    if (i.GetComponent<MeshComponent>().transformed_bounding_box.Intersects(j.GetComponent<MeshComponent>().transformed_bounding_box)) {
+                        if (i.HasComponent<ScriptComponent>()) {
+                            gfx.test_entt_scene.lua_state["on_collide"]();
+                        }
+                    }
+                }
+            } 
+        }*/
     }
+
+
 	
 	if (primary_camera) 
 	{
 		// TODO: без векторов направления будет кататся неправильно
 
-		float camera_speed = 0.004f;
+		/*float camera_speed = 0.004f;
 
 		auto& transform = primary_camera.GetComponent<TransformComponent>();
 
@@ -187,7 +331,7 @@ void Framework::Update()
             }
             if (display.keyboard.KeyIsPressed('Z')) {
                 ComponentSystems::AjustPosition(primary_camera, XMFLOAT3(0, -1.0f, 0), camera_speed * delta);
-            }
+            }*/
 	} 
 	else 
 	{

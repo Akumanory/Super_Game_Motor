@@ -27,7 +27,7 @@ public:
     Entity CreateEntity(const std::string name);
     void DestroyEntity(Entity entity);
     Entity GetPrimaryCamera();
-
+    ModelStruct& GetModel(int id);
     template<typename T>
     std::vector<Entity> GetEntitysByComponent() 
     {
@@ -66,15 +66,13 @@ public:
     void Save();
     void Load();
 
-    sol::state lua_state;
+    //sol::state lua_state;
 
 private:
     template <typename T>
     void OnComponentAdded(Entity entity, T& component);
 
 private:
-    ModelStruct& GetModel(int id);
-
     int m_window_height;
     int m_window_width;
     

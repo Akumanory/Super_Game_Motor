@@ -33,5 +33,17 @@ private:
     motor::LuaConsole lua_console_{ lua_ };
     bool showConsole_{ true };*/
 
+	DirectX::XMFLOAT3 _global_pos_1;
+	DirectX::XMFLOAT3 _global_pos_2;
+	DirectX::XMFLOAT3 _global_pos_3;
+
+	bool _global_flag_1;
+	bool _global_flag_2;
+	bool _global_flag_3;
+
+	int _global_int;
+
+	float slow_for_on_collision = 0;
+
 	std::unique_ptr<motor::task_system::thread_pool> tpool_;
 };

@@ -110,6 +110,7 @@ struct PointLightComponent
 
 struct ScriptComponent 
 {
+    sol::state lua_state;
     bool is_initialized = false;
     std::string script = (R"(
 function on_start()
@@ -118,7 +119,12 @@ end
 
 function on_update(time)
 
-end)");
+end
+
+function on_collide()
+
+end
+)");
 
     static auto from_json(rj::Value& obj) -> ScriptComponent;
     auto to_json(rj::Value& obj, rj::Document::AllocatorType& rjAllocator) const -> void;

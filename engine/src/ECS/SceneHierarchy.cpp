@@ -531,6 +531,14 @@ void SceneHierarchy::DrawSelectedEntityComponents(Entity entity) {
             }
         }
 
+        if (!m_selection_context.HasComponent<ScriptComponent>()) {
+            if (ImGui::MenuItem("Script")) {
+                m_selection_context.AddComponent<ScriptComponent>();
+
+                ImGui::CloseCurrentPopup();
+            }
+        }
+
         if (!m_selection_context.HasComponent<PointLightComponent>()) {
             if (ImGui::MenuItem("PointLight")) {
                 m_selection_context.AddComponent<PointLightComponent>();

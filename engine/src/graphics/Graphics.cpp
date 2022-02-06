@@ -489,20 +489,20 @@ bool Graphics::InitializeScene() {
         model_loader.LoadModel("Data\\Objects\\RubikCube.fbx", "RubikCube");
         model_loader.LoadModel("Data\\Objects\\spice.fbx", "Ship");
         model_loader.LoadModel("Data\\Objects\\Asteroid.obj", "Asteroid");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\ufo5.obj", "UFO5");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\UFO.obj", "UFO");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\sphere.obj", "sphere");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\spaceSkyBox3.fbx", "spaceSkyBox3");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\Intergalactic_Spaceship-(Wavefront).obj", "Intern_Ship");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\Astronaut.obj", "Astronaut");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\StartButton.fbx", "StartButton");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\eraseThem.fbx", "EraseThem");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\destoyTheirShips.fbx", "DTS");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\turnAwayHuman.fbx", "TAH");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\pleaseStop.fbx", "PlsStp");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\killAllTheAliens.fbx", "KATA");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\noStopIt.fbx", "NoStopi");
-        model_loader.LoadModel("Data\\Objects\\Game_Penis\\tables\\youMonster.fbx", "YM");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\ufo5.obj", "UFO5");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\UFO.obj", "UFO");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\sphere.obj", "sphere");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\spaceSkyBox3.fbx", "spaceSkyBox3");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\Intergalactic_Spaceship-(Wavefront).obj", "Intern_Ship");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\Astronaut.obj", "Astronaut");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\StartButton.fbx", "StartButton");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\eraseThem.fbx", "EraseThem");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\destoyTheirShips.fbx", "DTS");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\turnAwayHuman.fbx", "TAH");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\pleaseStop.fbx", "PlsStp");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\killAllTheAliens.fbx", "KATA");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\noStopIt.fbx", "NoStopi");
+        model_loader.LoadModel("Data\\Objects\\Game_Obj\\tables\\youMonster.fbx", "YM");
 
 
         
